@@ -8,10 +8,17 @@ defineProps({
 const count = ref(0)
 </script>
 
+<style>
+.newbackground{
+  background-color: red;
+}
+
+</style>
+
 <template>
   <h1>{{ msg }}</h1>
 
-  <div class="card">
+  <div class="card newbackground">
     <button type="button" @click="count++">count is {{ count }}</button>
     <p>
       Edit hello thre dominic teh
