@@ -14,7 +14,7 @@ const count = ref(0)
   <div class="card">
     <button type="button" @click="count++">count is {{ count }}</button>
     <p>
-      Edit hello thre
+      Edit hello thre dominic teh
       <code>components/HelloWorld.vue</code> to test HMR
     </p>
   </div>
