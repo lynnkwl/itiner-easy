@@ -1,1 +1,69 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<body>
+    City<input type="text" id="country" name="City">
+    From<input type="date" id="from" name="From">
+    To<input type="date" id="to" name="To">
+</br>
+
+    Indoor or outdoor
+</br>
+<input type="radio" id="preferences" name="outgoing" value="Indoor"> Indoor
+    <input type="radio" id="preferences" name="outgoing" value="Outdoor"> Outdoor
+</br>
+    Mode of Transport</br> <input type="radio" id="transport" name="Transport" value="Car">Car
+    <input type="radio" id="transport" name="Transport" value="Public Transport">Public Transport
+    <input type="radio" id="transport" name="Transport" value="Walking"> Walking
+</br>
+    <button onclick="generateitinerary()">Generate Itinerary</button>
+
+</body>
+
+<script>
+    
+    function generateitinerary(){
+        var city = document.getElementById("country").value;
+        var from = document.getElementById("from").value;
+        var to = document.getElementById("to").value;
+        var preferences = document.querySelector('input[name="outgoing"]:checked').value;
+        var transport = document.querySelector('input[name="Transport"]:checked').value;
+        console.log(city);
+        console.log(from);
+        console.log(to);
+        console.log(preferences);
+        console.log(transport);
+        axios.get('http://localhost:3000/itinerary', {
+            params: {
+                city: city,
+                from: from,
+                to: to,
+                preferences: preferences,
+                transport: transport
+            }
+        })
+        .then(function (response) {
+            console.log(response);
+            var data = response.data;
+            var itinerary = data.itinerary;
+            var itineraryString = "";
+            for (var i = 0; i < itinerary.length; i++) {
+                itineraryString += itinerary[i] + "<br>";
+            }
+            document.getElementById("itinerary").innerHTML = itineraryString;
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+    }
+</script>
+</html>
