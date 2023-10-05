@@ -81,9 +81,10 @@
               <option value="10">10</option>
             </select>
           </div>
-          <div class='col'>
-
-          </div>
+        </div>
+        <div class="row justify-content-center">
+          <button type="button" class="btn btn-primary btn-lg btn-block"
+            style="background-color: #05c8f7; border: none;">Continue</button>
         </div>
       </div>
     </form>
@@ -91,7 +92,7 @@
       function updateNumNames(number) {
         console.log(number);
         let i = 1;
-        str  = "";
+        str = "";
         while (i < number) {
           str += "<input style='margin-bottom: 10px;' type='text' placeholder='Person " + (i + 1) + "' class='form-control'>";
           i++;
