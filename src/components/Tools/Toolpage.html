@@ -19,6 +19,9 @@ integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQI
         border: 1px solid black;
         border-collapse: collapse;
     }
+    .pad{
+      background-color: #d9d9d9;
+    }
 </style>
 <body onload="getitemsonload()">
     <nav class="navbar navbar-expand-sm navbar-dark" style="background-color: #05c8f7;"
@@ -56,9 +59,9 @@ integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQI
       </div>
     </div>
   </nav>
-  <div class="row">
+  <div class="row text-center">
 
-                <div class= "col-4"style="margin-left: 15px; margin-top: 15px;">
+                <div class= "col-3 pad"style="margin-left: 15px; margin-top: 15px;">
                     <h3>Weather Forecast</h3>
                     <h7>Which city are you heading to?</h7>
                     <br><br><br>
@@ -71,10 +74,10 @@ integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQI
                 </div>
                 </div>
 
-                <div class="col-4" style="margin-left: 15px; margin-top: 15px;">
+                <div class="col-4 pad" style="margin-left: 15px; margin-top: 15px;">
                     <h3>Language Translator</h3>
                     <h7>Which language do you want to transalte to?</h7>
-                    <br><br><br>
+                    <br><br>
                     <label for="languages">List of Languages:</label>
                         <select name="language" id="languages">
 
@@ -82,7 +85,7 @@ integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQI
                     <br><br>
                     <label for="text">Text to translate:</label>
                     <br>
-                    <textarea id="text" name="text" rows="4" cols="50" onchange="translateit()"></textarea>
+                    <textarea id="text" name="text" rows="3" cols="30" onchange="translateit()"></textarea>
                     <br><br>
                     <button onclick="translateit()">Translate</button>
                     <br><br>
@@ -90,10 +93,10 @@ integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQI
                     <div id="translatedtext">
                     </div>
                 </div>
-                <div class="col-4" style="margin-left: 15px; margin-top: 15px;">
+                <div class="col-4 pad" style="margin-left: 15px; margin-top: 15px;">
                     <h3>Currency Converter</h3>
                     <h7>Which Currency do you want to convert to?</h7>
-                    <br><br><br>
+                    <br><br>
                     <label for="currencylist">Which currency are you using?</label>
                         <select name="currencylist" id="currencylist" onchange="convertit()">
 
@@ -107,8 +110,10 @@ integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQI
 
                     </select>
                     <br><br>
+                    <button onclick="convertit()">Convert</button>
+                    <br><br>
                     <h7>Converted amount</h7>
-                    <br><br><br>
+                    <br><br>
                     <div id="convertedmoney">
                         
                     </div>
