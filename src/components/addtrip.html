@@ -102,13 +102,10 @@
       function submitTrip() {
         let tripName = document.getElementById("tripName").value;
         let numPeople = document.getElementById("numPeople").value;
-        let personNames = document.getElementById("person1").value;
-        for (i = 2; i <= numPeople; i++) {
-          personNames += ", " + document.getElementById("person" + (i)).value;
+        let personNames = [];
+        for (i = 1; i <= numPeople; i++) {
+          personNames.push(document.getElementById("person" + (i)).value);
         }
-        console.log(tripName);
-        console.log(numPeople);
-        console.log(personNames);
 
         // Store the value in localStorage
         localStorage.setItem('tripName', tripName);
