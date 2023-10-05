@@ -41,29 +41,31 @@
         console.log(to);
         console.log(preferences);
         console.log(transport);
-        axios.get('http://localhost:3000/itinerary', {
-            params: {
-                city: city,
-                from: from,
-                to: to,
-                preferences: preferences,
-                transport: transport
-            }
-        })
+        //get day difference between from and to dates
+        var date1 = new Date(from);
+        var date2 = new Date(to);
+        var Difference_In_Time = date2.getTime() - date1.getTime();
+        var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
+        //api to get the weather
+        key ="cfb27632a44746f6aaf01356231409";
+        axios.get('http://api.weatherapi.com/v1/forecast.json?key='+key+'&q='+city+'&days=3'+Difference_In_Days)
         .then(function (response) {
-            console.log(response);
-            var data = response.data;
-            var itinerary = data.itinerary;
-            var itineraryString = "";
-            for (var i = 0; i < itinerary.length; i++) {
-                itineraryString += itinerary[i] + "<br>";
+            console.log(response.data);
+            var weather = response.data.forecast.forecastday;
+            var weatherarray = [];
+            for(var i=0;i<weather.length;i++){
+                var weatherobj = {};
+                // weatherobj.date = weather[i].date;
+                // weatherobj.maxtemp = weather[i].day.maxtemp_c;
+                // weatherobj.mintemp = weather[i].day.mintemp_c;
+                // weatherobj.avgtemp = weather[i].day.avgtemp_c;
+                // weatherobj.condition = weather[i].day.condition.text;
+                weatherarray.push(weather[i].day.condition.text);
             }
-            document.getElementById("itinerary").innerHTML = itineraryString;
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
+            console.log(weatherarray);
 
-    }
+
+
+    })}
 </script>
 </html>
