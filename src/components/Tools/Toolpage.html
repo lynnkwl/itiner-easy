@@ -20,7 +20,7 @@ integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQI
         border-collapse: collapse;
     }
 </style>
-<body onload="getlanguages()">
+<body onload="getitemsonload()">
     <nav class="navbar navbar-expand-sm navbar-dark" style="background-color: #05c8f7;"
     aria-label="Second navbar example">
     <div class="container-fluid">
@@ -101,16 +101,13 @@ integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQI
                     <br><br>
                     <label for="text">Amount</label>
                     <br>
+                    <input type="number" name="moneymoneyahhhhh" onchange="converit()"></input>
+                    <label for="currencylist">What do you want to convert to?</label>
+                    <select name="currencylisttoconvert" id="currencylisttoconvert">
+
+                    </select>
                     <h7>Converted amount</h7>
                     <br><br><br>
-                    <br><br>
-                    <label for="text">Amount</label>
-                    <br>
-                    <input type="number" name="moneymoneyahhhhh" onchange="converit()"></input>
-                    <br><br>
-                    <button onclick="converit()">Convert</button>
-                    <br><br>
-
                     <div id="convertedmoney">
                         
                     </div>
@@ -161,6 +158,10 @@ integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQI
         })
 
     }
+    function getitemsonload(){
+        getlanguages();
+        getcurrencylist();
+    }
     function getlanguages(){
         var key ="AIzaSyCjKtOTNCtEK5MYtW-GrP5QUiCj72PCT9Q";
         //googlecloudtranslator api
@@ -191,6 +192,36 @@ integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQI
             textdiv.innerHTML = translatedtext;
         })
     }
+    function getcurrencylist(){
+      var url= 'https://currency-converter5.p.rapidapi.com/currency/list';
+      var XRapidAPIKey= '2f0bfe79abmsh886342ca61bbf11p1e6dd8jsna7f5de5249b0';
+      var XRapidAPIHost= 'currency-converter5.p.rapidapi.com';
+      axios.get(url, {
+        headers: {
+          'x-rapidapi-key': XRapidAPIKey,
+          'x-rapidapi-host': XRapidAPIHost
+        }
+      })
+      .then(function(response) {
+        console.log(response.data);
+        var currencylist = response.data.currencies;
+        var currencylistdiv = document.getElementById("currencylist");
+        var html = "";
+        for(const [key, value] of Object.entries(currencylist)){
+          html += "<option value="+key+">"+value+"</option>";
+        }
+        currencylistdiv.innerHTML = html;
+        var currencylisttoconvertdiv = document.getElementById("currencylisttoconvert");
+        var html = "";
+        for(const [key, value] of Object.entries(currencylist)){
+          html += "<option value="+key+">"+value+"</option>";
+        }
+        currencylisttoconvertdiv.innerHTML = html;
+    
+      })
+  }
+
+    
 
   </script>
   <!-- Bootstrap Bundle with Popper -->
