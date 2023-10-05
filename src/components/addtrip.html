@@ -60,15 +60,15 @@
         <div class='row justify-content-center'>
           <div class='col-6'>
             <h3>Trip Name:</h3>
-            <input type="text" placeholder="Trip Name" name="trip-name" id="trip-name" class="form-control">
+            <input type="text" placeholder="Trip Name" name="tripName" id="tripName" class="form-control">
             <br>
             <h3>Names:</h3>
-            <input style="margin-bottom: 10px;" type="text" placeholder="Person 1" class="form-control">
-            <span id="person-names"></span>
+            <input style="margin-bottom: 10px;" type="text" placeholder="Person 1" id="person1" class="form-control">
+            <span id="personNames"></span>
           </div>
           <div class='col-6'>
             <h3>No of People:</h3>
-            <select name="num-people" id="num-people" class="form-control" onchange="updateNumNames(this.value)">
+            <select name="numPeople" id="numPeople" class="form-control" onchange="updateNumNames(this.value)">
               <option value="1">1</option>
               <option value="2">2</option>
               <option value="3">3</option>
@@ -84,21 +84,39 @@
         </div>
         <div class="row justify-content-center">
           <button type="button" class="btn btn-primary btn-lg btn-block"
-            style="background-color: #05c8f7; border: none;">Continue</button>
+            style="background-color: #05c8f7; border: none;" onclick="submitTrip()">Continue</button>
         </div>
       </div>
     </form>
     <script>
       function updateNumNames(number) {
-        console.log(number);
         let i = 1;
         str = "";
         while (i < number) {
-          str += "<input style='margin-bottom: 10px;' type='text' placeholder='Person " + (i + 1) + "' class='form-control'>";
+          str += "<input style='margin-bottom: 10px;' type='text' placeholder='Person " + (i + 1) + "' id='person" + (i + 1) + "' class='form-control'>";
           i++;
         }
-        console.log(str);
-        document.getElementById("person-names").innerHTML = str;
+        document.getElementById("personNames").innerHTML = str;
+      }
+
+      function submitTrip() {
+        let tripName = document.getElementById("tripName").value;
+        let numPeople = document.getElementById("numPeople").value;
+        let personNames = document.getElementById("person1").value;
+        for (i = 2; i <= numPeople; i++) {
+          personNames += ", " + document.getElementById("person" + (i)).value;
+        }
+        console.log(tripName);
+        console.log(numPeople);
+        console.log(personNames);
+
+        // Store the value in localStorage
+        localStorage.setItem('tripName', tripName);
+        localStorage.setItem('numPeople', numPeople);
+        localStorage.setItem('personNames', personNames);
+
+        // Redirect to the second page
+        window.location.href = 'edittrip.html';
       }
     </script>
   </div>

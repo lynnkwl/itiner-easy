@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+  <!-- Vue using CDN -->
+  <script src="https://unpkg.com/vue@next"></script>
+
+  <script>
+    window.onload = function() {
+      // Get the value from localStorage
+      var tripName = localStorage.getItem('tripName');
+      var numPeople = localStorage.getItem('numPeople');
+      var personNames = localStorage.getItem('personNames');
+      
+      // Display the value on the page
+      var tripNameOutput = document.getElementById('tripNameOutput');
+      tripNameOutput.innerText = tripName;
+      var numPeopleOutput = document.getElementById('numPeopleOutput');
+      numPeopleOutput.innerText = numPeople;
+      var personNamesOutput = document.getElementById('personNamesOutput');
+      personNamesOutput.innerText = personNames;
+    };
+  </script>
+  
+  <title>BillBuddy</title>
+</head>
+
+<body>
+
+  <nav class="navbar navbar-expand-sm navbar-dark" style="background-color: #05c8f7;"
+    aria-label="Second navbar example">
+    <div class="container-fluid">
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample02"
+        aria-controls="navbarsExample02" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarsExample02">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link text-white" href="#">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="#">Tools</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active text-black" aria-current="page" href="billbuddy.html">BillBuddy</a>
+          </li>
+        </ul>
+        <div class="position-absolute top-0 start-50 translate-middle-x">
+          <img src="logo/itiner-easy.svg" style="width: 100px; height: 100px; margin-top: -15px;"
+            alt="itiner-easy logo">
+        </div>
+        <ul class="navbar-nav pull-right">
+          <li class="nav-item">
+            <a class="nav-link rounded"
+              style="background-color: white; color: #05c8f7; padding-left: 20px; padding-right: 20px;"
+              href="#">Profile</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <h1>Page 2</h1>
+    <p>The value you entered on the first page was:</p>
+    <p id="tripNameOutput"></p>
+    <p id="numPeopleOutput"></p>
+    <p id="personNamesOutput"></p>
+
+  <!-- Bootstrap Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
