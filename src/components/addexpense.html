@@ -51,11 +51,55 @@
     </div>
   </nav>
 
-  <div style="margin-left: 15px; margin-top: 15px;">
-    <h1>Current expenses</h1>
-    <h7>No expenses at the moment</h7>
-    <br><br><br>
-    <a href="addexpense.html" style="color: gray;">Add an Expense Now!</a>
+  <div>
+    <div class="text-center my-5">
+      <h1>New Expense</h1>
+    </div>
+    <form>
+      <div class='container col-6 px-5 py-3' style="background-color: #d9d9d9; border-radius: 10px;">
+        <div class='row justify-content-center'>
+          <div class='col-6'>
+            <h3>Trip Name:</h3>
+            <input type="text" placeholder="Trip Name" name="trip-name" id="trip-name" class="form-control">
+            <br>
+            <h3>Names:</h3>
+            <input style="margin-bottom: 10px;" type="text" placeholder="Person 1" class="form-control">
+            <span id="person-names"></span>
+          </div>
+          <div class='col-6'>
+            <h3>No of People:</h3>
+            <select name="num-people" id="num-people" class="form-control" onchange="updateNumNames(this.value)">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+            </select>
+          </div>
+          <div class='col'>
+
+          </div>
+        </div>
+      </div>
+    </form>
+    <script>
+      function updateNumNames(number) {
+        console.log(number);
+        let i = 1;
+        str  = "";
+        while (i < number) {
+          str += "<input style='margin-bottom: 10px;' type='text' placeholder='Person " + (i + 1) + "' class='form-control'>";
+          i++;
+        }
+        console.log(str);
+        document.getElementById("person-names").innerHTML = str;
+      }
+    </script>
   </div>
 
   <!-- Bootstrap Bundle with Popper -->
