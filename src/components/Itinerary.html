@@ -264,11 +264,14 @@ integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQI
         var weather = getweather();
         var preferences = document.querySelector('input[name="outgoing"]:checked').value;
         var transport = document.querySelector('input[name="Transport"]:checked').value;
+        var usedattractions = [];
+        var itinerary =  [];
         for(var i=0;i<weather.length;i++){
             if(weather[i] == "Rain"){
+                //generate itinerary for indoor attractions and include the time it tadkes to get there between 9am-9pm and ensure the attraction is open and nearby, each attraction should be 3 hours long
                 searchIndoorAttractions();
-                
-            }
+            
+        }
             else if(preferences == "Indoor"){
                 searchIndoorAttractions();
             }
@@ -279,8 +282,8 @@ integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQI
                 searchOutdoorAttractions();
             }
 
-        }
-    }
+        }}
+        
 
 </script>
 </html>
