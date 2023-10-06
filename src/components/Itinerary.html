@@ -6,13 +6,73 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+<!-- Vue using CDN -->
+<script src="https://unpkg.com/vue@next"></script><script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<style>
+    .slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 23px;
+  height: 24px;
+  border: 0;
+  background: url('contrasticon.png');
+  cursor: pointer;
+}
 
+.slider::-moz-range-thumb {
+  width: 23px;
+  height: 25px;
+  border: 0;
+  background: url('contrasticon.png');
+  cursor: pointer;
+}
+</style>
 <body>
-    City<input type="text" id="country" name="City">
-    From<input type="date" id="from" name="From">
-    To<input type="date" id="to" name="To">
+    <nav class="navbar navbar-expand-sm navbar-dark" style="background-color: #05c8f7;"
+    aria-label="Second navbar example">
+    <div class="container-fluid">
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample02"
+        aria-controls="navbarsExample02" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarsExample02">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link text-white" href="#">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="Tools/Toolpage.html">Tools</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active text-black" aria-current="page" href="billbuddy.html">BillBuddy</a>
+          </li>
+        </ul>
+        <div class="position-absolute top-0 start-50 translate-middle-x">
+            <a href="#"><img src="logo/itiner-easy.svg"  style="width: 100px; height: 100px; margin-top: -15px;"
+                alt="itiner-easy logo"></a>
+        </div>
+        <ul class="navbar-nav pull-right">
+          <li class="nav-item">
+            <a class="nav-link rounded"
+              style="background-color: white; color: #05c8f7; padding-left: 20px; padding-right: 20px;"
+              href="#">Profile</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+
+
+    <h7>Which City do you want to go to?</h7><input type="text" id="country" name="City">
+    <div class="slidecontainer">
+        How many days
+        <input type="range" min="1" max="3" value="1" class="slider" id="daterange" name ="darerange">
+    </div>
 </br>
 
     Indoor or outdoor
@@ -63,9 +123,66 @@
                 weatherarray.push(weather[i].day.condition.text);
             }
             console.log(weatherarray);
+            //get the attractions from google places(new) api based on location
+        key = "AIzaSyCrtlMuj3mZnI5NGVkgw5ME1hZL-XEtRzI";
+        url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522,151.1957362&radius=500&types=restaurant&name=harbour&key=YOUR_API_KEY";
+        axios.get('https://maps.googleapis.com/maps/api/place/textsearch/json?query='+city+'+attractions&key='+key)
+        .then(function (response) {
+            console.log(response.data);
+            var attractions = response.data.results;
+            var attractionsarray = [];
+            for(var i=0;i<attractions.length;i++){
+                var attractionsobj = {};
+                attractionsobj.name = attractions[i].name;
+                attractionsobj.rating = attractions[i].rating;
+                attractionsobj.address = attractions[i].formatted_address;
+                attractionsobj.type = attractions[i].types;
+                attractionsarray.push(attractionsobj);
+            }
+            console.log(attractionsarray);
+            //get the restaurants from google places based on location
+            https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522,151.1957362&radius=500&types=restaurant&name=harbour&key=YOUR_API_KEY
+            axios.get('https://maps.googleapis.com/maps/api/place/textsearch/json?query='+city+'+restaurants&key='+key)
+            .then(function (response) {
+                console.log(response.data);
+                var restaurants = response.data.results;
+                var restaurantsarray = [];
+                for(var i=0;i<restaurants.length;i++){
+                    var restaurantsobj = {};
+                    restaurantsobj.name = restaurants[i].name;
+                    restaurantsobj.rating = restaurants[i].rating;
+                    restaurantsobj.address = restaurants[i].formatted_address;
+                    restaurantsobj.type = restaurants[i].types;
+                    restaurantsarray.push(restaurantsobj);
+                }
+                // console.log(restaurantsarray);
+                // //get the hotels from google places based on location
+                // axios.get('https://maps.googleapis.com/maps/api/place/textsearch/json?query='+city+'+hotels&key='+key)
+                // .then(function (response) {
+                //     console.log(response.data);
+                //     var hotels = response.data.results;
+                //     var hotelsarray = [];
+                //     for(var i=0;i<hotels.length;i++){
+                //         var hotelsobj = {};
+                //         hotelsobj.name = hotels[i].name;
+                //         hotelsobj.rating = hotels[i].rating;
+                //         hotelsobj.address = hotels[i].formatted_address;
+                //         hotelsobj.type = hotels[i].types;
+                //         hotelsarray.push(hotelsobj);
+                //     }
+                //     console.log(hotelsarray);
+                //     //get the flights from skyscanner based on location
+                //     axios.get('https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browsequotes/v1.0/IN/INR/en-US/'+city+'/anywhere/'+from+'/'+to, {
+                //         headers: {
+                //             'x-rapidapi-host': 'skyscanner-skyscanner-flight-search-v1.p.rapidapi.com',
+                //             'x-rapidapi-key': '
+        
 
+    })
 
+    }
+        )})}
+                
 
-    })}
 </script>
 </html>
