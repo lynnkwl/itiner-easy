@@ -110,11 +110,13 @@ integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQI
 
 
 </br>
-    How will you be getting around?</br> <input type="radio" id="car" name="Transport" value="Car">
+    How will you be getting around?</br> <input type="radio" id="car" name="Transport" value="DRIVING">
     <label for="car">Car</label>
-    <input type="radio" id="Public Transport" name="Transport" value="Public Transport">
+    <input type="radio" id="Public Transport" name="Transport" value="TRANSIT">
     <label for="Public Transport">Public Transport</label>
-    <input type="radio" id="walking" name="Transport" value="Walking">
+    <input type="radio" id="Cycling" name ="Transport" value = "BICYCLING">
+    <label for="Cycling">Bicycle</label>
+    <input type="radio" id="walking" name="Transport" value="WALKING">
     <label for="walking">Walking</label>
 
 </br>
@@ -253,7 +255,28 @@ integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQI
 
 
 
-    function getdistance(){
+    function gettraveltime(origin,endpoint,travelmode){
+    const directionsService = new google.maps.DirectionsService();
+    const directionsRenderer = new google.maps.DirectionsRenderer({ map: map });
+    var mode = document.getElementsByName("Transport");
+    
+    const request = {
+    origin: origin,
+    destination: destination,
+    travelMode: google.maps.TravelMode[mode], // Convert mode  Maps enum
+
+    directionsService.route(request, (result, status) => {
+    if (status === 'OK') {
+      directionsRenderer.setDirections(result);
+      const route = result.routes[0];
+      const travelTime = route.legs[0].duration.text;
+      console.log(`Travel time from ${origin} to ${destination} via ${mode}: ${travelTime}`);
+    } else {
+      console.error(`Error: ${status}`);
+    }
+  })
+  };
+
 
     }
 
