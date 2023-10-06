@@ -260,9 +260,27 @@ integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQI
 
 
     function generateitinerary(){
-        getweather();
-        searchAttractions();
+        //go through the weatherarray of each day from getweather() and if its rainy run searchIndoorAttractions() else if outgoing is indoor run searchIndoorAttractions() else if outgoing is both run searchBothAttractions() else run searchOutdoorAttractions()
+        var weather = getweather();
+        var preferences = document.querySelector('input[name="outgoing"]:checked').value;
+        var transport = document.querySelector('input[name="Transport"]:checked').value;
+        for(var i=0;i<weather.length;i++){
+            if(weather[i] == "Rain"){
+                searchIndoorAttractions();
+                
+            }
+            else if(preferences == "Indoor"){
+                searchIndoorAttractions();
+            }
+            else if(preferences == "Both"){
+                searchBothAttractions();
+            }
+            else{
+                searchOutdoorAttractions();
+            }
+
         }
+    }
 
 </script>
 </html>
