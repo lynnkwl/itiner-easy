@@ -28,6 +28,16 @@ integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQI
   background: url('contrasticon.png');
   cursor: pointer;
 }
+.Mainbody{
+    text-align: center;
+    margin-left: 30px;
+    margin-top: 30px;
+    background-color: #d9d9d9 ;
+}
+#sliderVal{
+    margin-left: 10px;
+    margin-right: 10px;
+}
 </style>
 <body>
     <nav class="navbar navbar-expand-sm navbar-dark" style="background-color: #05c8f7;"
@@ -67,48 +77,62 @@ integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQI
   </nav>
 
 
+<div class="Mainbody">
+
 
     <h7>Which City do you want to go to?</h7><input type="text" id="country" name="City">
     <div class="slidecontainer">
-        How many days
-        <input type="range" min="1" max="3" value="1" class="slider" id="daterange" name ="darerange">
+        For many days?
+        <input id="slider" type="range" min="1" max="3" step="1" oninput="sliderChange(this.value)">
+        <div class="SliderValue">
+
+        </div>
+        <output id="sliderVal">
+            2
+        </output>  
+    
     </div>
+
+
 </br>
 
-    Indoor or outdoor
+    What kind of person are you?
 </br>
-<input type="radio" id="preferences" name="outgoing" value="Indoor"> Indoor
-    <input type="radio" id="preferences" name="outgoing" value="Outdoor"> Outdoor
+<input type="radio" id="Indoor" name="outgoing" value="Indoor">
+<label for="Indoor">Indoor</label>
+<input type="radio" id="Outdoor" name="outgoing" value="Outdoor">
+<label for="Outdoor">Outdoor</label>
 </br>
-    Mode of Transport</br> <input type="radio" id="transport" name="Transport" value="Car">Car
-    <input type="radio" id="transport" name="Transport" value="Public Transport">Public Transport
-    <input type="radio" id="transport" name="Transport" value="Walking"> Walking
+    How will you be getting around?</br> <input type="radio" id="car" name="Transport" value="Car">
+    <label for="car">Car</label>
+    <input type="radio" id="Public Transport" name="Transport" value="Public Transport">
+    <label for="Public Transport">Public Transport</label>
+    <input type="radio" id="walking" name="Transport" value="Walking">
+    <label for="walking">Walking</label>
+
 </br>
     <button onclick="generateitinerary()">Generate Itinerary</button>
+
+</div>
 
 </body>
 
 <script>
-    
+    function sliderChange(val) {
+    document.getElementById('sliderVal').innerHTML = val;
+    }
+
     function generateitinerary(){
         var city = document.getElementById("country").value;
-        var from = document.getElementById("from").value;
-        var to = document.getElementById("to").value;
+        var days = document.getElementById("sliderVal").value;
         var preferences = document.querySelector('input[name="outgoing"]:checked').value;
         var transport = document.querySelector('input[name="Transport"]:checked').value;
         console.log(city);
-        console.log(from);
-        console.log(to);
         console.log(preferences);
         console.log(transport);
-        //get day difference between from and to dates
-        var date1 = new Date(from);
-        var date2 = new Date(to);
-        var Difference_In_Time = date2.getTime() - date1.getTime();
-        var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
         //api to get the weather
         key ="cfb27632a44746f6aaf01356231409";
-        axios.get('http://api.weatherapi.com/v1/forecast.json?key='+key+'&q='+city+'&days=3'+Difference_In_Days)
+        axios.get('http://api.weatherapi.com/v1/forecast.json?key='+key+'&q='+city+'&days='+days)
         .then(function (response) {
             console.log(response.data);
             var weather = response.data.forecast.forecastday;
