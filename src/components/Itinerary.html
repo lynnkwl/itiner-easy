@@ -10,6 +10,9 @@
 integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
 <!-- Vue using CDN -->
 <script src="https://unpkg.com/vue@next"></script><script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCrtlMuj3mZnI5NGVkgw5ME1hZL-XEtRzI&libraries=places"></script>
+
 <style>
     .slider::-webkit-slider-thumb {
   -webkit-appearance: none;
@@ -121,8 +124,7 @@ integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQI
     function sliderChange(val) {
     document.getElementById('sliderVal').innerHTML = val;
     }
-
-    function generateitinerary(){
+    function getweather(){
         var city = document.getElementById("country").value;
         var days = document.getElementById("sliderVal").value;
         var preferences = document.querySelector('input[name="outgoing"]:checked').value;
@@ -131,8 +133,8 @@ integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQI
         console.log(preferences);
         console.log(transport);
         //api to get the weather
-        key ="cfb27632a44746f6aaf01356231409";
-        axios.get('http://api.weatherapi.com/v1/forecast.json?key='+key+'&q='+city+'&days='+days)
+        var weatherkey ="cfb27632a44746f6aaf01356231409";
+        axios.get('http://api.weatherapi.com/v1/forecast.json?key='+weatherkey+'&q='+city+'&days='+days)
         .then(function (response) {
             console.log(response.data);
             var weather = response.data.forecast.forecastday;
@@ -147,66 +149,46 @@ integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQI
                 weatherarray.push(weather[i].day.condition.text);
             }
             console.log(weatherarray);
-            //get the attractions from google places(new) api based on location
-        key = "AIzaSyCrtlMuj3mZnI5NGVkgw5ME1hZL-XEtRzI";
-        url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522,151.1957362&radius=500&types=restaurant&name=harbour&key=YOUR_API_KEY";
-        axios.get('https://maps.googleapis.com/maps/api/place/textsearch/json?query='+city+'+attractions&key='+key)
-        .then(function (response) {
-            console.log(response.data);
-            var attractions = response.data.results;
-            var attractionsarray = [];
-            for(var i=0;i<attractions.length;i++){
-                var attractionsobj = {};
-                attractionsobj.name = attractions[i].name;
-                attractionsobj.rating = attractions[i].rating;
-                attractionsobj.address = attractions[i].formatted_address;
-                attractionsobj.type = attractions[i].types;
-                attractionsarray.push(attractionsobj);
-            }
-            console.log(attractionsarray);
-            //get the restaurants from google places based on location
-            https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522,151.1957362&radius=500&types=restaurant&name=harbour&key=YOUR_API_KEY
-            axios.get('https://maps.googleapis.com/maps/api/place/textsearch/json?query='+city+'+restaurants&key='+key)
-            .then(function (response) {
-                console.log(response.data);
-                var restaurants = response.data.results;
-                var restaurantsarray = [];
-                for(var i=0;i<restaurants.length;i++){
-                    var restaurantsobj = {};
-                    restaurantsobj.name = restaurants[i].name;
-                    restaurantsobj.rating = restaurants[i].rating;
-                    restaurantsobj.address = restaurants[i].formatted_address;
-                    restaurantsobj.type = restaurants[i].types;
-                    restaurantsarray.push(restaurantsobj);
-                }
-                // console.log(restaurantsarray);
-                // //get the hotels from google places based on location
-                // axios.get('https://maps.googleapis.com/maps/api/place/textsearch/json?query='+city+'+hotels&key='+key)
-                // .then(function (response) {
-                //     console.log(response.data);
-                //     var hotels = response.data.results;
-                //     var hotelsarray = [];
-                //     for(var i=0;i<hotels.length;i++){
-                //         var hotelsobj = {};
-                //         hotelsobj.name = hotels[i].name;
-                //         hotelsobj.rating = hotels[i].rating;
-                //         hotelsobj.address = hotels[i].formatted_address;
-                //         hotelsobj.type = hotels[i].types;
-                //         hotelsarray.push(hotelsobj);
-                //     }
-                //     console.log(hotelsarray);
-                //     //get the flights from skyscanner based on location
-                //     axios.get('https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browsequotes/v1.0/IN/INR/en-US/'+city+'/anywhere/'+from+'/'+to, {
-                //         headers: {
-                //             'x-rapidapi-host': 'skyscanner-skyscanner-flight-search-v1.p.rapidapi.com',
-                //             'x-rapidapi-key': '
-        
 
-    })
+    })}
 
+        // Replace with your API key
+    const apiKey = 'AIzaSyCrtlMuj3mZnI5NGVkgw5ME1hZL-XEtRzI';
+
+    // Function to search for attractions in a city
+    function searchAttractions(city) {
+    var city = document.getElementById("country").value;
+
+    const request = {
+        query: `tourist attractions in ${city}`,
+        fields: ['name', 'formatted_address','types', 'business_status'],
+    };
+
+
+
+    const service = new google.maps.places.PlacesService(document.createElement('div'));
+
+
+    service.textSearch(request, (results, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+        for (const place of results) {
+            console.log(`Name: ${place.name}`);
+            console.log(`Address: ${place.formatted_address}`);
+            console.log(`Types: ${place.types}`);
+            console.log(`Business Status: ${place.business_status}`);
+            console.log('---');
+        }
+        } else {
+        console.error(`Error: ${status}`);
+        }
+    });
     }
-        )})}
-                
+
+
+    function generateitinerary(){
+        getweather();
+        searchAttractions();
+        }
 
 </script>
 </html>
