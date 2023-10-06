@@ -105,6 +105,10 @@ integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQI
 <label for="Indoor">Indoor</label>
 <input type="radio" id="Outdoor" name="outgoing" value="Outdoor">
 <label for="Outdoor">Outdoor</label>
+<input type="radio" id="Both" name="outgoing" value="Both">
+<label for="Both">I'm fine with either!</label>
+
+
 </br>
     How will you be getting around?</br> <input type="radio" id="car" name="Transport" value="Car">
     <label for="car">Car</label>
@@ -156,18 +160,19 @@ integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQI
     const apiKey = 'AIzaSyCrtlMuj3mZnI5NGVkgw5ME1hZL-XEtRzI';
 
     // Function to search for attractions in a city
-    function searchAttractions(city) {
+    function searchIndoorAttractions(city) {
     var city = document.getElementById("country").value;
 
     const request = {
-        query: `tourist attractions in ${city}`,
-        fields: ['name', 'formatted_address','types', 'business_status'],
+        query: `Shopping malls and mueseums and aquariums in ${city}`,
+        fields: ['name', 'formatted_address','types', 'business_status', 'location'],
     };
 
 
 
     const service = new google.maps.places.PlacesService(document.createElement('div'));
-
+    const outdoorplaces = ['park','zoo','amusement_park',''];
+    // const outdoo
 
     service.textSearch(request, (results, status) => {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
@@ -176,6 +181,7 @@ integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQI
             console.log(`Address: ${place.formatted_address}`);
             console.log(`Types: ${place.types}`);
             console.log(`Business Status: ${place.business_status}`);
+            console.log(`Location: ${place.geometry.location}`);
             console.log('---');
         }
         } else {
@@ -183,6 +189,74 @@ integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQI
         }
     });
     }
+    function searchBothAttractions(city) {
+    var city = document.getElementById("country").value;
+
+    const request = {
+        query: `Tourist Attractions in ${city}`,
+        fields: ['name', 'formatted_address','types', 'business_status', 'location'],
+    };
+
+
+
+    const service = new google.maps.places.PlacesService(document.createElement('div'));
+    const outdoorplaces = ['park','zoo','amusement_park',''];
+    // const outdoo
+
+    service.textSearch(request, (results, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+        for (const place of results) {
+            console.log(`Name: ${place.name}`);
+            console.log(`Address: ${place.formatted_address}`);
+            console.log(`Types: ${place.types}`);
+            console.log(`Business Status: ${place.business_status}`);
+            console.log(`Location: ${place.geometry.location}`);
+            console.log('---');
+        }
+        } else {
+        console.error(`Error: ${status}`);
+        }
+    });
+    }
+
+
+
+    function searchOutdoorAttractions(city) {
+    var city = document.getElementById("country").value;
+
+    const request = {
+        query: `Outdoor Tourist Attractions in ${city}`,
+        fields: ['name', 'formatted_address','types', 'business_status', 'location'],
+    };
+
+
+
+    const service = new google.maps.places.PlacesService(document.createElement('div'));
+    const outdoorplaces = ['park','zoo','amusement_park',''];
+    // const outdoo
+
+    service.textSearch(request, (results, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+        for (const place of results) {
+            console.log(`Name: ${place.name}`);
+            console.log(`Address: ${place.formatted_address}`);
+            console.log(`Types: ${place.types}`);
+            console.log(`Business Status: ${place.business_status}`);
+            console.log(`Location: ${place.geometry.location}`);
+            console.log('---');
+        }
+        } else {
+        console.error(`Error: ${status}`);
+        }
+    });
+    }
+
+
+
+    function getdistance(){
+
+    }
+
 
 
     function generateitinerary(){
