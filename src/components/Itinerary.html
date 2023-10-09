@@ -130,36 +130,9 @@ integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQI
     function sliderChange(val) {
     document.getElementById('sliderVal').innerHTML = val;
     }
-    function getweather(){
-        var city = document.getElementById("country").value;
-        var days = document.getElementById("sliderVal").value;
-        var preferences = document.querySelector('input[name="outgoing"]:checked').value;
-        var transport = document.querySelector('input[name="Transport"]:checked').value;
-        console.log(city);
-        console.log(preferences);
-        console.log(transport);
-        //api to get the weather
-        var weatherkey ="cfb27632a44746f6aaf01356231409";
-        axios.get('http://api.weatherapi.com/v1/forecast.json?key='+weatherkey+'&q='+city+'&days='+days)
-        .then(function (response) {
-            console.log(response.data);
-            var weather = response.data.forecast.forecastday;
-            var weatherarray = [];
-            for(var i=0;i<weather.length;i++){
-                var weatherobj = {};
-                // weatherobj.date = weather[i].date;
-                // weatherobj.maxtemp = weather[i].day.maxtemp_c;
-                // weatherobj.mintemp = weather[i].day.mintemp_c;
-                // weatherobj.avgtemp = weather[i].day.avgtemp_c;
-                // weatherobj.condition = weather[i].day.condition.text;
-                weatherarray.push(weather[i].day.condition.text);
-            }
-            console.log(weatherarray);
 
-    })}
 
         // Replace with your API key
-    const apiKey = 'AIzaSyCrtlMuj3mZnI5NGVkgw5ME1hZL-XEtRzI';
 
     // Function to search for attractions in a city
     function searchIndoorAttractions(city) {
@@ -174,7 +147,7 @@ integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQI
 
     const service = new google.maps.places.PlacesService(document.createElement('div'));
     const outdoorplaces = ['park','zoo','amusement_park',''];
-    // const outdoo
+    // const outdoor
 
     service.textSearch(request, (results, status) => {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
@@ -278,35 +251,64 @@ integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQI
   // };
 
 
-    }
+async function getweather() {
+    return new Promise(async (resolve, reject) => {
+        var city = document.getElementById("country").value;
+        var days = document.getElementById("sliderVal").value;
+
+        // Replace your API call with an async/await call
+        try {
+            var weatherkey ="cfb27632a44746f6aaf01356231409";
+            const response = await axios.get(
+                'http://api.weatherapi.com/v1/forecast.json?key=' + weatherkey + '&q=' + city + '&days=' + days
+            );
+            console.log(response.data);
+
+            var weather = response.data.forecast.forecastday;
+            var weatherarray = [];
+
+            for (var i = 0; i < weather.length; i++) {
+                var weatherobj = {};
+                weatherarray.push(weather[i].day.condition.text);
+            }
+
+            resolve(weatherarray);
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
 
 
 
-    function generateitinerary(){
-        //go through the weatherarray of each day from getweather() and if its rainy run searchIndoorAttractions() else if outgoing is indoor run searchIndoorAttractions() else if outgoing is both run searchBothAttractions() else run searchOutdoorAttractions()
-        var weather = getweather();
+  async function generateitinerary() {
+    try {
+        var weather = await getweather(); // Wait for getweather to finish
+        console.log(weather);
         var preferences = document.querySelector('input[name="outgoing"]:checked').value;
         var transport = document.querySelector('input[name="Transport"]:checked').value;
         var usedattractions = [];
-        var itinerary =  [];
-        for(var i=0;i<weather.length;i++){
-            if(weather[i] == "Rain"){
-                //generate itinerary for indoor attractions and include the time it tadkes to get there between 9am-9pm and ensure the attraction is open and nearby, each attraction should be 3 hours long
+        var itinerary = [];
+        var city = document.getElementById("country").value;
+        var days = document.getElementById("sliderVal").value;
+
+        for (var i = 0; i < weather.length; i++) {
+            if (weather[i].indexOf("Rain") >= 0 || weather[i].indexOf("hazy") >= 0) {
                 searchIndoorAttractions();
-            
-        }
-            else if(preferences == "Indoor"){
+                
+            } else if (preferences == "Indoor") {
                 searchIndoorAttractions();
-            }
-            else if(preferences == "Both"){
+            } else if (preferences == "Both") {
                 searchBothAttractions();
-            }
-            else{
+            } else {
                 searchOutdoorAttractions();
             }
+        }
+    } catch (error) {
+        console.error("Error fetching weather data:", error);
+    }
+}
 
-        }}
-        
 
 </script>
 </html>
