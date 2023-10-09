@@ -1,16 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<title>Tools</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
-integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-<!-- Vue using CDN -->
-<script src="https://unpkg.com/vue@next"></script>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <style>
   
     table{
@@ -37,7 +24,17 @@ integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQI
 
     }
 </style>
+
+<template>
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
 <body onload="getitemsonload()">
+
     <nav class="navbar navbar-expand-sm navbar-dark" style="background-color: #05c8f7;"
     aria-label="Second navbar example">
     <div class="container-fluid">
@@ -76,7 +73,7 @@ integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQI
   <div class="row text-center">
     
 
-                <div class= "col-3 pad"style="margin-left: 15px; margin-top: 15px;">
+                <div class= "col-3 pad" >
                   <div class="card">
                     <h3>Weather Forecast</h3>
                     <h7>Which city are you heading to?</h7>
@@ -135,7 +132,7 @@ integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQI
                     <br><br>
                     <label for="text">Amount</label>
                     <br>
-                    <input type="number" id="moneymoneyahhhhh" onchange="convertit()"></input>
+                    <input type="number" id="moneymoneyahhhhh" onchange="convertit()">
                     <label for="currencylist">What do you want to convert to?</label>
                     <select name="currencylisttoconvert" id="currencylisttoconvert" onchange="convertit()">
 
@@ -158,6 +155,12 @@ integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQI
 
 
 </div>
+
+
+
+</body>
+</html>
+</template>
 
 
 
@@ -321,5 +324,3 @@ integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQI
     crossorigin="anonymous"></script>
 
 
-</body>
-</html>

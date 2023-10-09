@@ -58,15 +58,15 @@ integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQI
             <a class="nav-link text-white" href="#">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-white" href="Tools/Toolpage.html">Tools</a>
+            <a class="nav-link text-black" href="Tools/Toolpage.html">Tools</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link active text-black" aria-current="page" href="billbuddy.html">BillBuddy</a>
+            <a class="nav-link active text-white" aria-current="page" href="billbuddy.html">BillBuddy</a>
           </li>
         </ul>
         <div class="position-absolute top-0 start-50 translate-middle-x">
-            <a href="#"><img src="logo/itiner-easy.svg"  style="width: 100px; height: 100px; margin-top: -15px;"
-                alt="itiner-easy logo"></a>
+          <a href="#"><img src="logo\itiner-easy.svg"  style="width: 100px; height: 100px; margin-top: -15px;"
+            alt="itiner-easy logo"></a>
         </div>
         <ul class="navbar-nav pull-right">
           <li class="nav-item">
@@ -294,7 +294,17 @@ async function getweather() {
 
         for (var i = 0; i < weather.length; i++) {
             if (weather[i].indexOf("Rain") >= 0 || weather[i].indexOf("hazy") >= 0) {
-                searchIndoorAttractions();
+                var all_attractions = searchIndoorAttractions();
+                var possibleattractions = [];
+                //go through used attractions and if it is not in the all attractions list, add it to the possible attractions list
+                for (var j = 0; j < all_attractions.length; j++) {
+                    if (usedattractions.indexOf(all_attractions[j]) < 0) {
+                        possibleattractions.push(all_attractions[j]);
+                    }
+                }
+                var randomattraction = possibleattractions[Math.floor(Math.random() * possibleattractions.length)];
+                itinerary.push(randomattraction);
+                
                 
             } else if (preferences == "Indoor") {
                 searchIndoorAttractions();
