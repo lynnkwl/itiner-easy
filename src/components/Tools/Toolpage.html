@@ -24,6 +24,9 @@ integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQI
     .pad{
       background-color: #d9d9d9;
     }
+    .background{
+      background-color: white;
+    }
 </style>
 <body onload="getitemsonload()">
     <nav class="navbar navbar-expand-sm navbar-dark" style="background-color: #05c8f7;"
@@ -78,23 +81,34 @@ integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQI
 
                 <div class="col-4 pad" style="margin-left: 15px; margin-top: 15px;">
                     <h3>Language Translator</h3>
-                    <h7>Which language do you want to transalte to?</h7>
+                    <h7>What language are you typing?</h7>
                     <br><br>
                     <label for="languages">List of Languages:</label>
-                        <select name="language" id="languages">
+                    <select name="inputlanguage" id="inputlanguage">
 
-                        </select>
+                    </select>
                     <br><br>
                     <label for="text">Text to translate:</label>
                     <br>
-                    <textarea id="text" name="text" rows="3" cols="30" onchange="translateit()"></textarea>
+                    <textarea class="form-control" id="text" name="text" rows="3" cols="30" onchange="translateit()"></textarea>
+                    <br><br>
+                    <h7>Which language do you want to translate to?</h7>
+                    <br><br>
+                      <label for="languages">List of Languages:</label>
+                          <select name="language" id="outputlanguage">
+
+                          </select>
                     <br><br>
                     <button onclick="translateit()">Translate</button>
                     <br><br>
 
-                    <div id="translatedtext">
+                    <div id="translatedtext" class="background">
                     </div>
                 </div>
+
+
+
+
                 <div class="col-4 pad" style="margin-left: 15px; margin-top: 15px;">
                     <h3>Currency Converter</h3>
                     <h7>Which Currency do you want to convert to?</h7>
@@ -164,6 +178,9 @@ integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQI
 
 
         })
+        .catch(function(error){
+            console.log(error);
+        })
 
     }
     function getitemsonload(){
@@ -177,21 +194,40 @@ integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQI
         .then(function(response) {
             console.log(response.data);
             var languages = response.data.data.languages;
-            var languagesdiv = document.getElementById("languages");
+            var languagesdiv = document.getElementById("inputlanguage");
+            var languagesdiv2 = document.getElementById("outputlanguage");
             var html = "";
             for(var i=0;i<languages.length;i++){
                 html += "<option value="+languages[i].language+">"+languages[i].name+"</option>";
             }
-            languagesdiv.innerHTML = html;
+            languagesdiv.innerHTML = "<option value=detect> Detect Language</option>" + html;
+            languagesdiv2.innerHTML = html;
+
+        })
+        .catch(function(error){
+            console.log(error);
         })
     }
     function translateit(){
         var text = document.getElementById("text").value;
-        var language = document.getElementById("languages").value;
+        var inputlang = document.getElementById("inputlanguage").value;
+        var language = document.getElementById("outputlanguage").value;
         console.log(text);
         console.log(language);
         var key ="AIzaSyCjKtOTNCtEK5MYtW-GrP5QUiCj72PCT9Q";
-        axios.get('https://translation.googleapis.com/language/translate/v2?key='+key+'&q='+text+'&target='+language)
+        if(inputlang="detect"){
+            axios.get('https://translation.googleapis.com/language/translate/v2?key='+key+'&q='+text+'&target='+language )
+        .then(function(response) {
+            console.log(response.data);
+            var translatedtext = response.data.data.translations[0].translatedText;
+            console.log(translatedtext);
+            var textdiv = document.getElementById("translatedtext");
+            textdiv.innerHTML = translatedtext;
+        })
+        }
+        else{
+        var inputlang = document.getElementById("inputlanguage").value;
+        axios.get('https://translation.googleapis.com/language/translate/v2?key='+key+'&q='+text+'&target='+language + '&source='+inputlang)
         .then(function(response) {
             console.log(response.data);
             var translatedtext = response.data.data.translations[0].translatedText;
@@ -200,6 +236,7 @@ integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQI
             textdiv.innerHTML = translatedtext;
         })
     }
+  }
     function getcurrencylist(){
       var url= 'https://currency-converter5.p.rapidapi.com/currency/list';
       var XRapidAPIKey= '2f0bfe79abmsh886342ca61bbf11p1e6dd8jsna7f5de5249b0';

@@ -255,27 +255,27 @@ integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQI
 
 
 
-    function gettraveltime(origin,endpoint,travelmode){
-    const directionsService = new google.maps.DirectionsService();
-    const directionsRenderer = new google.maps.DirectionsRenderer({ map: map });
-    var mode = document.getElementsByName("Transport");
+  //   function gettraveltime(origin,endpoint,travelmode){
+  //   const directionsService = new google.maps.DirectionsService();
+  //   const directionsRenderer = new google.maps.DirectionsRenderer({ map: map });
+  //   var mode = document.getElementsByName("Transport");
     
-    const request = {
-    origin: origin,
-    destination: destination,
-    travelMode: google.maps.TravelMode[mode], // Convert mode  Maps enum
+  //   const request = {
+  //   origin: origin,
+  //   destination: destination,
+  //   travelMode: google.maps.TravelMode[mode], // Convert mode  Maps enum
 
-    directionsService.route(request, (result, status) => {
-    if (status === 'OK') {
-      directionsRenderer.setDirections(result);
-      const route = result.routes[0];
-      const travelTime = route.legs[0].duration.text;
-      console.log(`Travel time from ${origin} to ${destination} via ${mode}: ${travelTime}`);
-    } else {
-      console.error(`Error: ${status}`);
-    }
-  })
-  };
+  // };      
+  //   if (status === 'OK') {
+  //     directionsRenderer.setDirections(result);
+  //     const route = result.routes[0];
+  //     const travelTime = route.legs[0].duration.text;
+  //     console.log(`Travel time from ${origin} to ${destination} via ${mode}: ${travelTime}`);
+  //   } else {
+  //     console.error(`Error: ${status}`);
+  //   }
+  // })
+  // };
 
 
     }
