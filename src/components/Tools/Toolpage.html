@@ -129,15 +129,15 @@ integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQI
                     <h7>Which Currency do you want to convert to?</h7>
                     <br><br>
                     <label for="currencylist">Which currency are you using?</label>
-                        <select name="currencylist" id="currencylist" onchange="convertit()">
+                        <select name="currencylist" id="currencylist" @onchange="convertit">
 
                         </select>
                     <br><br>
                     <label for="text">Amount</label>
                     <br>
-                    <input type="number" id="moneymoneyahhhhh" onchange="convertit()"></input>
+                    <input type="number" id="moneymoneyahhhhh" @onchange="convertit"></input>
                     <label for="currencylist">What do you want to convert to?</label>
-                    <select name="currencylisttoconvert" id="currencylisttoconvert" onchange="convertit()">
+                    <select name="currencylisttoconvert" id="currencylisttoconvert" @onchange="convertit()">
 
                     </select>
                     <br><br>

@@ -9,10 +9,12 @@ const router = createRouter({
         { path: "/register", component: () => import("../views/Register.vue")},
         { path: "/sign-in", component: () => import("../views/SignIn.vue")},
         { path: "/feed", component: () => import("../views/Feed.vue"),
+        
         meta:{
             requiresAuth:true
-        },
-    },
+        }},
+        //go to toolpage.vue
+        {path: "/toolpage", component: () => import("../views/ToolPage.vue")},
     ],
 });
 
