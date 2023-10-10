@@ -49,9 +49,9 @@
       <div class="col-4 pad" style="margin-left: 15px; margin-top: 15px;">
         <div class="card">
           <h3>Currency Converter</h3>
-          <h7>Which Currency do you want to convert to?</h7>
-          <br><br>
+          <br>
                     <label for="currencylist">Which currency are you using?</label>
+                    <br><br>
                         <select name="currencylist" id="currencylist" @change="convertit">
 
                         </select>
@@ -59,13 +59,16 @@
                     <label for="text">Amount</label>
                     <br>
                     <input type="number" id="moneymoneyahhhhh" @change="convertCurrency">
-                    <label for="currencylist">What do you want to convert to?</label>
+                    <br>
+                    <br>
+                    <h7>Which Currency do you want to convert to?</h7>
+                    <br><br>
                     <select name="currencylisttoconvert" id="currencylisttoconvert" @change="convertCurrency">
-
                     </select>
+
                     <br><br>
-                    <button @click="convertCurrency">Convert</button>
-                    <br><br>
+                    <button @click="convertCurrency" class="btn-primary">Convert</button>
+                    <br>
                     <h6>Converted amount</h6>
                     <br><br>
                     <div id="convertedmoney" class="background">
