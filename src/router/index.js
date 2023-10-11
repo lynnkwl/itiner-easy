@@ -15,6 +15,8 @@ const router = createRouter({
         }},
         //go to toolpage.vue
         {path: "/toolpage", component: () => import("../views/ToolPage.vue")},
+        //gotobillbuddy.vue
+        {path: "/billbuddy", component: () => import("../views/BillBuddy.vue")},
     ],
 });
 
