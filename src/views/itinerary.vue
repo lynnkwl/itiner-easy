@@ -119,7 +119,6 @@ async function getweather() {
         var city = document.getElementById("country").value;
         var days = document.getElementById("sliderVal").value;
 
-        // Replace your API call with an async/await call
         try {
             var weatherkey ="cfb27632a44746f6aaf01356231409";
             const response = await axios.get(
@@ -141,6 +140,7 @@ async function getweather() {
         }
     });
 }
+
 
 
 
@@ -195,36 +195,7 @@ function sliderChange(val) {
 
     const request = {
         query: `Shopping malls and mueseums and aquariums in ${city}`,
-        fields: ['name', 'formatted_address','types', 'business_status', 'location'],
-    };
-
-
-
-    const service = new google.maps.places.PlacesService(document.createElement('div'));
-    const outdoorplaces = ['park','zoo','amusement_park',''];
-    // const outdoor
-
-    service.textSearch(request, (results, status) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
-        for (const place of results) {
-            console.log(`Name: ${place.name}`);
-            console.log(`Address: ${place.formatted_address}`);
-            console.log(`Types: ${place.types}`);
-            console.log(`Business Status: ${place.business_status}`);
-            console.log(`Location: ${place.geometry.location}`);
-            console.log('---');
-        }
-        } else {
-        console.error(`Error: ${status}`);
-        }
-    });
-    }
-    function searchBothAttractions(city) {
-    var city = document.getElementById("country").value;
-
-    const request = {
-        query: `Tourist Attractions in ${city}`,
-        fields: ['name', 'formatted_address','types', 'business_status', 'location'],
+        fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours', 'website'],
     };
 
 
@@ -241,6 +212,8 @@ function sliderChange(val) {
             console.log(`Types: ${place.types}`);
             console.log(`Business Status: ${place.business_status}`);
             console.log(`Location: ${place.geometry.location}`);
+            console.log(`Opening Hours: ${place.opening_hours}`);
+            console.log(`Website: ${place.website}`);
             console.log('---');
         }
         } else {
@@ -249,6 +222,37 @@ function sliderChange(val) {
     });
     }
 
+    function searchAttractions(city) {
+    var city = document.getElementById("country").value;
+
+    const request = {
+        query: `Tourist Attractions in ${city}`,
+        fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours', 'website'],
+    };
+
+
+
+    const service = new google.maps.places.PlacesService(document.createElement('div'));
+    const outdoorplaces = ['park','zoo','amusement_park',''];
+    // const outdoo
+
+    service.textSearch(request, (results, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+        for (const place of results) {
+            console.log(`Name: ${place.name}`);
+            console.log(`Address: ${place.formatted_address}`);
+            console.log(`Types: ${place.types}`);
+            console.log(`Business Status: ${place.business_status}`);
+            console.log(`Location: ${place.geometry.location}`);
+            console.log(`Opening Hours: ${place.opening_hours}`);
+            console.log(`Website: ${place.website}`);
+            console.log('---');
+        }
+        } else {
+        console.error(`Error: ${status}`);
+        }
+    });
+    }
 
 
     function searchOutdoorAttractions(city) {
@@ -256,7 +260,7 @@ function sliderChange(val) {
 
     const request = {
         query: `Outdoor Tourist Attractions in ${city}`,
-        fields: ['name', 'formatted_address','types', 'business_status', 'location'],
+        fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours', 'website'],
     };
 
 
@@ -273,6 +277,39 @@ function sliderChange(val) {
             console.log(`Types: ${place.types}`);
             console.log(`Business Status: ${place.business_status}`);
             console.log(`Location: ${place.geometry.location}`);
+            console.log(`Opening Hours: ${place.opening_hours}`);
+            console.log(`Website: ${place.website}`);
+            console.log('---');
+        }
+        } else {
+        console.error(`Error: ${status}`);
+        }
+    });
+    }
+function SearchMuseums(city) {
+    var city = document.getElementById("country").value;
+
+    const request = {
+        query: `Museums in ${city}`,
+        fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours', 'website'],
+    };
+
+
+
+    const service = new google.maps.places.PlacesService(document.createElement('div'));
+    const outdoorplaces = ['park','zoo','amusement_park',''];
+    // const outdoo
+
+    service.textSearch(request, (results, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+        for (const place of results) {
+            console.log(`Name: ${place.name}`);
+            console.log(`Address: ${place.formatted_address}`);
+            console.log(`Types: ${place.types}`);
+            console.log(`Business Status: ${place.business_status}`);
+            console.log(`Location: ${place.geometry.location}`);
+            console.log(`Opening Hours: ${place.opening_hours}`);
+            console.log(`Website: ${place.website}`);
             console.log('---');
         }
         } else {
@@ -281,5 +318,67 @@ function sliderChange(val) {
     });
     }
 
+    function searchShoppingMalls(city) {
+    var city = document.getElementById("country").value;
+
+    const request = {
+        query: `Shopping malls in ${city}`,
+        fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours', 'website'],
+    };
+
+
+
+    const service = new google.maps.places.PlacesService(document.createElement('div'));
+    const outdoorplaces = ['park','zoo','amusement_park',''];
+    // const outdoo
+
+    service.textSearch(request, (results, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+        for (const place of results) {
+            console.log(`Name: ${place.name}`);
+            console.log(`Address: ${place.formatted_address}`);
+            console.log(`Types: ${place.types}`);
+            console.log(`Business Status: ${place.business_status}`);
+            console.log(`Location: ${place.geometry.location}`);
+            console.log(`Opening Hours: ${place.opening_hours}`);
+            console.log(`Website: ${place.website}`);
+            console.log('---');
+        }
+        } else {
+        console.error(`Error: ${status}`);
+        }
+    });
+    }
+nction searchgardens(city) {
+    var city = document.getElementById("country").value;
+
+    const request = {
+        query: `Gardens and parks in ${city}`,
+        fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours', 'website'],
+    };
+
+
+
+    const service = new google.maps.places.PlacesService(document.createElement('div'));
+    const outdoorplaces = ['park','zoo','amusement_park',''];
+    // const outdoo
+
+    service.textSearch(request, (results, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+        for (const place of results) {
+            console.log(`Name: ${place.name}`);
+            console.log(`Address: ${place.formatted_address}`);
+            console.log(`Types: ${place.types}`);
+            console.log(`Business Status: ${place.business_status}`);
+            console.log(`Location: ${place.geometry.location}`);
+            console.log(`Opening Hours: ${place.opening_hours}`);
+            console.log(`Website: ${place.website}`);
+            console.log('---');
+        }
+        } else {
+        console.error(`Error: ${status}`);
+        }
+    });
+    }
 
 </script>
