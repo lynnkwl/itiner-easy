@@ -1,0 +1,285 @@
+<style>
+    .slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 23px;
+  height: 24px;
+  border: 0;
+  background: url('contrasticon.png');
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 23px;
+  height: 25px;
+  border: 0;
+  background: url('contrasticon.png');
+  cursor: pointer;
+}
+.Mainbody{
+    text-align: center;
+    margin-left: 30px;
+    margin-top: 30px;
+    background-color: #d9d9d9 ;
+}
+#sliderVal{
+    margin-left: 10px;
+    margin-right: 10px;
+}
+</style>
+
+
+<template>
+    <nav class="navbar navbar-expand-sm navbar-dark" style="background-color: #05c8f7;"
+    aria-label="Second navbar example">
+    <div class="container-fluid">
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample02"
+        aria-controls="navbarsExample02" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarsExample02">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link text-white" href="#">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-black" href="Tools/Toolpage.html">Tools</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active text-white" aria-current="page" href="billbuddy.html">BillBuddy</a>
+          </li>
+        </ul>
+        <div class="position-absolute top-0 start-50 translate-middle-x">
+          <a href="#"><img src="logo\itiner-easy.svg"  style="width: 100px; height: 100px; margin-top: -15px;"
+            alt="itiner-easy logo"></a>
+        </div>
+        <ul class="navbar-nav pull-right">
+          <li class="nav-item">
+            <a class="nav-link rounded"
+              style="background-color: white; color: #05c8f7; padding-left: 20px; padding-right: 20px;"
+              href="#">Profile</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+
+<div class="Mainbody">
+
+
+    <h7>Which City do you want to go to?</h7><input type="text" id="country" name="City">
+    <div class="slidecontainer">
+        For many days?
+        <input id="slider" type="range" min="1" max="3" step="1" @input="sliderChange(this.value)">
+        <div class="SliderValue">
+
+        </div>
+        <output id="sliderVal">
+            2
+        </output>  
+    
+    </div>
+
+
+
+    <h6>What kind of person are you?</h6>
+<br>
+<input type="radio" id="Indoor" name="outgoing" value="Indoor">
+<label for="Indoor">Indoor</label>
+<input type="radio" id="Outdoor" name="outgoing" value="Outdoor">
+<label for="Outdoor">Outdoor</label>
+<input type="radio" id="Both" name="outgoing" value="Both">
+<label for="Both">I'm fine with either!</label>
+
+
+<br>
+    How will you be getting around?<br> <input type="radio" id="car" name="Transport" value="DRIVING">
+    <label for="car">Car</label>
+    <input type="radio" id="Public Transport" name="Transport" value="TRANSIT">
+    <label for="Public Transport">Public Transport</label>
+    <input type="radio" id="Cycling" name ="Transport" value = "BICYCLING">
+    <label for="Cycling">Bicycle</label>
+    <input type="radio" id="walking" name="Transport" value="WALKING">
+    <label for="walking">Walking</label>
+
+<br>
+    <button @click="generateitinerary">Generate Itinerary</button>
+
+</div>
+
+</template>
+
+<script>
+
+async function getweather() {
+    return new Promise(async (resolve, reject) => {
+        var city = document.getElementById("country").value;
+        var days = document.getElementById("sliderVal").value;
+
+        // Replace your API call with an async/await call
+        try {
+            var weatherkey ="cfb27632a44746f6aaf01356231409";
+            const response = await axios.get(
+                'http://api.weatherapi.com/v1/forecast.json?key=' + weatherkey + '&q=' + city + '&days=' + days
+            );
+            console.log(response.data);
+
+            var weather = response.data.forecast.forecastday;
+            var weatherarray = [];
+
+            for (var i = 0; i < weather.length; i++) {
+                var weatherobj = {};
+                weatherarray.push(weather[i].day.condition.text);
+            }
+
+            resolve(weatherarray);
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
+
+
+
+  async function generateitinerary() {
+    try {
+        var weather = await getweather(); // Wait for getweather to finish
+        console.log(weather);
+        var preferences = document.querySelector('input[name="outgoing"]:checked').value;
+        var transport = document.querySelector('input[name="Transport"]:checked').value;
+        var usedattractions = [];
+        var itinerary = [];
+        var city = document.getElementById("country").value;
+        var days = document.getElementById("sliderVal").value;
+
+        for (var i = 0; i < weather.length; i++) {
+            if (weather[i].indexOf("Rain") >= 0 || weather[i].indexOf("hazy") >= 0) {
+                var all_attractions = searchIndoorAttractions();
+                var possibleattractions = [];
+                //go through used attractions and if it is not in the all attractions list, add it to the possible attractions list
+                for (var j = 0; j < all_attractions.length; j++) {
+                    if (usedattractions.indexOf(all_attractions[j]) < 0) {
+                        possibleattractions.push(all_attractions[j]);
+                    }
+                }
+                var randomattraction = possibleattractions[Math.floor(Math.random() * possibleattractions.length)];
+                itinerary.push(randomattraction);
+                
+                
+            } else if (preferences == "Indoor") {
+                searchIndoorAttractions();
+            } else if (preferences == "Both") {
+                searchBothAttractions();
+            } else {
+                searchOutdoorAttractions();
+            }
+        }
+    } catch (error) {
+        console.error("Error fetching weather data:", error);
+    }
+}
+
+function sliderChange(val) {
+    document.getElementById('sliderVal').innerHTML = val;
+    }
+
+
+        // Replace with your API key
+
+    // Function to search for attractions in a city
+    function searchIndoorAttractions(city) {
+    var city = document.getElementById("country").value;
+
+    const request = {
+        query: `Shopping malls and mueseums and aquariums in ${city}`,
+        fields: ['name', 'formatted_address','types', 'business_status', 'location'],
+    };
+
+
+
+    const service = new google.maps.places.PlacesService(document.createElement('div'));
+    const outdoorplaces = ['park','zoo','amusement_park',''];
+    // const outdoor
+
+    service.textSearch(request, (results, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+        for (const place of results) {
+            console.log(`Name: ${place.name}`);
+            console.log(`Address: ${place.formatted_address}`);
+            console.log(`Types: ${place.types}`);
+            console.log(`Business Status: ${place.business_status}`);
+            console.log(`Location: ${place.geometry.location}`);
+            console.log('---');
+        }
+        } else {
+        console.error(`Error: ${status}`);
+        }
+    });
+    }
+    function searchBothAttractions(city) {
+    var city = document.getElementById("country").value;
+
+    const request = {
+        query: `Tourist Attractions in ${city}`,
+        fields: ['name', 'formatted_address','types', 'business_status', 'location'],
+    };
+
+
+
+    const service = new google.maps.places.PlacesService(document.createElement('div'));
+    const outdoorplaces = ['park','zoo','amusement_park',''];
+    // const outdoo
+
+    service.textSearch(request, (results, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+        for (const place of results) {
+            console.log(`Name: ${place.name}`);
+            console.log(`Address: ${place.formatted_address}`);
+            console.log(`Types: ${place.types}`);
+            console.log(`Business Status: ${place.business_status}`);
+            console.log(`Location: ${place.geometry.location}`);
+            console.log('---');
+        }
+        } else {
+        console.error(`Error: ${status}`);
+        }
+    });
+    }
+
+
+
+    function searchOutdoorAttractions(city) {
+    var city = document.getElementById("country").value;
+
+    const request = {
+        query: `Outdoor Tourist Attractions in ${city}`,
+        fields: ['name', 'formatted_address','types', 'business_status', 'location'],
+    };
+
+
+
+    const service = new google.maps.places.PlacesService(document.createElement('div'));
+    const outdoorplaces = ['park','zoo','amusement_park',''];
+    // const outdoo
+
+    service.textSearch(request, (results, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+        for (const place of results) {
+            console.log(`Name: ${place.name}`);
+            console.log(`Address: ${place.formatted_address}`);
+            console.log(`Types: ${place.types}`);
+            console.log(`Business Status: ${place.business_status}`);
+            console.log(`Location: ${place.geometry.location}`);
+            console.log('---');
+        }
+        } else {
+        console.error(`Error: ${status}`);
+        }
+    });
+    }
+
+
+</script>
