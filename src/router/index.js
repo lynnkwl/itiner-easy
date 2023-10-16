@@ -14,7 +14,7 @@ const router = createRouter({
             requiresAuth:true
         }},
         //go to toolpage.vue
-        {path: "/toolpage", component: () => import("../views/ToolPage.vue")},
+        {path: "/toolpage", component: () => import("../views/Toolpage.vue")},
         //gotobillbuddy.vue
         {path: "/billbuddy", component: () => import("../views/BillBuddy.vue")},
         {path: "/itinerary", component: () => import("../views/itinerary.vue")},
