@@ -70,7 +70,7 @@
 <div class="Mainbody">
 
 
-    <h7>Which City do you want to go to?</h7><input type="text" id="country" name="City"  v-model="town"  class="form-control input-sm" placeholder="Where are you going?" required>"
+    Which City do you want to go to?<input type="text" id="country" name="City"  v-model="town"  class="form-control input-sm" placeholder="Where are you going?" required>"
     <div class="slidecontainer">
         For many days?
         <div>
@@ -103,12 +103,13 @@
     <label for="walking">Walking</label>
 
 <br>
+<br>
+<br>
+    <input type="checkbox" name="strongindependentwoman">I want to choose where I can go!<br>
     <button @click="checkempty">Generate Itinerary</button>
 
 </div>
-<div >
 
-</div>
 <div id ="results">
 
 </div>
@@ -189,6 +190,7 @@ async getweather() {
             result.push(place.name);
         }
         //place results in checkbox
+        if(this.strongindependentwoman == true){
         for (var i = 0; i < result.length; i++) {
             var checkbox = document.createElement('input');
             checkbox.type = "checkbox";
@@ -205,6 +207,7 @@ async getweather() {
             document.getElementById('selectplaces').appendChild(document.createElement("br"));
         }
         }
+      }
          else {
         console.error(`Error: ${status}`);
         }
@@ -265,7 +268,7 @@ async getweather() {
 
 
 
-    const service = new google.maps.places.PlacesService(document.createElement('div'));
+    const service = new google.maps.places.PlacesService(this.createElement('div'));
     const outdoorplaces = ['park','zoo','amusement_park',''];
     // const outdoo
 
@@ -280,6 +283,23 @@ async getweather() {
             console.log(`Opening Hours: ${place.opening_hours}`);
             console.log(`Website: ${place.website}`);
             console.log('---');
+        }
+        if(this.strongindependentwoman == true){
+        for (var i = 0; i < result.length; i++) {
+            var checkbox = document.createElement('input');
+            checkbox.type = "checkbox";
+            checkbox.name = "name";
+            checkbox.value = "value";
+            checkbox.id = "id";
+
+            var label = document.createElement('label')
+            label.htmlFor = "id";
+            label.appendChild(document.createTextNode(result[i]));
+
+            document.getElementById('selectplaces').appendChild(checkbox);
+            document.getElementById('selectplaces').appendChild(label);
+            document.getElementById('selectplaces').appendChild(document.createElement("br"));
+        }
         }
         } else {
         console.error(`Error: ${status}`);
@@ -313,7 +333,8 @@ async getweather() {
             console.log(`Website: ${place.website}`);
             console.log('---');
         }
-        } else {
+        } 
+        else {
         console.error(`Error: ${status}`);
         }
     });
@@ -345,6 +366,23 @@ async getweather() {
             console.log(`Opening Hours: ${place.opening_hours}`);
             console.log(`Website: ${place.website}`);
             console.log('---');
+        }
+        if(this.strongindependentwoman == true){
+        for (var i = 0; i < result.length; i++) {
+            var checkbox = document.createElement('input');
+            checkbox.type = "checkbox";
+            checkbox.name = "name";
+            checkbox.value = "value";
+            checkbox.id = "id";
+
+            var label = document.createElement('label')
+            label.htmlFor = "id";
+            label.appendChild(document.createTextNode(result[i]));
+
+            document.getElementById('selectplaces').appendChild(checkbox);
+            document.getElementById('selectplaces').appendChild(label);
+            document.getElementById('selectplaces').appendChild(document.createElement("br"));
+        }
         }
         } else {
         console.error(`Error: ${status}`);
@@ -517,8 +555,8 @@ async getweather() {
     else{
         this.generateitinerary();
     }
+    }
 },
-  },
-};
+  };
 
 </script>
