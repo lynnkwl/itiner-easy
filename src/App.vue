@@ -47,7 +47,7 @@ const handleSignOut = () => {
             <router-link to="/sign-in"> Login </router-link> |
           </div>
           <div class="position-absolute top-0 start-50 translate-middle-x">
-            <a href="#"><img src="logo\itiner-easy.svg" style="width: 100px; height: 100px; margin-top: -15px;"
+            <a href="#"><img src="./components/logo/itiner-easy.svg" style="width: 100px; height: 100px; margin-top: -15px;"
                 alt="itiner-easy logo"></a>
           </div>
           <ul class="navbar-nav pull-right">
