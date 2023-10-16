@@ -1,4 +1,5 @@
 <script setup>
+
 import { onMounted, ref } from 'vue';
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
 import router from './router';
