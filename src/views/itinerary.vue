@@ -30,8 +30,7 @@
 
 
 <template>
-<<<<<<< HEAD
-    <nav class="navbar navbar-expand-sm navbar-dark" style="background-color: #05c8f7;"
+    <!-- <nav class="navbar navbar-expand-sm navbar-dark" style="background-color: #05c8f7;"
     aria-label="Second navbar example">
     <div class="container-fluid">
 
@@ -65,9 +64,7 @@
         </ul>
       </div>
     </div>
-  </nav>
-=======
->>>>>>> aa827c3b1c96a292e41373d625661c85ea2841a3
+  </nav> -->
 
 
 <div class="Mainbody">
@@ -416,15 +413,9 @@ async getweather() {
         console.error(`Error: ${status}`);
         }
     });
-<<<<<<< HEAD
     },
       searchgardens(city) {
     var city = this.town;
-=======
-    }
-function searchgardens(city) {
-    var city = document.getElementById("country").value;
->>>>>>> aa827c3b1c96a292e41373d625661c85ea2841a3
 
     const request = {
         query: `Gardens and parks in ${city}`,
