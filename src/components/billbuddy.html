@@ -103,7 +103,11 @@
 
       <!-- submit button -->
       <button type="button" class="btn btn-primary btn-lg btn-block" style="background-color: #05c8f7; border: none;"
-        onclick="getData()">Submit</button>
+        onclick="addExpense()">Submit</button>
+
+      <!-- breakeven button -->
+      <button type="button" class="btn btn-primary btn-lg btn-block" style="background-color: #05c8f7; border: none;"
+        onclick="breakeven()">Breakeven</button>
 
     </div>
     <script>
@@ -127,7 +131,7 @@
 
       // write a function to get the amount of expense from the user
       function getExpenseAmount() {
-        var expenseAmount = document.getElementById("expenseAmount").value;
+        var expenseAmount = Number(document.getElementById("expenseAmount").value);
         return expenseAmount;
       }
 
@@ -141,6 +145,15 @@
         return arr;
       }
 
+      // write a function to get the amount of money owed from the user by each person
+      function getPeopleOwingAmount() {
+        var totalAmount = getExpenseAmount();
+        var peopleOwingNames = getPeopleOwingNames();
+        var peopleOwingAmount = Number((totalAmount / peopleOwingNames.length).toFixed(2));
+        return peopleOwingAmount;
+      }
+
+
       // write a function to get the name of person who is owed money from the user
       function getPersonOwedName() {
         var personOwedName = document.getElementById("personOwedName").value;
@@ -148,30 +161,101 @@
       }
 
       var data = {
-        tripName: "euro",
-        budget: 1000,
-        expenseName: "food",
+        food: 100,
+        travel: 200
       }
-      function getData() {
+
+      var whoOweswho = {
+        dom: 500,
+        joe: -500
+      }
+
+      function getExpense() {
         var tripName = getTripName();
         var budget = getBudget();
         var expenseName = getExpenseName();
         var expenseAmount = getExpenseAmount();
         var peopleOwingNames = getPeopleOwingNames();
         var personOwedName = getPersonOwedName();
-        var data = {
+        var peopleOwingAmount = getPeopleOwingAmount();
+        var expenseData = {
           tripName: tripName,
           budget: budget,
           expenseName: expenseName,
           expenseAmount: expenseAmount,
           peopleOwingNames: peopleOwingNames,
-          personOwedName: personOwedName
+          personOwedName: personOwedName,
+          peopleOwingAmount: peopleOwingAmount
         };
-        console.log(data);
-        return data;
+        return expenseData;
       }
 
-      
+      function addExpense() {
+        var expense = getExpense();
+        console.log(expense);
+        console.log(data);
+        console.log(expense.expenseAmount);
+        console.log(expense.expenseName);
+
+        if (expense.expenseName in data) {
+          data[expense.expenseName] += expense.expenseAmount;
+          console.log("in if");
+        } else {
+          data[expense.expenseName] = expense.expenseAmount;
+          console.log("in else");
+        }
+        console.log(data);
+
+        for (i=0; i<expense.peopleOwingNames.length; i++) {
+          console.log(expense.peopleOwingNames[i]);
+          if (expense.peopleOwingNames[i] in whoOweswho) {
+            whoOweswho[expense.peopleOwingNames[i]] += expense.peopleOwingAmount;
+            console.log("in if");
+          } else {
+            whoOweswho[expense.peopleOwingNames[i]] = expense.peopleOwingAmount;
+            console.log("in else");
+          }
+        }
+        if (expense.personOwedName in whoOweswho) {
+          whoOweswho[expense.personOwedName] -= expense.expenseAmount;
+          console.log("in if");
+        } else {
+          whoOweswho[expense.personOwedName] = -expense.expenseAmount;
+          console.log("in else");
+        }
+        console.log(whoOweswho);
+      }
+
+      // write a function to breakeven expenses from whoOweswho variable
+      function breakeven() {
+        console.log(whoOweswho);
+        for (var key in whoOweswho) {
+          if (whoOweswho[key] > 0) {
+            console.log(key + " owes " + whoOweswho[key]);
+          } else if (whoOweswho[key] < -0.01) {
+            console.log(key + " is owed " + -whoOweswho[key]);
+          } else {
+            console.log(key + " is breakeven");
+          }
+
+          while (whoOweswho[key] > 0) {
+            for (var key2 in whoOweswho) {
+              if (whoOweswho[key2] < 0) {
+                if (whoOweswho[key] > -whoOweswho[key2]) {
+                  console.log(key + " pays " + -whoOweswho[key2] + " to " + key2);
+                  whoOweswho[key] += whoOweswho[key2];
+                  whoOweswho[key2] = 0;
+                } else {
+                  console.log(key + " pays " + whoOweswho[key] + " to " + key2);
+                  whoOweswho[key2] += whoOweswho[key];
+                  whoOweswho[key] = 0;
+                }
+              }
+            }
+          }
+        }
+      }
+
     </script>
   </div>
   <!-- Bootstrap Bundle with Popper -->
