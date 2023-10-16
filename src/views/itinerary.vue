@@ -89,8 +89,15 @@
 <label for="Outdoor">Outdoor</label>
 <input type="radio" id="Both"  value="Both" v-model="outgoing" required >
 <label for="Both">I'm fine with either!</label>
-
-
+<br>
+    Are there any places you want to visit?
+<br>
+    <input type="checkbox" id="interests" name="interests" value="Museums">
+    <label for="interests">Museums</label>
+    <input type="checkbox" id="interests" name="interests" value="Shopping Malls">
+    <label for="interests">Shopping Malls</label>
+    <input type="checkbox" id="interests" name="interests" value="Gardens">
+    <label for="interests">Gardens</label>
 <br>
     How will you be getting around?<br>
      <input type="radio" id="car" value="DRIVING" v-model="transport" required>
@@ -111,11 +118,33 @@
 </div>
 
 <div id="selectplaces">
-      <label v-for="place in places" :key="place.name">
-        <input type="checkbox" :value="place.name" v-model="selectedPlaces" />
-        {{ place.name}}
-      </label>
+  <div v-if="places.length > 0">
+    
+    <h3> Choose where you want to go!</h3>
+    <table>
+      <tr>
+        <th>Place</th>
+        <th>Address</th>
+        <th>Select</th>
+      </tr>
+      <tbody>
+            <tr v-for="place in places" :key="place.name">
+              <td>
+                <label>
+                  {{ place.name }}
+                </label>
+              </td>
+              <td>
+                {{ place.formatted_address }}
+              </td>
+              <td>
+                <input type="checkbox" :value="place.name" v-model="selectedPlaces" />
+              </td>
+            </tr>
+          </tbody>
+        </table>
     </div>
+</div>
 
 </template>
 
@@ -172,7 +201,7 @@ async getweather() {
 
  searchBothAttractions(city) {
     var city = this.town;
-
+    this.places = [];
     const request = {
         query: `Tourist Attractions in ${city}`,
         fields: ['name', 'formatted_address','types', 'business_status', 'location'],
@@ -188,32 +217,10 @@ async getweather() {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
           for (const place of results) {
 
-            console.log(`Name: ${place.name}`);
-            console.log(`Address: ${place.formatted_address}`);
-            console.log(`Types: ${place.types}`);
-            console.log(`Business Status: ${place.business_status}`);
-            console.log(`Location: ${place.geometry.location}`);
-            console.log('---');
-            result.push(place.name);
+            console.log(place);
         }
         //place results in checkbox
-        if(this.strongindependentwoman == true){
-        for (var i = 0; i < result.length; i++) {
-            var checkbox = document.createElement('input');
-            checkbox.type = "checkbox";
-            checkbox.name = "name";
-            checkbox.value = "value";
-            checkbox.id = "id";
-
-            var label = document.createElement('label')
-            label.htmlFor = "id";
-            label.appendChild(document.createTextNode(result[i]));
-
-            document.getElementById('selectplaces').appendChild(checkbox);
-            document.getElementById('selectplaces').appendChild(label);
-            document.getElementById('selectplaces').appendChild(document.createElement("br"));
-        }
-        }
+        this.places = results;
       }
          else {
         console.error(`Error: ${status}`);
@@ -267,7 +274,7 @@ async getweather() {
     //   to search for attractions in a city
     searchIndoorAttractions(city) {
     var city = this.town;
-
+    this.places = [];
     const request = {
         query: `Shopping malls and mueseums and aquariums in ${city}`,
         fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours', 'website'],
@@ -275,7 +282,7 @@ async getweather() {
 
 
 
-    const service = new google.maps.places.PlacesService(this.createElement('div'));
+    const service = new google.maps.places.PlacesService(document.createElement('div'));
     const outdoorplaces = ['park','zoo','amusement_park',''];
     // const outdoo
 
@@ -291,23 +298,7 @@ async getweather() {
             console.log(`Website: ${place.website}`);
             console.log('---');
         }
-        if(this.strongindependentwoman == true){
-        for (var i = 0; i < result.length; i++) {
-            var checkbox = document.createElement('input');
-            checkbox.type = "checkbox";
-            checkbox.name = "name";
-            checkbox.value = "value";
-            checkbox.id = "id";
-
-            var label = document.createElement('label')
-            label.htmlFor = "id";
-            label.appendChild(document.createTextNode(result[i]));
-
-            document.getElementById('selectplaces').appendChild(checkbox);
-            document.getElementById('selectplaces').appendChild(label);
-            document.getElementById('selectplaces').appendChild(document.createElement("br"));
-        }
-        }
+        this.places = results;
         } else {
         console.error(`Error: ${status}`);
         }
@@ -385,7 +376,7 @@ async getweather() {
     },
   SearchMuseums(city) {
     var city = document.getElementById("country").value;
-
+    this.places = [];
     const request = {
         query: `Museums in ${city}`,
         fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours', 'website'],
@@ -409,6 +400,7 @@ async getweather() {
             console.log(`Website: ${place.website}`);
             console.log('---');
         }
+        this.places = results;
         } else {
         console.error(`Error: ${status}`);
         }
@@ -417,7 +409,7 @@ async getweather() {
 
     searchShoppingMalls(city) {
     var city = document.getElementById("country").value;
-
+    this.places = [];
     const request = {
         query: `Shopping malls in ${city}`,
         fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours', 'website'],
@@ -440,7 +432,9 @@ async getweather() {
             console.log(`Opening Hours: ${place.opening_hours}`);
             console.log(`Website: ${place.website}`);
             console.log('---');
+
         }
+        this.places = results;
         } else {
         console.error(`Error: ${status}`);
         }
@@ -448,7 +442,7 @@ async getweather() {
     },
       searchgardens(city) {
     var city = this.town;
-
+    this.places = [];
     const request = {
         query: `Gardens and parks in ${city}`,
         fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours', 'website'],
@@ -472,6 +466,7 @@ async getweather() {
             console.log(`Website: ${place.website}`);
             console.log('---');
         }
+        this.places = results;
         } else {
         console.error(`Error: ${status}`);
         }
