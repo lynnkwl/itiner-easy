@@ -1,7 +1,14 @@
 <template>
     <div class="eye-container" @scroll="handleScroll">
-      <div class="eye-frame" v-for="(frame, index) in frames" :key="index" :class="{ 'is-revealed': frame === activeFrame }">
-        <img :src="require(`@/assets/eye/${frame}.jpg`)" alt="Eye Frame" />
+      <div class="eye-scroll">
+        <div
+          class="eye-frame"
+          v-for="(frame, index) in frames"
+          :key="index"
+          :style="frameStyle(index)"
+        >
+          <img :src="frameUrls[index]" alt="Eye Frame" class="eye-image" />
+        </div>
       </div>
     </div>
   </template>
@@ -11,20 +18,29 @@
     data() {
       return {
         frames: [],
-        activeFrame: null,
+        frameUrls: [], // Array to store image URLs
+        scrollPosition: 0,
       };
     },
     methods: {
       handleScroll() {
-        // Calculate the current active frame based on scroll position
-        const frameIndex = Math.floor((this.$el.scrollTop / this.$el.scrollHeight) * 182);
-        this.activeFrame = this.frames[frameIndex];
+        // Update the scroll position
+        this.scrollPosition = this.$el.scrollTop;
+      },
+      frameStyle(index) {
+        const translateY = this.scrollPosition / 3 - index * 50; // Adjust the parallax effect as needed
+        return {
+          transform: `translateY(${translateY}px)`,
+        };
       },
     },
     created() {
       // Generate an array of frame numbers (000 to 182)
       for (let i = 0; i <= 182; i++) {
         this.frames.push(String(i).padStart(3, "0"));
+  
+        // Generate the image URLs using relative paths (without @ symbol)
+        this.frameUrls.push(`./assets/eye/${String(i).padStart(3, "0")}.jpg`);
       }
     },
   };
@@ -32,24 +48,26 @@
   
   <style scoped>
   .eye-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
     height: 100vh;
-    overflow: auto; /* Allow the component to scroll */
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .eye-scroll {
+    display: flex;
+    flex-direction: column;
   }
   
   .eye-frame {
-    width: 25%; /* Adjust the width as needed */
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.5s, transform 0.5s;
+    max-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.5s;
   }
   
-  .eye-frame.is-revealed {
-    opacity: 1;
-    transform: translateY(0);
+  .eye-image {
+    max-width: 100%;
   }
   </style>
   

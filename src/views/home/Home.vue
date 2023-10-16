@@ -1,18 +1,20 @@
 <template>
-    <div>
-      <!-- Your parent component's template content here -->
-      <Eye></Eye>
+    <div class="eye-scroll">
+      <div class="blank-space" style="height: 5000px;"></div>
+      <div class="eye-container">
+        <Eye></Eye>
+      </div>
+      <div class="blank-space" style="height: 5000px;"></div>
     </div>
   </template>
   
   <script>
-  import Eye from './eye.vue'; // Import the Eye component
+  import Eye from './eye.vue';
   
   export default {
     components: {
-      Eye, // Register the Eye component
+      Eye,
     },
-    // Rest of your parent component's script
   };
   </script>
   
