@@ -38,8 +38,8 @@
           </li>
         </ul>
         <div class="position-absolute top-0 start-50 translate-middle-x">
-          <a href="#"><img src="logo\itiner-easy.svg"  style="width: 100px; height: 100px; margin-top: -15px;"
-            alt="itiner-easy logo"></a>
+          <a href="#"><img src="logo\itiner-easy.svg" style="width: 100px; height: 100px; margin-top: -15px;"
+              alt="itiner-easy logo"></a>
         </div>
         <ul class="navbar-nav pull-right">
           <li class="nav-item">
@@ -59,6 +59,121 @@
     <a href="addtrip.html" style="color: gray;">Add a Trip Now!</a>
   </div>
 
+
+  <!-- functions for billbuddy -->
+  <div>
+    <div class="text-center my-5">
+      <h1>New Trip</h1>
+    </div>
+    <div>
+      <!-- get input for tripName -->
+      <h3>Trip Name:</h3>
+      <input type="text" placeholder="Trip Name" name="tripName" id="tripName" class="form-control">
+      <br>
+
+      <!-- get input for budget -->
+      <h3>Budget:</h3>
+      <input type="number" placeholder="Budget" name="budget" id="budget" class="form-control">
+      <br>
+
+      <!-- get input for expense -->
+      <h3>Expense Name:</h3>
+      <input type="text" placeholder="Expense Name" name="expenseName" id="expenseName" class="form-control">
+      <br>
+
+      <!-- get input for expense amount -->
+      <h3>Expense Amount:</h3>
+      <input type="number" placeholder="Expense Amount" name="expenseAmount" id="expenseAmount" class="form-control">
+      <br>
+
+      <!-- get input for peopleOwingNames -->
+      <h3>People Owing Names:</h3>
+      <input type="checkbox" id="peopleOwingNames" value="dom">
+      <label for="dom">Dom</label><br>
+      <input type="checkbox" id="peopleOwingNames" value="joe">
+      <label for="joe">Joe</label><br>
+      <input type="checkbox" id="peopleOwingNames" value="jane">
+      <label for="jane">Jane</label><br>
+      <br>
+
+      <!-- get input for personOwedName -->
+      <h3>Person Owed Name:</h3>
+      <input type="text" placeholder="Person Owed Name" name="personOwedName" id="personOwedName" class="form-control">
+      <br>
+
+      <!-- submit button -->
+      <button type="button" class="btn btn-primary btn-lg btn-block" style="background-color: #05c8f7; border: none;"
+        onclick="getData()">Submit</button>
+
+    </div>
+    <script>
+      // write a function to get the trip name from the user
+      function getTripName() {
+        var tripName = document.getElementById("tripName").value;
+        return tripName;
+      }
+
+      // write a function to get the budget of the trip from the user
+      function getBudget() {
+        var budget = document.getElementById("budget").value;
+        return budget;
+      }
+
+      // write a function to get the name of expense from the user
+      function getExpenseName() {
+        var expenseName = document.getElementById("expenseName").value;
+        return expenseName;
+      }
+
+      // write a function to get the amount of expense from the user
+      function getExpenseAmount() {
+        var expenseAmount = document.getElementById("expenseAmount").value;
+        return expenseAmount;
+      }
+
+      // write a function to get the names of people owing money from the user
+      function getPeopleOwingNames() {
+        let arr = [];
+        let checkboxes = document.querySelectorAll("input[type='checkbox']:checked");
+        for (let i = 0; i < checkboxes.length; i++) {
+          arr.push(checkboxes[i].value)
+        }
+        return arr;
+      }
+
+      // write a function to get the name of person who is owed money from the user
+      function getPersonOwedName() {
+        var personOwedName = document.getElementById("personOwedName").value;
+        return personOwedName;
+      }
+
+      var data = {
+        tripName: "euro",
+        budget: 1000,
+        expenseName: "food",
+      }
+      function getData() {
+        var tripName = getTripName();
+        var budget = getBudget();
+        var expenseName = getExpenseName();
+        var expenseAmount = getExpenseAmount();
+        var peopleOwingNames = getPeopleOwingNames();
+        var personOwedName = getPersonOwedName();
+        var data = {
+          tripName: tripName,
+          budget: budget,
+          expenseName: expenseName,
+          expenseAmount: expenseAmount,
+          peopleOwingNames: peopleOwingNames,
+          personOwedName: personOwedName
+        };
+        console.log(data);
+        return data;
+      }
+
+      
+    </script>
+  </div>
   <!-- Bootstrap Bundle with Popper -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
