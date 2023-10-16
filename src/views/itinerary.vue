@@ -110,13 +110,15 @@
 
 </div>
 
-<div id ="results">
+    <div id="selectplaces">
+    </div>
 
-</div>
 
 </template>
 
-<script>
+
+
+<script >
 import axios from 'axios'; // Import Axios
 
 export default {
@@ -127,6 +129,7 @@ export default {
       town: "",
       outgoing: "",
       transport: "",
+      results: [],
     };
   },
     methods: {
@@ -178,8 +181,7 @@ async getweather() {
 
     service.textSearch(request, (results, status) => {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
-            result = [];
-        for (const place of results) {
+          for (const place of results) {
 
             console.log(`Name: ${place.name}`);
             console.log(`Address: ${place.formatted_address}`);
@@ -258,8 +260,8 @@ async getweather() {
 
 
     //   to search for attractions in a city
-    SearchIndoorAttractions(city) {
-    var city = document.getElementById("country").value;
+    searchIndoorAttractions(city) {
+    var city = this.town;
 
     const request = {
         query: `Shopping malls and mueseums and aquariums in ${city}`,
@@ -368,21 +370,14 @@ async getweather() {
             console.log('---');
         }
         if(this.strongindependentwoman == true){
+            let html = '';
+            let div = document.getElementById('selectplaces');
         for (var i = 0; i < result.length; i++) {
-            var checkbox = document.createElement('input');
-            checkbox.type = "checkbox";
-            checkbox.name = "name";
-            checkbox.value = "value";
-            checkbox.id = "id";
-
-            var label = document.createElement('label')
-            label.htmlFor = "id";
-            label.appendChild(document.createTextNode(result[i]));
-
-            document.getElementById('selectplaces').appendChild(checkbox);
-            document.getElementById('selectplaces').appendChild(label);
-            document.getElementById('selectplaces').appendChild(document.createElement("br"));
+            html += `<input type="checkbox" name="selectplaces" value="${result[i]}" id="id">
+            <label for="id">${result[i]}</label><br>`;
         }
+        div.innerHTML = html;
+
         }
         } else {
         console.error(`Error: ${status}`);
