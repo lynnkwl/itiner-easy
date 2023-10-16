@@ -11,7 +11,8 @@ integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQI
 <!-- Vue using CDN -->
 <script src="https://unpkg.com/vue@next"></script><script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCrtlMuj3mZnI5NGVkgw5ME1hZL-XEtRzI&libraries=places"></script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCrtlMuj3mZnI5NGVkgw5ME1hZL-XEtRzI&libraries=places&callback=initMap"></script>
 
 <style>
     .slider::-webkit-slider-thumb {
@@ -128,6 +129,7 @@ integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQI
 </br>
     <button onclick="generateitinerary()">Generate Itinerary</button>
 </div>
+<div id="map"></div>
 
 </body>
 
@@ -147,7 +149,6 @@ integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQI
         query: `Shopping malls and mueseums and aquariums in ${city}`,
         fields: ['name', 'formatted_address','types', 'business_status', 'location'],
     };
-
 
 
     const service = new google.maps.places.PlacesService(document.createElement('div'));
@@ -304,9 +305,71 @@ async function getweather() {
     });
 }
 
+function geteateriesnearby(){
+    var geocoder = new google.maps.Geocoder();
+    var postalCode = document.getElementById('location').value;
+    geocoder.geocode({ address: postalCode }, function (results, status) {
+    if (status === google.maps.GeocoderStatus.OK) {
+      var location = results[0].geometry.location;
+      var request = {
+        location: location,
+        radius: '500',
+        type: ['restaurant'],
+        componentRestrictions: { country: "sg" }
+      };
+
+      service = new google.maps.places.PlacesService(map);
+      service.nearbySearch(request, callback);
+    } else {
+      console.error('Geocode was not successful for the following reason: ' + status);
+    }
+  });
+
+  function callback(results, status) {
+    if (status == google.maps.places.PlacesServiceStatus.OK) {
+      for (var i = 0; i < results.length; i++) {
+        var place = results[i];
+        console.log(place);
+        checkOpenStatus(place.place_id, '12:00 PM'); // Change the time as needed
+      }
+    }
+  }
+}
+function checkOpenStatus(placeId, checkTime) {
+  var request = {
+    placeId: placeId,
+    fields: ['name', 'opening_hours'],
+  };
+
+  service.getDetails(request, function (place, status) {
+    if (status == google.maps.places.PlacesServiceStatus.OK) {
+      var isOpenNow = false;
+
+      if (place.opening_hours) {
+        // Convert checkTime to a Date object
+        var checkDate = new Date('2023-10-16 ' + checkTime);
+
+        var openingHours = place.opening_hours;
+        openingHours.periods.forEach(function (period) {
+          if (
+            checkDate >= new Date('2023-10-16 ' + period.open.time) &&
+            checkDate <= new Date('2023-10-16 ' + period.close.time)
+          ) {
+            isOpenNow = true;
+          }
+        });
+      }
+
+      console.log(
+        place.name + ' is open at ' + checkTime + ': ' + (isOpenNow ? 'Yes' : 'No')
+      );
+    }
+  });
+}
 
 
-async   function generateitinerary() {
+
+async function generateitinerary() {
     try {
         var weather = await getweather(); // Wait for getweather to finish
         console.log(weather);
@@ -343,63 +406,74 @@ async   function generateitinerary() {
         console.error("Error fetching weather data:", error);
     }
 }
-    function initMap() {
-    const map = new google.maps.Map(document.getElementById("map"), {
-        center: { lat: 1.3521, lng: 103.8198 },
-        zoom: 13,
-    });
-    const input = document.getElementById("country");
-    const autocomplete = new google.maps.places.Autocomplete(input);
-    autocomplete.bindTo("bounds", map);
-    autocomplete.setFields(["address_components", "geometry", "icon", "name"]);
-    const infowindow = new google.maps.InfoWindow();
-    const infowindowContent = document.getElementById("infowindow-content");
-    infowindow.setContent(infowindowContent);
-    const marker = new google.maps.Marker({
-        map,
-        anchorPoint: new google.maps.Point(0, -29),
-    });
-    autocomplete.addListener("place_changed", () => {
-        infowindow.close();
-        marker.setVisible(false);
-        const place = autocomplete.getPlace();
-
-        if (!place.geometry || !place.geometry.location) {
-        window.alert("No details available for input: '" + place.name + "'");
-        return;
-        }
-
-        if (place.geometry.viewport) {
-        map.fitBounds(place.geometry.viewport);
-        } else {
-        map.setCenter(place.geometry.location);
-        map.setZoom(17);
-        }
-        marker.setPosition(place.geometry.location);
-        marker.setVisible(true);
-
-        let address = "";
-        if (place.address_components) {
-        address = [
-            (place.address_components[0] &&
-            place.address_components[0].short_name) ||
-            "",
-            (place.address_components[1] &&
-            place.address_components[1].short_name) ||
-            "",
-            (place.address_components[2] &&
-            place.address_components[2].short_name) ||
-            "",
-        ].join(" ");
-        }
-
-        infowindowContent.children["place-icon"].src = place.icon;
-        infowindowContent.children["place-name"].textContent = place.name;
-        infowindowContent.children["place-address"].textContent = address;
-        infowindow.open(map, marker);
-    });
+    
+    function geteateriesnearby(location){
+        var request = {
+            location: location,
+            radius: '500',
+            type: ['restaurant']
+          };
+          
+          service = new google.maps.places.PlacesService(map);
+          service.nearbySearch(request, callback);
+          
+          function callback(results, status) {
+            if (status == google.maps.places.PlacesServiceStatus.OK) {
+              for (var i = 0; i < results.length; i++) {
+                var place = results[i];
+                console.log(place);
+              }
+            }
+          }
     }
+    function initMap() {
 
+    var pointA = new google.maps.LatLng(51.7519, -1.2578);
+    var pointB = new google.maps.LatLng(50.8429, -0.1313);
+    myOptions = {
+      zoom: 7,
+      center: pointA
+    },
+    map = new google.maps.Map(document.getElementById('map'), myOptions),
+    // Instantiate a directions service.
+    directionsService = new google.maps.DirectionsService,
+    directionsDisplay = new google.maps.DirectionsRenderer({
+      map: map
+    }),
+    markerA = new google.maps.Marker({
+      position: pointA,
+      title: "point A",
+      label: "A",
+      map: map
+    }),
+    markerB = new google.maps.Marker({
+      position: pointB,
+      title: "point B",
+      label: "B",
+      map: map
+    });
+
+  // get route from A to B
+  calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, pointB);
+
+}
+
+
+
+function calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, pointB) {
+  directionsService.route({
+    origin: pointA,
+    destination: pointB,
+    travelMode: google.maps.TravelMode.DRIVING
+  }, function(response, status) {
+    if (status == google.maps.DirectionsStatus.OK) {
+      directionsDisplay.setDirections(response);
+      console.log(response);
+    } else {
+      window.alert('Directions request failed due to ' + status);
+    }
+  });
+}
 
 
 </script>

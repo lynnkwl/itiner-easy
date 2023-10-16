@@ -5,112 +5,134 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
-<script async
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCrtlMuj3mZnI5NGVkgw5ME1hZL-XEtRzI&callback=initMap">
+<script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCrtlMuj3mZnI5NGVkgw5ME1hZL-XEtRzI&callback=initMap">
+    
 </script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCrtlMuj3mZnI5NGVkgw5ME1hZL-XEtRzI&libraries=places"></script>
+
 <body>
     <div id="map" style="width: 100%; height: 400px;"></div>
-    <!-- var pointA = new google.maps.LatLng(51.7519, -1.2578),
-    pointB = new google.maps.LatLng(50.8429, -0.1313),
-    myOptions = {
-      zoom: 7,
-      center: pointA
-    },
-    map = new google.maps.Map(document.getElementById('map-canvas'), myOptions),
-    // Instantiate a directions service.
-    directionsService = new google.maps.DirectionsService,
-    directionsDisplay = new google.maps.DirectionsRenderer({
-      map: map
-    }),
-    markerA = new google.maps.Marker({
-      position: pointA,
-      title: "point A",
-      label: "A",
-      map: map
-    }),
-    markerB = new google.maps.Marker({
-      position: pointB,
-      title: "point B",
-      label: "B",
-      map: map
-    });
+    <div id="hungryvery">
+        <input name="location" id="location" placeholder="Where are you?">
 
-  // get route from A to B
-  calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, pointB);
-
-}
-
-
-
-function calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, pointB) {
-  directionsService.route({
-    origin: pointA,
-    destination: pointB,
-    travelMode: google.maps.TravelMode.DRIVING
-  }, function(response, status) {
-    if (status == google.maps.DirectionsStatus.OK) {
-      directionsDisplay.setDirections(response);
-    } else {
-      window.alert('Directions request failed due to ' + status);
-    }
-  });
-}
-
--->
+        </input>
+        <button onclick="geteateriesnearby()">Hungry?</button>
+    </div>
 </body>
 
     <script>
     
 
-      function initMap() {
+//       function initMap() {
 
-    var pointA = new google.maps.LatLng(51.7519, -1.2578);
-    var pointB = new google.maps.LatLng(50.8429, -0.1313);
-    myOptions = {
-      zoom: 7,
-      center: pointA
-    },
-    map = new google.maps.Map(document.getElementById('map'), myOptions),
-    // Instantiate a directions service.
-    directionsService = new google.maps.DirectionsService,
-    directionsDisplay = new google.maps.DirectionsRenderer({
-      map: map
-    }),
-    markerA = new google.maps.Marker({
-      position: pointA,
-      title: "point A",
-      label: "A",
-      map: map
-    }),
-    markerB = new google.maps.Marker({
-      position: pointB,
-      title: "point B",
-      label: "B",
-      map: map
-    });
+//     var pointA = new google.maps.LatLng(51.7519, -1.2578);
+//     var pointB = new google.maps.LatLng(50.8429, -0.1313);
+//     myOptions = {
+//       zoom: 7,
+//       center: pointA
+//     },
+//     map = new google.maps.Map(document.getElementById('map'), myOptions),
+//     // Instantiate a directions service.
+//     directionsService = new google.maps.DirectionsService,
+//     directionsDisplay = new google.maps.DirectionsRenderer({
+//       map: map
+//     }),
+//     markerA = new google.maps.Marker({
+//       position: pointA,
+//       title: "point A",
+//       label: "A",
+//       map: map
+//     }),
+//     markerB = new google.maps.Marker({
+//       position: pointB,
+//       title: "point B",
+//       label: "B",
+//       map: map
+//     });
 
-  // get route from A to B
-  calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, pointB);
+//   // get route from A to B
+//   calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, pointB);
 
-}
+// }
 
 
 
-function calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, pointB) {
-  directionsService.route({
-    origin: pointA,
-    destination: pointB,
-    travelMode: google.maps.TravelMode.DRIVING
-  }, function(response, status) {
-    if (status == google.maps.DirectionsStatus.OK) {
-      directionsDisplay.setDirections(response);
-      console.log(response);
+// function calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, pointB) {
+//   directionsService.route({
+//     origin: pointA,
+//     destination: pointB,
+//     travelMode: google.maps.TravelMode.DRIVING
+//   }, function(response, status) {
+//     if (status == google.maps.DirectionsStatus.OK) {
+//       directionsDisplay.setDirections(response);
+//       console.log(response);
+//     } else {
+//       window.alert('Directions request failed due to ' + status);
+//     }
+//   });
+// }
+
+function geteateriesnearby(){
+    var geocoder = new google.maps.Geocoder();
+    var postalCode = document.getElementById('location').value;
+    geocoder.geocode({ address: postalCode }, function (results, status) {
+    if (status === google.maps.GeocoderStatus.OK) {
+      var location = results[0].geometry.location;
+      var request = {
+        location: location,
+        radius: '500',
+        type: ['restaurant'],
+        componentRestrictions: { country: "sg" }
+      };
+
+      service = new google.maps.places.PlacesService(map);
+      service.nearbySearch(request, callback);
     } else {
-      window.alert('Directions request failed due to ' + status);
+      console.error('Geocode was not successful for the following reason: ' + status);
+    }
+  });
+
+  function callback(results, status) {
+    if (status == google.maps.places.PlacesServiceStatus.OK) {
+      for (var i = 0; i < results.length; i++) {
+        var place = results[i];
+        console.log(place);
+        checkOpenStatus(place.place_id, '12:00 PM'); // Change the time as needed
+      }
+    }
+  }
+}
+function checkOpenStatus(placeId, checkTime) {
+  var request = {
+    placeId: placeId,
+    fields: ['name', 'opening_hours'],
+  };
+
+  service.getDetails(request, function (place, status) {
+    if (status == google.maps.places.PlacesServiceStatus.OK) {
+      var isOpenNow = false;
+
+      if (place.opening_hours) {
+        // Convert checkTime to a Date object
+        var checkDate = new Date('2023-10-16 ' + checkTime);
+
+        var openingHours = place.opening_hours;
+        openingHours.periods.forEach(function (period) {
+          if (
+            checkDate >= new Date('2023-10-16 ' + period.open.time) &&
+            checkDate <= new Date('2023-10-16 ' + period.close.time)
+          ) {
+            isOpenNow = true;
+          }
+        });
+      }
+
+      console.log(
+        place.name + ' is open at ' + checkTime + ': ' + (isOpenNow ? 'Yes' : 'No')
+      );
     }
   });
 }
-
 
       
 </script>
