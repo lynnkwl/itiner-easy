@@ -110,9 +110,12 @@
 
 </div>
 
-    <div id="selectplaces">
+<div id="selectplaces">
+      <label v-for="place in places" :key="place.name">
+        <input type="checkbox" :value="place.name" v-model="selectedPlaces" />
+        {{ place.name}}
+      </label>
     </div>
-
 
 </template>
 
@@ -129,7 +132,9 @@ export default {
       town: "",
       outgoing: "",
       transport: "",
-      results: [],
+      strongIndependentWoman: false, // To store the strongindependentwoman checkbox value
+      places: [], // To store search results
+      selectedPlaces: [], // To store selected places
     };
   },
     methods: {
@@ -345,11 +350,12 @@ async getweather() {
 
       searchOutdoorAttractions(city) {
     var city = document.getElementById("country").value;
-
+    this.places = [];
     const request = {
         query: `Outdoor Tourist Attractions in ${city}`,
         fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours', 'website'],
     };
+    
 
 
 
@@ -359,6 +365,7 @@ async getweather() {
 
     service.textSearch(request, (results, status) => {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
+        this.places = results;
         for (const place of results) {
             console.log(`Name: ${place.name}`);
             console.log(`Address: ${place.formatted_address}`);
@@ -368,17 +375,9 @@ async getweather() {
             console.log(`Opening Hours: ${place.opening_hours}`);
             console.log(`Website: ${place.website}`);
             console.log('---');
+            console.log(this.places);  
         }
-        if(this.strongindependentwoman == true){
-            let html = '';
-            let div = document.getElementById('selectplaces');
-        for (var i = 0; i < result.length; i++) {
-            html += `<input type="checkbox" name="selectplaces" value="${result[i]}" id="id">
-            <label for="id">${result[i]}</label><br>`;
-        }
-        div.innerHTML = html;
 
-        }
         } else {
         console.error(`Error: ${status}`);
         }
