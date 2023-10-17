@@ -331,6 +331,7 @@ async searchBothAttractions(city) {
 
 
   async getactivitieslist(){
+    this.final_activities = [];
     this.places = [];
     if(this.outgoing == "Indoor"){
       await this.searchIndoorAttractions();
@@ -341,8 +342,8 @@ async searchBothAttractions(city) {
     else{
       await this.searchBothAttractions();
     }
+    //get interests from museums, shopping malls and parks if ticked and add to this.places
     await this.getinterests();
-    this.final_activities = [];
     if(this.selectedPlaces == []){
       if(this.interestsresults != null){
         this.final_activities = this.final_activities.concat(this.interestsresults);
@@ -363,6 +364,7 @@ async searchBothAttractions(city) {
     }
 
     this.final_activities = [...new Set(this.final_activities)];
+    console.log(this.final_activities);
     await this.managetime();
     console.log("im done");
     },
@@ -372,7 +374,6 @@ async searchBothAttractions(city) {
 
     async managetime(){
     var time = "0900";
-    console.log(this.final_activities);
     this.activitiesandtime = [];
     //get random activity from final_activities where each activity is 1 hour if its outdoor and 2 hours if its indoor do until time is 2100
     // while (time < "2100") {
@@ -451,11 +452,11 @@ async searchBothAttractions(city) {
     }
     for (var i = 0; i < interests.length; i++) {
         if (interests[i] == "Museums") {
-            this.SearchMuseums();
+          await  this.SearchMuseums();
         } else if (interests[i] == "Shopping Malls") {
-            this.searchShoppingMalls();
+          await this.searchShoppingMalls();
         } else if (interests[i] == "Gardens") {
-            this.searchgardens();
+          await this.searchgardens();
         }
     }
   },
@@ -466,15 +467,19 @@ async searchBothAttractions(city) {
         fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours', 'website'],
     };
     const service = new google.maps.places.PlacesService(document.createElement('div'));
-
+    return new Promise((resolve, reject) => {
     service.textSearch(request, (results, status) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
+      if (status === google.maps.places.PlacesServiceStatus.OK) {
         this.interestsresults = this.interestsresults.concat(results);
-        } else {
+        console.log(this.interestsresults);
+        resolve(results); // Resolve the promise with the search results
+      } else {
         console.error(`Error: ${status}`);
-        }
+        reject(status); // Reject the promise with the error status
+      }
     });
-    },
+  });
+},
 
     async searchShoppingMalls(city) {
       var city = this.town;
@@ -483,18 +488,23 @@ async searchBothAttractions(city) {
         fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours', 'website'],
     };
 
-
-
     const service = new google.maps.places.PlacesService(document.createElement('div'));
 
+    return new Promise((resolve, reject) => {
     service.textSearch(request, (results, status) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
+      if (status === google.maps.places.PlacesServiceStatus.OK) {
         this.interestsresults = this.interestsresults.concat(results);
-        } else {
+        console.log(this.interestsresults);
+        resolve(results); // Resolve the promise with the search results
+      } else {
         console.error(`Error: ${status}`);
-        }
+        reject(status); // Reject the promise with the error status
+      }
     });
-    },
+  });
+},
+
+
     async  searchgardens(city) {
     var city = this.town;
     const request = {
@@ -504,14 +514,19 @@ async searchBothAttractions(city) {
 
     const service = new google.maps.places.PlacesService(document.createElement('div'));
 
+    return new Promise((resolve, reject) => {
     service.textSearch(request, (results, status) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
+      if (status === google.maps.places.PlacesServiceStatus.OK) {
         this.interestsresults = this.interestsresults.concat(results);
-        } else {
+        console.log(this.interestsresults);
+        resolve(results); // Resolve the promise with the search results
+      } else {
         console.error(`Error: ${status}`);
-        }
+        reject(status); // Reject the promise with the error status
+      }
     });
-    },
+  });
+},
     
     async getEateriesNearby() {
       var geocoder = new google.maps.Geocoder();
