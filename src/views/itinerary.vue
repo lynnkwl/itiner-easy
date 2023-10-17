@@ -90,14 +90,14 @@
 <input type="radio" id="Both"  value="Both" v-model="outgoing" required >
 <label for="Both">I'm fine with either!</label>
 <br>
-    Are there any places you want to visit?
+    Are there any places you would prefer to visit?(optional)
 <br>
-    <input type="checkbox" id="interests" name="interests" value="Museums">
-    <label for="interests">Museums</label>
-    <input type="checkbox" id="interests" name="interests" value="Shopping Malls">
-    <label for="interests">Shopping Malls</label>
-    <input type="checkbox" id="interests" name="interests" value="Gardens">
-    <label for="interests">Gardens</label>
+    <input type="checkbox" id="Museums" name="interests" value="Museums">
+    <label for="Museums">Museums</label>
+    <input type="checkbox" id="Shopping Malls" name="interests" value="Shopping Malls">
+    <label for="Shopping Malls">Shopping Malls</label>
+    <input type="checkbox" id="Gardens" name="interests" value="Gardens">
+    <label for="Gardens">Gardens</label>
 <br>
     How will you be getting around?<br>
      <input type="radio" id="car" value="DRIVING" v-model="transport" required>
@@ -108,7 +108,6 @@
     <label for="Cycling">Bicycle</label>
     <input type="radio" id="walking" value="WALKING"  v-model="transport" required>
     <label for="walking">Walking</label>
-
 <br>
 <br>
 <br>
@@ -118,7 +117,7 @@
 </div>
 
 <div id="selectplaces">
-  <div v-if="places.length > 0">
+  <div v-if="strongIndependentWoman">
     
     <h3> Choose where you want to go!</h3>
     <table>
@@ -146,6 +145,29 @@
     </div>
 </div>
 
+<div v-if="final_activities.length>0">
+  <!-- getmap -->
+    <div id="map-container">
+      <div id="map"></div>
+  </div>
+  <table v-for="day in days">
+    <tr>
+      <th colspan = 3>Day {{ day }}</th>
+    </tr>
+    <th>Time</th>
+    <th>Activity</th>
+    <th>Route</th>
+    <tr>
+      <td>
+        <div v-for="activity in activities">
+          <label>
+            {{ activity }}
+          </label>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
 </template>
 
 
@@ -154,6 +176,13 @@
 import axios from 'axios'; // Import Axios
 
 export default {
+  mounted(){
+    const script = document.createElement('script');
+    script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCrtlMuj3mZnI5NGVkgw5ME1hZL-XEtRzI&libraries=places&callback=initMap';
+    script.defer = true;
+    script.async = true;
+    document.head.appendChild(script);
+  },
   data() {
     return {
       sliderValue: 1,
@@ -164,18 +193,26 @@ export default {
       strongIndependentWoman: false, // To store the strongindependentwoman checkbox value
       places: [], // To store search results
       selectedPlaces: [], // To store selected places
+      interestsresults: [],
+      generatenow: false,
+      days: 0,
+      final_activities : [],
     };
   },
     methods: {
         sliderChange(event) {
         this.sliderValue = event.target.value;
         },
-
+        updatestrongindependentwoman(event){
+          
+        }
+//weather api
 
 async getweather() {
     return new Promise(async (resolve, reject) => {
         var city = this.town;
         var days = this.sliderValue;
+        this.days = days;
 
         try {
             var weatherkey ="cfb27632a44746f6aaf01356231409";
@@ -198,7 +235,7 @@ async getweather() {
         }
     });
 },
-
+//getplaces
  searchBothAttractions(city) {
     var city = this.town;
     this.places = [];
@@ -228,6 +265,27 @@ async getweather() {
     });
     },
 
+  getinterests(){
+    var interests = [];
+    var interestsresults = [];
+    var checkboxes = document.getElementsByName("interests");
+    for (var i = 0; i < checkboxes.length; i++) {
+        if (checkboxes[i].checked) {
+            interests.push(checkboxes[i].value);
+        }
+    }
+    for (var i = 0; i < interests.length; i++) {
+        if (interests[i] == "Museums") {
+            this.SearchMuseums();
+            this.interestsresults.push(this.places);
+        } else if (interests[i] == "Shopping Malls") {
+            this.searchShoppingMalls();
+        } else if (interests[i] == "Gardens") {
+            this.searchgardens();
+        }
+    }
+  },
+
 
   async generateitinerary() {
     try {
@@ -237,8 +295,8 @@ async getweather() {
         var transport = this.transport;
         var usedattractions = [];
         var itinerary = [];
-        var city = this.town;
-        var days = this.sliderValue;
+        this.city = this.town;
+        this.days = this.sliderValue;
 
         for (var i = 0; i < weather.length; i++) {
             if (weather[i].indexOf("Rain") >= 0 || weather[i].indexOf("hazy") >= 0) {
@@ -262,14 +320,33 @@ async getweather() {
                 this.searchOutdoorAttractions();
             }
         }
+        this.getactivitieslist();
     } catch (error) {
         console.error("Error fetching weather data:", error);
     }
 },
 
 
-
-
+    getactivitieslist(){
+    if(this.selectedPlaces.length == 0){
+      if(this.getinterests() != null){
+      this.getinterests();
+        this.final_activities = this.interestsresults; 
+        this.final_activities = this.final_activities.concat(this.places);
+    }
+      else{
+        this.searchBothAttractions();
+        this.final_activities = this.places;
+      }
+    }
+    else{
+        this.final_activities = this.selectedPlaces;
+        if(this.final_activities< 5 * this.days){
+            this.final_activities = this.final_activities.concat(this.places);
+        }
+    }
+    },
+    
 
     //   to search for attractions in a city
     searchIndoorAttractions(city) {
@@ -536,6 +613,27 @@ async getweather() {
         }
       });
     },
+    initMap() {
+      const city = this.town;
+      const mapOptions = {
+        center: { lat: 0, lng: 0 }, // Replace with the coordinates of your city
+        zoom: 10, // Adjust the zoom level as needed
+      };
+
+      const map = new google.maps.Map(document.getElementById('map'), mapOptions);
+
+      // Use Geocoding to get the coordinates for the city
+      const geocoder = new google.maps.Geocoder();
+      geocoder.geocode({ address: city }, (results, status) => {
+        if (status === google.maps.GeocoderStatus.OK) {
+          map.setCenter(results[0].geometry.location);
+        } else {
+          console.error('Geocode was not successful for the following reason: ' + status);
+        }
+      })},
+    
+
+    
     checkempty(){
     if (!this.town || !this.sliderValue || !this.outgoing || !this.transport) {
         window.alert
