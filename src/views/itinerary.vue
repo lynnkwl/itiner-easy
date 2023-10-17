@@ -241,7 +241,6 @@ async getweather() {
 //getplaces
 async searchBothAttractions(city) {
     var city = this.town;
-    this.places = [];
     const request = {
         query: `Tourist Attractions in ${city}`,
         fields: ['name', 'formatted_address','types', 'business_status', 'location'],
@@ -397,7 +396,6 @@ async searchBothAttractions(city) {
     //   to search for attractions in a city
     async searchIndoorAttractions(city) {
     var city = this.town;
-    this.places = [];
     const request = {
         query: `Shopping malls and mueseums and aquariums in ${city}`,
         fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours', 'website'],
@@ -420,7 +418,6 @@ async searchBothAttractions(city) {
 
     async  searchOutdoorAttractions(city) {
     var city = document.getElementById("country").value;
-    this.places = [];
     const request = {
         query: `Outdoor Tourist Attractions in ${city}`,
         fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours', 'website'],
@@ -430,6 +427,7 @@ async searchBothAttractions(city) {
 
     service.textSearch(request, (results, status) => {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
+        //enter each result into places
         this.places = this.places.concat(results);
         } else {
         console.error(`Error: ${status}`);
