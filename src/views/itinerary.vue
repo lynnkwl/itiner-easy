@@ -252,20 +252,19 @@ async searchBothAttractions(city) {
     const outdoorplaces = ['park','zoo','amusement_park',''];
     // const outdoo
 
+    return new Promise((resolve, reject) => {
     service.textSearch(request, (results, status) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
-          for (const place of results) {
-            console.log(place);
-        }
-        //place results in checkbox
+      if (status === google.maps.places.PlacesServiceStatus.OK) {
         this.places = this.places.concat(results);
-      }
-         else {
+        console.log(this.places);
+        resolve(results); // Resolve the promise with the search results
+      } else {
         console.error(`Error: ${status}`);
-        }
+        reject(status); // Reject the promise with the error status
+      }
     });
-    },
-
+  });
+},
   async getlist2(city) {
     var city = this.town;
 
@@ -275,7 +274,7 @@ async searchBothAttractions(city) {
         fields: ['name', 'formatted_address','types', 'business_status', 'location'],
     };
 
-    this.getinterests();
+    this.getinterests(city);
 
     const service = new google.maps.places.PlacesService(document.createElement('div'));
     const outdoorplaces = ['park','zoo','amusement_park',''];
@@ -305,64 +304,66 @@ async searchBothAttractions(city) {
     },
 
 
-  async getlist() {
-    try {
-        var weather = await this.getweather(); // Wait for getweather to finish
-        console.log(weather);
-        var preferences = this.outgoing;
-        var transport = this.transport;
-        var usedattractions = [];
-        var itinerary = [];
-        this.city = this.town;
-        this.days = this.sliderValue;
+//   async getlist() {
+//     try {
+//   var weather = await this.getweather(); // Wait for getweather to finish
+//   console.log(weather);
+//   var preferences = this.outgoing;
+//   this.city = this.town;
+//   this.days = this.sliderValue;
 
-        for (var i = 0; i < weather.length; i++) {
-            if (weather[i].indexOf("Rain") >= 0 || weather[i].indexOf("hazy") >= 0) {
-                this.searchIndoorAttractions();
-                for (var j = 0; j < all_attractions.length; j++) {
-                    if (usedattractions.indexOf(all_attractions[j]) < 0) {
-                        possibleattractions.push(all_attractions[j]);
-                    }
-                }
-                var randomattraction = possibleattractions[Math.floor(Math.random() * possibleattractions.length)];
-                itinerary.push(randomattraction);
-                
-                
-            } else if (preferences == "Indoor") {
-              await  this.searchIndoorAttractions();
-            } else if (preferences == "Both") {
-              await this.searchBothAttractions();
-            } else {
-              await this.searchOutdoorAttractions();
-            }
-        }
-        this.places = [...new Set(this.places)];
-    } catch (error) {
-        console.error("Error fetching weather data:", error);
-    }
-},
+//   for (var i = 0; i < weather.length; i++) {
+//     if (weather[i].indexOf("Rain") >= 0 || weather[i].indexOf("hazy") >= 0) {
+//       await this.searchIndoorAttractions(); // Wait for searchIndoorAttractions() to finish
+//     } else if (preferences == "Indoor") {
+//       await this.searchIndoorAttractions(); // Wait for searchIndoorAttractions() to finish
+//     } else if (preferences == "Both") {
+//       await this.searchBothAttractions(); // Wait for searchBothAttractions() to finish
+//     } else {
+//       await this.searchOutdoorAttractions(); // Wait for searchOutdoorAttractions() to finish
+//     }
+//   }
+
+// } catch (error) {
+//   console.error(error);
+// }
+// },
 
 
   async getactivitieslist(){
-    this.getinterests();
-    if(this.selectedPlaces.length == 0){
+    this.places = [];
+    if(this.outgoing == "Indoor"){
+      await this.searchIndoorAttractions();
+    }
+    else if(this.outgoing == "Outdoor"){
+      await this.searchOutdoorAttractions();
+    }
+    else{
+      await this.searchBothAttractions();
+    }
+    await this.getinterests();
+    this.final_activities = [];
+    if(this.selectedPlaces == []){
       if(this.interestsresults != null){
-        this.final_activities = this.interestsresults; 
+        this.final_activities = this.final_activities.concat(this.interestsresults);
         this.final_activities = this.final_activities.concat(this.places);
     }
       else{
-        this.getlist();
-        this.final_activities = this.places;
+        this.final_activities = this.final_activities.concat(this.places);
       }
     }
+
+
     else{
-        this.final_activities = this.selectedPlaces;
+        this.final_activities = this.final_activities.concat(this.selectedPlaces);
         if(this.final_activities< 5 * this.days){
+            this.final_activities = this.final_activities.concat(this.interestsresults);
             this.final_activities = this.final_activities.concat(this.places);
         }
     }
+
     this.final_activities = [...new Set(this.final_activities)];
-    this.managetime();
+    await this.managetime();
     console.log("im done");
     },
 
@@ -402,21 +403,22 @@ async searchBothAttractions(city) {
     };
 
 
-
     const service = new google.maps.places.PlacesService(document.createElement('div'));
-    const outdoorplaces = ['park','zoo','amusement_park',''];
-    // const outdoo
-
-   service.textSearch(request, (results, status) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
+    return new Promise((resolve, reject) => {
+    service.textSearch(request, (results, status) => {
+      if (status === google.maps.places.PlacesServiceStatus.OK) {
         this.places = this.places.concat(results);
-        } else {
+        console.log(this.places);
+        resolve(results); // Resolve the promise with the search results
+      } else {
         console.error(`Error: ${status}`);
-        }
+        reject(status); // Reject the promise with the error status
+      }
     });
-    },
+  });
+},
 
-    async  searchOutdoorAttractions(city) {
+    async searchOutdoorAttractions(city) {
     var city = document.getElementById("country").value;
     const request = {
         query: `Outdoor Tourist Attractions in ${city}`,
@@ -425,15 +427,19 @@ async searchBothAttractions(city) {
     
     const service = new google.maps.places.PlacesService(document.createElement('div'));
 
+    return new Promise((resolve, reject) => {
     service.textSearch(request, (results, status) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
-        //enter each result into places
+      if (status === google.maps.places.PlacesServiceStatus.OK) {
         this.places = this.places.concat(results);
-        } else {
+        console.log(this.places);
+        resolve(results); // Resolve the promise with the search results
+      } else {
         console.error(`Error: ${status}`);
-        }
+        reject(status); // Reject the promise with the error status
+      }
     });
-    },
+  });
+},
     async getinterests(){
     var interests = [];
     this.interestsresults = [];
@@ -452,7 +458,6 @@ async searchBothAttractions(city) {
             this.searchgardens();
         }
     }
-    return this.interestsresults;
   },
   async SearchMuseums(city) {
     var city = this.town;
@@ -592,13 +597,13 @@ async searchBothAttractions(city) {
     
 
     
-      async checkempty(){
+  async checkempty(){
     if (!this.town || !this.sliderValue || !this.outgoing || !this.transport) {
         window.alert
 ("Please fill in all the fields!");
       }
     else{
-        this.getactivitieslist();
+        await this.getactivitieslist();
     }
     },
     async checkempty2(){
@@ -608,7 +613,7 @@ async searchBothAttractions(city) {
       }
     else{
         this.strongIndependentWoman = true;
-        this.getlist2();
+        await this.getlist2();
     }
     },
 },
