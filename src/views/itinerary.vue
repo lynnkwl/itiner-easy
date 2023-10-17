@@ -111,9 +111,7 @@
 <br>
 <br>
 <br>
-    <input type="checkbox" name="strongindependentwoman">I want to choose where I can go!<br>
-    <button @click="checkempty">Generate Itinerary</button>
-
+    <button @click="checkempty2" name="strongindependentwoman">I want to choose where I can go!</button><br>
 </div>
 
 <div id="selectplaces">
@@ -127,17 +125,17 @@
         <th>Select</th>
       </tr>
       <tbody>
-            <tr v-for="place in places" :key="place.name">
+            <tr v-for="act in suggested_activities" :key="act.name">
               <td>
                 <label>
-                  {{ place.name }}
+                  {{ act.name }}
                 </label>
               </td>
               <td>
-                {{ place.formatted_address }}
+                {{ act.formatted_address }}
               </td>
               <td>
-                <input type="checkbox" :value="place.name" v-model="selectedPlaces" />
+                <input type="checkbox" :value="act.name" v-model="selectedPlaces" />
               </td>
             </tr>
           </tbody>
@@ -168,6 +166,10 @@
     </tr>
   </table>
 </div>
+<div>
+  <button @click="checkempty">Generate Itinerary</button>
+
+</div>
 </template>
 
 
@@ -197,16 +199,15 @@ export default {
       generatenow: false,
       days: 0,
       final_activities : [],
+      suggested_activities: [],
     };
   },
     methods: {
         sliderChange(event) {
         this.sliderValue = event.target.value;
         },
-        updatestrongindependentwoman(event){
-          
 
-        }
+        
 //weather api
 
 async getweather() {
@@ -286,9 +287,45 @@ async getweather() {
         }
     }
   },
+  async getlist2(city) {
+    var city = this.town;
+    this.suggested_activities = [];
+    const request = {
+        query: `Tourist Attractions in ${city}`,
+        fields: ['name', 'formatted_address','types', 'business_status', 'location'],
+    };
 
 
-  async generateitinerary() {
+
+    const service = new google.maps.places.PlacesService(document.createElement('div'));
+    const outdoorplaces = ['park','zoo','amusement_park',''];
+    // const outdoo
+
+    service.textSearch(request, (results, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+          for (const place of results) {
+
+            console.log(place);
+        }
+        //place results in checkbox
+        this.suggested_activities = results;
+        //add museums, gardens and malls if checked
+        if(this.getinterests() != null){
+          this.suggested_activities = this.suggested_activities.concat(this.interestsresults);
+        }
+        //remove any duplicates in suggest_activities
+        this.suggested_activities = [...new Set(this.suggested_activities)];
+        
+      }
+      
+         else {
+        console.error(`Error: ${status}`);
+        }
+    });
+    },
+
+
+  async getlist() {
     try {
         var weather = await this.getweather(); // Wait for getweather to finish
         console.log(weather);
@@ -641,9 +678,19 @@ async getweather() {
 ("Please fill in all the fields!");
       }
     else{
-        this.generateitinerary();
+        this.getlist();
     }
+    },
+    checkempty2(){
+    if (!this.town || !this.sliderValue || !this.outgoing || !this.transport) {
+        window.alert
+("Please fill in all the fields!");
+      }
+    else{
+        this.strongIndependentWoman = true;
+        this.getlist2();
     }
+    },
 },
   };
 
