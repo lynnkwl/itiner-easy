@@ -205,6 +205,7 @@ export default {
         },
         updatestrongindependentwoman(event){
           
+
         }
 //weather api
 
