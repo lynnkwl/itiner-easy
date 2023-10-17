@@ -344,7 +344,7 @@ async searchBothAttractions(city) {
     }
     //get interests from museums, shopping malls and parks if ticked and add to this.places
     await this.getinterests();
-    if(this.selectedPlaces == []){
+    if(this.selectedPlaces.length === 0){
       if(this.interestsresults != null){
         this.final_activities = this.final_activities.concat(this.interestsresults);
         this.final_activities = this.final_activities.concat(this.places);
@@ -366,29 +366,52 @@ async searchBothAttractions(city) {
     this.final_activities = [...new Set(this.final_activities)];
     console.log(this.final_activities);
     await this.managetime();
-    console.log("im done");
     },
 
 
 
 
     async managetime(){
-    var time = "0900";
-    this.activitiesandtime = [];
-    //get random activity from final_activities where each activity is 1 hour if its outdoor and 2 hours if its indoor do until time is 2100
-    // while (time < "2100") {
-    //     var randomactivity = this.final_activities[Math.floor(Math.random() * this.final_activities.length)];
-    //     console.log(randomactivity);
-    //     if (randomactivity.types.indexOf("park") >= 0 || randomactivity.types.indexOf("zoo") >= 0 || randomactivity.types.indexOf("museum") >= 0) {
-    //         time = parseInt(time) + 300;
-    //     } else {
-    //         time = parseInt(time) + 100;
-    //     }
-    //     this.activitiesandtime.push(randomactivity);
-    // }
-    
-    
-  },
+      this.activitiesandtime = [];
+  for (var i = 0; i < this.days; i++) {
+    let time = "0900";
+    while (parseInt(time) < 2100) {
+      var randomactivity = this.final_activities[Math.floor(Math.random() * this.final_activities.length)];
+      var activitytime = 0;
+
+      // Adjust activity time calculation as needed
+      if (randomactivity.types.includes("park") || randomactivity.types.includes("zoo") || randomactivity.types.includes("amusement_park")) {
+        activitytime = 200;
+      } else {
+        activitytime = 300;
+      }
+
+      // Create the activity object
+      var activity = {
+        name: randomactivity.name,
+        time: time,
+        endtime: (parseInt(time) + activitytime).toString(), // Ensure 'endtime' is a string
+        address: randomactivity.formatted_address,
+        transport: this.transport,
+      };
+
+      // Add the activity to 'activitiesandtime' and remove it from 'final_activities'
+      this.activitiesandtime.push(activity);
+      this.final_activities.splice(this.final_activities.indexOf(randomactivity), 1);
+
+      // Update 'time'
+      time = (parseInt(time) + activitytime).toString();
+    }
+
+    // If the loop ends and 'time' is still less than 2100, add the activity and break
+    if (parseInt(time) < 2100) {
+      this.activitiesandtime.push(activity);
+      break;
+    }
+  }
+  // Debugging: Log the contents of activitiesandtime
+  console.log(this.activitiesandtime);
+},
 
 
 
