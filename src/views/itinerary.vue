@@ -199,6 +199,7 @@ export default {
       generatenow: false,
       days: 0,
       final_activities : [],
+      activitiesandtime: [],
       suggested_activities: [],
     };
   },
@@ -238,7 +239,7 @@ async getweather() {
     });
 },
 //getplaces
- searchBothAttractions(city) {
+async searchBothAttractions(city) {
     var city = this.town;
     this.places = [];
     const request = {
@@ -255,11 +256,10 @@ async getweather() {
     service.textSearch(request, (results, status) => {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
           for (const place of results) {
-
             console.log(place);
         }
         //place results in checkbox
-        this.places = results;
+        this.places = this.places.concat(results);
       }
          else {
         console.error(`Error: ${status}`);
@@ -267,9 +267,9 @@ async getweather() {
     });
     },
 
-  getinterests(){
+    async getinterests(){
     var interests = [];
-    var interestsresults = [];
+    this.interestsresults = [];
     var checkboxes = document.getElementsByName("interests");
     for (var i = 0; i < checkboxes.length; i++) {
         if (checkboxes[i].checked) {
@@ -282,10 +282,13 @@ async getweather() {
             this.interestsresults.push(this.places);
         } else if (interests[i] == "Shopping Malls") {
             this.searchShoppingMalls();
+            this.interestsresults.push(this.places);
         } else if (interests[i] == "Gardens") {
             this.searchgardens();
+            this.interestsresults.push(this.places);
         }
     }
+    return this.interestsresults;
   },
   async getlist2(city) {
     var city = this.town;
@@ -309,6 +312,7 @@ async getweather() {
         }
         //place results in checkbox
         this.suggested_activities = results;
+        console.log(this.interestsresults);
         //add museums, gardens and malls if checked
         if(this.getinterests() != null){
           this.suggested_activities = this.suggested_activities.concat(this.interestsresults);
@@ -338,9 +342,7 @@ async getweather() {
 
         for (var i = 0; i < weather.length; i++) {
             if (weather[i].indexOf("Rain") >= 0 || weather[i].indexOf("hazy") >= 0) {
-                var all_attractions = this.searchIndoorAttractions();
-                var possibleattractions = [];
-                //go through used attractions and if it is not in the all attractions list, add it to the possible attractions list
+                this.searchIndoorAttractions();
                 for (var j = 0; j < all_attractions.length; j++) {
                     if (usedattractions.indexOf(all_attractions[j]) < 0) {
                         possibleattractions.push(all_attractions[j]);
@@ -351,29 +353,29 @@ async getweather() {
                 
                 
             } else if (preferences == "Indoor") {
-                this.searchIndoorAttractions();
+              await  this.searchIndoorAttractions();
             } else if (preferences == "Both") {
-                this.searchBothAttractions();
+              await this.searchBothAttractions();
             } else {
-                this.searchOutdoorAttractions();
+              await this.searchOutdoorAttractions();
             }
         }
-        this.getactivitieslist();
+        this.places = [...new Set(this.places)];
     } catch (error) {
         console.error("Error fetching weather data:", error);
     }
 },
 
 
-    getactivitieslist(){
+  async getactivitieslist(){
+    getinterests();
     if(this.selectedPlaces.length == 0){
-      if(this.getinterests() != null){
-      this.getinterests();
+      if(this.interestsresults != null){
         this.final_activities = this.interestsresults; 
         this.final_activities = this.final_activities.concat(this.places);
     }
       else{
-        this.searchBothAttractions();
+        this.getlist();
         this.final_activities = this.places;
       }
     }
@@ -383,11 +385,40 @@ async getweather() {
             this.final_activities = this.final_activities.concat(this.places);
         }
     }
+    this.final_activities = [...new Set(this.final_activities)];
+    this.managetime();
+    console.log("im done");
     },
+
+
+
+
+    async managetime(){
+    var time = "0900";
+    console.log(this.final_activities);
+    this.activitiesandtime = [];
+    //get random activity from final_activities where each activity is 1 hour if its outdoor and 2 hours if its indoor do until time is 2100
+    // while (time < "2100") {
+    //     var randomactivity = this.final_activities[Math.floor(Math.random() * this.final_activities.length)];
+    //     console.log(randomactivity);
+    //     if (randomactivity.types.indexOf("park") >= 0 || randomactivity.types.indexOf("zoo") >= 0 || randomactivity.types.indexOf("museum") >= 0) {
+    //         time = parseInt(time) + 300;
+    //     } else {
+    //         time = parseInt(time) + 100;
+    //     }
+    //     this.activitiesandtime.push(randomactivity);
+    // }
+    
+    
+  },
+
+
+
+
     
 
     //   to search for attractions in a city
-    searchIndoorAttractions(city) {
+    async searchIndoorAttractions(city) {
     var city = this.town;
     this.places = [];
     const request = {
@@ -401,60 +432,16 @@ async getweather() {
     const outdoorplaces = ['park','zoo','amusement_park',''];
     // const outdoo
 
-    service.textSearch(request, (results, status) => {
+   service.textSearch(request, (results, status) => {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
-        for (const place of results) {
-            console.log(`Name: ${place.name}`);
-            console.log(`Address: ${place.formatted_address}`);
-            console.log(`Types: ${place.types}`);
-            console.log(`Business Status: ${place.business_status}`);
-            console.log(`Location: ${place.geometry.location}`);
-            console.log(`Opening Hours: ${place.opening_hours}`);
-            console.log(`Website: ${place.website}`);
-            console.log('---');
-        }
-        this.places = results;
+        this.places = this.places.concat(results);
         } else {
         console.error(`Error: ${status}`);
         }
     });
     },
 
-      searchAttractions(city) {
-    var city = this.town;
-
-    const request = {
-        query: `Tourist Attractions in ${city}`,
-        fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours', 'website'],
-    };
-
-
-
-    const service = new google.maps.places.PlacesService(document.createElement('div'));
-    const outdoorplaces = ['park','zoo','amusement_park',''];
-    // const outdoo
-
-    service.textSearch(request, (results, status) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
-        for (const place of results) {
-            console.log(`Name: ${place.name}`);
-            console.log(`Address: ${place.formatted_address}`);
-            console.log(`Types: ${place.types}`);
-            console.log(`Business Status: ${place.business_status}`);
-            console.log(`Location: ${place.geometry.location}`);
-            console.log(`Opening Hours: ${place.opening_hours}`);
-            console.log(`Website: ${place.website}`);
-            console.log('---');
-        }
-        } 
-        else {
-        console.error(`Error: ${status}`);
-        }
-    });
-    },
-
-
-      searchOutdoorAttractions(city) {
+    async  searchOutdoorAttractions(city) {
     var city = document.getElementById("country").value;
     this.places = [];
     const request = {
@@ -462,34 +449,17 @@ async getweather() {
         fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours', 'website'],
     };
     
-
-
-
     const service = new google.maps.places.PlacesService(document.createElement('div'));
-    const outdoorplaces = ['park','zoo','amusement_park',''];
-    // const outdoo
 
     service.textSearch(request, (results, status) => {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
-        this.places = results;
-        for (const place of results) {
-            console.log(`Name: ${place.name}`);
-            console.log(`Address: ${place.formatted_address}`);
-            console.log(`Types: ${place.types}`);
-            console.log(`Business Status: ${place.business_status}`);
-            console.log(`Location: ${place.geometry.location}`);
-            console.log(`Opening Hours: ${place.opening_hours}`);
-            console.log(`Website: ${place.website}`);
-            console.log('---');
-            console.log(this.places);  
-        }
-
+        this.places = this.places.concat(results);
         } else {
         console.error(`Error: ${status}`);
         }
     });
     },
-  SearchMuseums(city) {
+  async SearchMuseums(city) {
     var city = document.getElementById("country").value;
     this.places = [];
     const request = {
@@ -505,24 +475,14 @@ async getweather() {
 
     service.textSearch(request, (results, status) => {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
-        for (const place of results) {
-            console.log(`Name: ${place.name}`);
-            console.log(`Address: ${place.formatted_address}`);
-            console.log(`Types: ${place.types}`);
-            console.log(`Business Status: ${place.business_status}`);
-            console.log(`Location: ${place.geometry.location}`);
-            console.log(`Opening Hours: ${place.opening_hours}`);
-            console.log(`Website: ${place.website}`);
-            console.log('---');
-        }
-        this.places = results;
+        this.interestsresults = this.interestsresults.concat(results);
         } else {
         console.error(`Error: ${status}`);
         }
     });
     },
 
-    searchShoppingMalls(city) {
+    async searchShoppingMalls(city) {
     var city = document.getElementById("country").value;
     this.places = [];
     const request = {
@@ -533,29 +493,16 @@ async getweather() {
 
 
     const service = new google.maps.places.PlacesService(document.createElement('div'));
-    const outdoorplaces = ['park','zoo','amusement_park',''];
-    // const outdoo
 
     service.textSearch(request, (results, status) => {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
-        for (const place of results) {
-            console.log(`Name: ${place.name}`);
-            console.log(`Address: ${place.formatted_address}`);
-            console.log(`Types: ${place.types}`);
-            console.log(`Business Status: ${place.business_status}`);
-            console.log(`Location: ${place.geometry.location}`);
-            console.log(`Opening Hours: ${place.opening_hours}`);
-            console.log(`Website: ${place.website}`);
-            console.log('---');
-
-        }
-        this.places = results;
+        this.interestsresults = this.interestsresults.concat(results);
         } else {
         console.error(`Error: ${status}`);
         }
     });
     },
-      searchgardens(city) {
+    async  searchgardens(city) {
     var city = this.town;
     this.places = [];
     const request = {
@@ -571,24 +518,14 @@ async getweather() {
 
     service.textSearch(request, (results, status) => {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
-        for (const place of results) {
-            console.log(`Name: ${place.name}`);
-            console.log(`Address: ${place.formatted_address}`);
-            console.log(`Types: ${place.types}`);
-            console.log(`Business Status: ${place.business_status}`);
-            console.log(`Location: ${place.geometry.location}`);
-            console.log(`Opening Hours: ${place.opening_hours}`);
-            console.log(`Website: ${place.website}`);
-            console.log('---');
-        }
-        this.places = results;
+        this.interestsresults = this.interestsresults.concat(results);
         } else {
         console.error(`Error: ${status}`);
         }
     });
     },
     
-    getEateriesNearby() {
+    async getEateriesNearby() {
       var geocoder = new google.maps.Geocoder();
       var postalCode = this.postalCode;
 
@@ -619,7 +556,7 @@ async getweather() {
       }
     }
     ,
-    checkOpenStatus(placeId, checkTime) {
+    async checkOpenStatus(placeId, checkTime) {
       var request = {
         placeId: placeId,
         fields: ['name', 'opening_hours'],
@@ -651,7 +588,7 @@ async getweather() {
         }
       });
     },
-    initMap() {
+    async initMap() {
       const city = this.town;
       const mapOptions = {
         center: { lat: 0, lng: 0 }, // Replace with the coordinates of your city
@@ -672,16 +609,16 @@ async getweather() {
     
 
     
-    checkempty(){
+      async checkempty(){
     if (!this.town || !this.sliderValue || !this.outgoing || !this.transport) {
         window.alert
 ("Please fill in all the fields!");
       }
     else{
-        this.getlist();
+        this.getactivitieslist();
     }
     },
-    checkempty2(){
+    async checkempty2(){
     if (!this.town || !this.sliderValue || !this.outgoing || !this.transport) {
         window.alert
 ("Please fill in all the fields!");
