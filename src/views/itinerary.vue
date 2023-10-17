@@ -155,14 +155,10 @@
     <th>Time</th>
     <th>Activity</th>
     <th>Route</th>
-    <tr>
-      <td>
-        <div v-for="activity in activities">
-          <label>
-            {{ activity }}
-          </label>
-        </div>
-      </td>
+    <tr v-for="activity in activitiesandtime" :key="activity.name">
+      <td>{{ activity.time}} - {{ activity.endtime}}</td>
+      <td>{{ activity.name }}</td>
+      <td>{{ activity.transport }}</td>
     </tr>
   </table>
 </div>
@@ -215,7 +211,6 @@ async getweather() {
     return new Promise(async (resolve, reject) => {
         var city = this.town;
         var days = this.sliderValue;
-        this.days = days;
 
         try {
             var weatherkey ="cfb27632a44746f6aaf01356231409";
@@ -371,48 +366,63 @@ async searchBothAttractions(city) {
 
 
 
-    async managetime(){
-      this.activitiesandtime = [];
+    async managetime() {
+  this.days = this.sliderValue;
+  this.activitiesandtime = [];
+
   for (var i = 0; i < this.days; i++) {
-    let time = "0900";
-    while (parseInt(time) < 2100) {
-      var randomactivity = this.final_activities[Math.floor(Math.random() * this.final_activities.length)];
-      var activitytime = 0;
+    let timeint = 900;
+    let maxtimeint = 2100;
 
-      // Adjust activity time calculation as needed
-      if (randomactivity.types.includes("park") || randomactivity.types.includes("zoo") || randomactivity.types.includes("amusement_park")) {
-        activitytime = 200;
+    while (timeint < maxtimeint) {
+      if (this.final_activities.length === 0) {
+        console.log("No more activities to add.");
+        break;
       } else {
-        activitytime = 300;
+        var randomIndex = Math.floor(Math.random() * this.final_activities.length);
+        var randomactivity = this.final_activities[randomIndex];
+        var activitytime = 0;
+
+        // Adjust activity time calculation as needed
+        if (randomactivity.types.includes("park") || randomactivity.types.includes("zoo") || randomactivity.types.includes("amusement_park")) {
+          activitytime = 200;
+        } else {
+          activitytime = 300;
+        }
+
+        // Create the activity object
+        var activity = {
+          name: randomactivity.name,
+          time: await this.formatTime(timeint), // Format time as a string
+          endtime: await this.formatTime(timeint + activitytime), // Format endtime as a string
+          address: randomactivity.formatted_address,
+          transport: this.transport,
+        };
+
+        // Update 'timeint' for the next activity
+        timeint = timeint + activitytime;
+
+        // Add the activity to 'activitiesandtime' and remove it from 'final_activities'
+        this.activitiesandtime.push(activity);
+        this.final_activities.splice(randomIndex, 1);
+
+        console.log("Added activity:", activity);
       }
-
-      // Create the activity object
-      var activity = {
-        name: randomactivity.name,
-        time: time,
-        endtime: (parseInt(time) + activitytime).toString(), // Ensure 'endtime' is a string
-        address: randomactivity.formatted_address,
-        transport: this.transport,
-      };
-
-      // Add the activity to 'activitiesandtime' and remove it from 'final_activities'
-      this.activitiesandtime.push(activity);
-      this.final_activities.splice(this.final_activities.indexOf(randomactivity), 1);
-
-      // Update 'time'
-      time = (parseInt(time) + activitytime).toString();
-    }
-
-    // If the loop ends and 'time' is still less than 2100, add the activity and break
-    if (parseInt(time) < 2100) {
-      this.activitiesandtime.push(activity);
-      break;
     }
   }
-  // Debugging: Log the contents of activitiesandtime
-  console.log(this.activitiesandtime);
-},
 
+  // Debugging: Log the contents of activitiesandtime
+  console.log("Final activitiesandtime:", this.activitiesandtime);
+}
+,
+
+async formatTime(minutes) {
+  const hours = Math.floor(minutes / 100);
+  const mins = minutes % 100;
+  const formattedHours = hours < 10 ? `0${hours}` : `${hours}`;
+  const formattedMins = mins < 10 ? `0${mins}` : `${mins}`;
+  return `${formattedHours}:${formattedMins}`;
+},
 
 
 
