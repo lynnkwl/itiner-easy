@@ -7,7 +7,7 @@
     <h1>Current Trips</h1>
     <h7>No trips at the moment</h7>
     <br><br>
-    <a href="addtrip.html" style="color: gray;">Add a Trip Now!</a>
+    <router-link to="/addtripp"> Add a Trip Now! </router-link>
   </div>
 
 </body>
