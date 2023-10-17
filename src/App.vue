@@ -28,36 +28,37 @@ const handleSignOut = () => {
 
 <template>
   <nav>
-    <nav class="navbar navbar-expand-sm navbar-dark" style="background-color: #05c8f7;"
+    <nav class="navbar navbar-dark" style="background-color: #05c8f7;"
       aria-label="Second navbar example">
       <div class="container-fluid">
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample02"
+        <!-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample02"
           aria-controls="navbarsExample02" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
-        </button>
+        </button> -->
 
         <div class="collapse navbar-collapse" id="navbarsExample02">
           <div class="navbar-nav me-auto">
-            <router-link to="/"> Home </router-link> |
-            <router-link to="/itinerary"> Itinerary </router-link> |
-            <router-link to="/toolpage"> Tools </router-link> |
-            <router-link to="/feed"> Feed </router-link> |
-            <router-link to="/billbuddy"> BillBuddy </router-link> |
-            <router-link to="/register"> Register </router-link> |
-            <router-link to="/sign-in"> Login </router-link> |
+            <router-link class='navbar-btn' to="/">Home</router-link>
+            &nbsp; 
+            <router-link class='navbar-btn' to="/itinerary">Itinerary</router-link> 
+            &nbsp;
+            <router-link class='navbar-btn' to="/toolpage">Tools</router-link> 
+            &nbsp;
+            <router-link class='navbar-btn' to="/feed">Feed</router-link> 
+            &nbsp;
+            <router-link class='navbar-btn' to="/billbuddy">BillBuddy</router-link> 
+            &nbsp;
+            <router-link class='navbar-btn' to="/register">Register</router-link> 
+            &nbsp;
+            <router-link class='navbar-btn' to="/sign-in">Login</router-link> 
+            &nbsp;
+            <router-link class='navbar-btn' style="color: blue;" to="/profile">Profile</router-link> 
           </div>
           <div class="position-absolute top-0 start-50 translate-middle-x">
             <a href="#"><img src="./components/logo/itiner-easy.svg" style="width: 100px; height: 100px; margin-top: -15px;"
                 alt="itiner-easy logo"></a>
           </div>
-          <ul class="navbar-nav pull-right">
-            <li class="nav-item">
-              <a class="nav-link rounded"
-                style="background-color: white; color: #05c8f7; padding-left: 20px; padding-right: 20px;"
-                href="#"><router-link to="/profile"> Profile </router-link></a>
-            </li>
-          </ul>
         </div>
       </div>
     </nav>
@@ -82,5 +83,30 @@ const handleSignOut = () => {
 
 .logo.vue:hover {
   filter: drop-shadow(0 0 2em #42b883aa);
+}
+
+.navbar-btn {
+  display: flex-horizontal;
+  background-color: #05c8f7;
+  color: white;
+  padding: 5px 5px;
+  border-radius: 5px;
+  text-decoration: none;
+}
+
+.navbar {
+  display: flex;
+  background-color: #05c8f7;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  margin: auto;
+  justify-content: center;
+  align-items: center;
+}
+
+.nav-item{
+  list-style-type:none;
 }
 </style>
