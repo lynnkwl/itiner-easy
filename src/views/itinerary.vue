@@ -267,38 +267,16 @@ async searchBothAttractions(city) {
     });
     },
 
-    async getinterests(){
-    var interests = [];
-    this.interestsresults = [];
-    var checkboxes = document.getElementsByName("interests");
-    for (var i = 0; i < checkboxes.length; i++) {
-        if (checkboxes[i].checked) {
-            interests.push(checkboxes[i].value);
-        }
-    }
-    for (var i = 0; i < interests.length; i++) {
-        if (interests[i] == "Museums") {
-            this.SearchMuseums();
-            this.interestsresults.push(this.places);
-        } else if (interests[i] == "Shopping Malls") {
-            this.searchShoppingMalls();
-            this.interestsresults.push(this.places);
-        } else if (interests[i] == "Gardens") {
-            this.searchgardens();
-            this.interestsresults.push(this.places);
-        }
-    }
-    return this.interestsresults;
-  },
   async getlist2(city) {
     var city = this.town;
+
     this.suggested_activities = [];
     const request = {
         query: `Tourist Attractions in ${city}`,
         fields: ['name', 'formatted_address','types', 'business_status', 'location'],
     };
 
-
+    this.getinterests();
 
     const service = new google.maps.places.PlacesService(document.createElement('div'));
     const outdoorplaces = ['park','zoo','amusement_park',''];
@@ -312,9 +290,8 @@ async searchBothAttractions(city) {
         }
         //place results in checkbox
         this.suggested_activities = results;
-        console.log(this.interestsresults);
         //add museums, gardens and malls if checked
-        if(this.getinterests() != null){
+        if(this.interestsresults != null){
           this.suggested_activities = this.suggested_activities.concat(this.interestsresults);
         }
         //remove any duplicates in suggest_activities
@@ -368,7 +345,7 @@ async searchBothAttractions(city) {
 
 
   async getactivitieslist(){
-    getinterests();
+    this.getinterests();
     if(this.selectedPlaces.length == 0){
       if(this.interestsresults != null){
         this.final_activities = this.interestsresults; 
@@ -459,19 +436,33 @@ async searchBothAttractions(city) {
         }
     });
     },
+    async getinterests(){
+    var interests = [];
+    this.interestsresults = [];
+    var checkboxes = document.getElementsByName("interests");
+    for (var i = 0; i < checkboxes.length; i++) {
+        if (checkboxes[i].checked) {
+            interests.push(checkboxes[i].value);
+        }
+    }
+    for (var i = 0; i < interests.length; i++) {
+        if (interests[i] == "Museums") {
+            this.SearchMuseums();
+        } else if (interests[i] == "Shopping Malls") {
+            this.searchShoppingMalls();
+        } else if (interests[i] == "Gardens") {
+            this.searchgardens();
+        }
+    }
+    return this.interestsresults;
+  },
   async SearchMuseums(city) {
-    var city = document.getElementById("country").value;
-    this.places = [];
+    var city = this.town;
     const request = {
         query: `Museums in ${city}`,
         fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours', 'website'],
     };
-
-
-
     const service = new google.maps.places.PlacesService(document.createElement('div'));
-    const outdoorplaces = ['park','zoo','amusement_park',''];
-    // const outdoo
 
     service.textSearch(request, (results, status) => {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
@@ -483,8 +474,7 @@ async searchBothAttractions(city) {
     },
 
     async searchShoppingMalls(city) {
-    var city = document.getElementById("country").value;
-    this.places = [];
+      var city = this.town;
     const request = {
         query: `Shopping malls in ${city}`,
         fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours', 'website'],
@@ -504,17 +494,12 @@ async searchBothAttractions(city) {
     },
     async  searchgardens(city) {
     var city = this.town;
-    this.places = [];
     const request = {
         query: `Gardens and parks in ${city}`,
         fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours', 'website'],
     };
 
-
-
     const service = new google.maps.places.PlacesService(document.createElement('div'));
-    const outdoorplaces = ['park','zoo','amusement_park',''];
-    // const outdoo
 
     service.textSearch(request, (results, status) => {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
