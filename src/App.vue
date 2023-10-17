@@ -55,7 +55,7 @@ const handleSignOut = () => {
             <li class="nav-item">
               <a class="nav-link rounded"
                 style="background-color: white; color: #05c8f7; padding-left: 20px; padding-right: 20px;"
-                href="#">Profile</a>
+                href="#"><router-link to="/profile"> Profile </router-link></a>
             </li>
           </ul>
         </div>
