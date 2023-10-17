@@ -60,6 +60,8 @@
   </div>
 
 
+  <!-- make a class that makes use of all the functions below -->
+
   <!-- functions for billbuddy -->
   <div>
     <div class="text-center my-5">
@@ -232,7 +234,7 @@
         for (var key in whoOweswho) {
           if (whoOweswho[key] > 0) {
             console.log(key + " owes " + whoOweswho[key]);
-          } else if (whoOweswho[key] < -0.01) {
+          } else if (whoOweswho[key] < -0.011) {
             console.log(key + " is owed " + -whoOweswho[key]);
           } else {
             console.log(key + " is breakeven");
