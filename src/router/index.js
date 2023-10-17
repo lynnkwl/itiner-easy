@@ -5,7 +5,7 @@ import { createRouter, createWebHistory } from "vue-router";
 const router = createRouter({
     history : createWebHistory(),
     routes: [
-        { path: "/", component: () => import("../views/Home.vue")},
+        { path: "/", component: () => import("../views/home/Home.vue")},
         { path: "/register", component: () => import("../views/Register.vue")},
         { path: "/sign-in", component: () => import("../views/SignIn.vue")},
         { path: "/feed", component: () => import("../views/Feed.vue"),
@@ -14,7 +14,7 @@ const router = createRouter({
             requiresAuth:true
         }},
         //go to toolpage.vue
-        {path: "/toolpage", component: () => import("../views/ToolPage.vue")},
+        {path: "/toolpage", component: () => import("../views/Toolpage.vue")},
         //gotobillbuddy.vue
         {path: "/billbuddy", component: () => import("../views/BillBuddy.vue")},
         {path: "/itinerary", component: () => import("../views/itinerary.vue")},
