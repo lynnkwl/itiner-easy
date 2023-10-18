@@ -148,19 +148,39 @@
     <div id="map-container">
       <div id="map"></div>
   </div>
-  <table v-for="day in days">
-    <tr>
-      <th colspan = 3>Day {{ day }}</th>
-    </tr>
-    <th>Time</th>
-    <th>Activity</th>
-    <th>Route</th>
-    <tr v-for="activity in activitiesandtime" :key="activity.name">
-      <td>{{ activity.time}} - {{ activity.endtime}}</td>
-      <td>{{ activity.name }}</td>
-      <td>{{ activity.transport }}</td>
-    </tr>
-  </table>
+  <!-- create table each day -->
+  <div v-for="(day, index) in activitiesandtime" :key="index">
+    <table>
+      <tr>
+        <th colspan="4">Day {{ index + 1 }}</th>
+      </tr>
+      <tr>
+        <th>Activity</th>
+        <th>Time</th>
+        <th>Address</th>
+        <th>Transport</th>
+      </tr>
+      <tbody>
+        <tr v-for="activity in day.activities" :key="activity.name">
+          <td>
+            <label>
+              {{ activity.name }}
+            </label>
+          </td>
+          <td>
+            {{ activity.time }} - {{ activity.endtime }} n
+          </td>
+
+          <td>
+            {{ activity.address }}
+          </td>
+          <td>
+            {{ activity.transport }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+</div>
 </div>
 <div>
   <button @click="checkempty">Generate Itinerary</button>
@@ -197,6 +217,8 @@ export default {
       final_activities : [],
       activitiesandtime: [],
       suggested_activities: [],
+      isOpenNow: false,
+      twelvehrtime: "",
     };
   },
     methods: {
@@ -373,14 +395,26 @@ async searchBothAttractions(city) {
   for (var i = 0; i < this.days; i++) {
     let timeint = 900;
     let maxtimeint = 2100;
-
+    var day = {};
+    day.activities = [];
+    day.day = i + 1;
     while (timeint < maxtimeint) {
       if (this.final_activities.length === 0) {
         console.log("No more activities to add.");
         break;
       } else {
+        //convert timeint to string with pm or am
+        await formattimestrfrom24hourto12hour(timeint);        
+        //checkopenstatus if business is open at that time if closed find another place
         var randomIndex = Math.floor(Math.random() * this.final_activities.length);
         var randomactivity = this.final_activities[randomIndex];
+        await this.checkOpenStatus(randomactivity.place_id, this.twelvehrtime);
+        while (this.isOpenNow == false) {
+          randomIndex = Math.floor(Math.random() * this.final_activities.length);
+          randomactivity = this.final_activities[randomIndex];
+          await this.checkOpenStatus(randomactivity.place_id, this.twelvehrtime);
+        }
+        
         var activitytime = 0;
 
         // Adjust activity time calculation as needed
@@ -397,18 +431,23 @@ async searchBothAttractions(city) {
           endtime: await this.formatTime(timeint + activitytime), // Format endtime as a string
           address: randomactivity.formatted_address,
           transport: this.transport,
-        };
+        };    
+        //store activities in each day
+
+        day.activities.push(activity);
 
         // Update 'timeint' for the next activity
         timeint = timeint + activitytime;
 
         // Add the activity to 'activitiesandtime' and remove it from 'final_activities'
-        this.activitiesandtime.push(activity);
+
         this.final_activities.splice(randomIndex, 1);
 
         console.log("Added activity:", activity);
       }
     }
+    this.activitiesandtime.push(day);
+
   }
 
   // Debugging: Log the contents of activitiesandtime
@@ -425,6 +464,27 @@ async formatTime(minutes) {
 },
 
 
+async formattimestrfrom24hourto12hour(time) {
+  var time = time.split(":");
+  var hours = Number(time[0]);
+  var minutes = Number(time[1]);
+  var timevalue;
+
+  if (hours > 0 && hours <= 12) {
+    timevalue = "" + hours;
+  } else if (hours > 12) {
+    timevalue = "" + (hours - 12);
+  } else if (hours == 0) {
+    timevalue = "12";
+  }
+
+  timevalue += minutes < 10 ? ":0" + minutes : ":" + minutes; // get minutes
+  timevalue += hours >= 12 ? " PM" : " AM"; // get AM/PM
+
+  this.twelvehrtime = timevalue;
+},
+
+
 
     
 
@@ -433,7 +493,7 @@ async formatTime(minutes) {
     var city = this.town;
     const request = {
         query: `Shopping malls and mueseums and aquariums in ${city}`,
-        fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours', 'website'],
+        fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours', 'website', 'place_id'],
     };
 
 
@@ -456,7 +516,7 @@ async formatTime(minutes) {
     var city = document.getElementById("country").value;
     const request = {
         query: `Outdoor Tourist Attractions in ${city}`,
-        fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours', 'website'],
+        fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours', 'website', 'place_id'],
     };
     
     const service = new google.maps.places.PlacesService(document.createElement('div'));
@@ -497,7 +557,7 @@ async formatTime(minutes) {
     var city = this.town;
     const request = {
         query: `Museums in ${city}`,
-        fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours', 'website'],
+        fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours', 'website', 'place_id'],
     };
     const service = new google.maps.places.PlacesService(document.createElement('div'));
     return new Promise((resolve, reject) => {
@@ -518,7 +578,7 @@ async formatTime(minutes) {
       var city = this.town;
     const request = {
         query: `Shopping malls in ${city}`,
-        fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours', 'website'],
+        fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours', 'website', 'place_id'],
     };
 
     const service = new google.maps.places.PlacesService(document.createElement('div'));
@@ -542,7 +602,7 @@ async formatTime(minutes) {
     var city = this.town;
     const request = {
         query: `Gardens and parks in ${city}`,
-        fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours', 'website'],
+        fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours', 'website', 'place_id'],
     };
 
     const service = new google.maps.places.PlacesService(document.createElement('div'));
@@ -593,37 +653,46 @@ async formatTime(minutes) {
     }
     ,
     async checkOpenStatus(placeId, checkTime) {
-      var request = {
-        placeId: placeId,
-        fields: ['name', 'opening_hours'],
-      };
+  var request = {
+    placeId: placeId,
+    fields: ['name', 'opening_hours'],
+  };
 
-      var service = new google.maps.places.PlacesService(map); // Assuming 'map' is accessible
+  var service = new google.maps.places.PlacesService(map); // Assuming 'map' is accessible
 
-      service.getDetails(request, (place, status) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
-          var isOpenNow = false;
+  return new Promise((resolve, reject) => {
+    service.getDetails(request, (place, status) => {
+      if (status === google.maps.places.PlacesServiceStatus.OK) {
+        var isOpenNow = false;
 
-          if (place.opening_hours) {
-            var checkDate = new Date('2023-10-16 ' + checkTime);
+        if (place.opening_hours) {
+          var checkDate = new Date('2023-10-16 ' + checkTime);
 
-            var openingHours = place.opening_hours;
-            openingHours.periods.forEach((period) => {
-              if (
-                checkDate >= new Date('2023-10-16 ' + period.open.time) &&
-                checkDate <= new Date('2023-10-16 ' + period.close.time)
-              ) {
-                isOpenNow = true;
-              }
-            });
-          }
-
-          console.log(
-            place.name + ' is open at ' + checkTime + ': ' + (isOpenNow ? 'Yes' : 'No')
-          );
+          var openingHours = place.opening_hours;
+          openingHours.periods.forEach((period) => {
+            if (
+              checkDate >= new Date('2023-10-16 ' + period.open.time) &&
+              checkDate <= new Date('2023-10-16 ' + period.close.time)
+            ) {
+              this.isOpenNow = true;
+            }
+            else{
+              this.isOpenNow = false;
+            }
+          });
         }
-      });
-    },
+
+        console.log(
+          place.name + ' is open at ' + checkTime + ': ' + (isOpenNow ? 'Yes' : 'No')
+        );
+        resolve(isOpenNow); // Resolve the promise with the isOpenNow value
+      } else {
+        console.error(`Error: ${status}`);
+        reject(status); // Reject the promise with the error status
+      }
+    });
+  });
+},
     async initMap() {
       const city = this.town;
       const mapOptions = {
