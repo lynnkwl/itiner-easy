@@ -26,6 +26,23 @@
     margin-left: 10px;
     margin-right: 10px;
 }
+#selectplaces{
+    margin-top: 30px;
+    margin-left: 30px;
+    margin-right: 30px;
+    background-color: #d9d9d9 ;
+}
+#map-container{
+    margin-top: 30px;
+    margin-left: 30px;
+    margin-right: 30px;
+    background-color: #d9d9d9 ;
+}
+#map{
+    height: 400px;
+    width: 100%;
+}
+
 </style>
 
 
@@ -168,7 +185,7 @@
             </label>
           </td>
           <td>
-            {{ activity.time }} - {{ activity.endtime }} n
+            {{ activity.time }} - {{ activity.endtime }}
           </td>
 
           <td>
@@ -192,6 +209,19 @@
 
 <script >
 import axios from 'axios'; // Import Axios
+import { initMap } from '../main.js';
+// import { Loader, Map } from "google-maps";
+
+// const loader = new Loader({
+//   apiKey: "YOUR_API_KEY",
+//   version: "weekly",
+// });
+// loader.load().then(() => {
+//   const map = new Map(document.getElementById("map"), {
+//     center: { lat: 37.7749, lng: -122.4194 },
+//     zoom: 12,
+//   });
+// });
 
 export default {
   mounted(){
@@ -388,7 +418,7 @@ async searchBothAttractions(city) {
     console.log(this.final_activities);
     await this.managetime();
     await this.getLatLng();
-    await this.initMap();
+    await initMap(this.citycoords);
     },
 
 
@@ -712,24 +742,9 @@ async checkOpenStatus(placeId, checkTime, date) {
 });
 },
 
-    async initMap() {
-      const city = this.town;
-      const mapOptions = {
-        center: this.citycoords, // Replace with the coordinates of your city
-        zoom: 10, // Adjust the zoom level as needed
-      };
 
-      const map = new google.maps.Map(document.getElementById('map'), mapOptions);
 
-      // Use Geocoding to get the coordinates for the city
-      const geocoder = new google.maps.Geocoder();
-      geocoder.geocode({ address: city }, (results, status) => {
-        if (status === google.maps.GeocoderStatus.OK) {
-          map.setCenter(results[0].geometry.location);
-        } else {
-          console.error('Geocode was not successful for the following reason: ' + status);
-        }
-      })},
+
     
 
     
