@@ -195,10 +195,8 @@ import axios from 'axios'; // Import Axios
 
 export default {
   mounted(){
-    this.map = new google.maps.Map(this.$refs.map, {
-      center: { lat: 37.7749, lng: -122.4194 },
-      zoom: 8,
-    });
+    
+    this.initMap();
   },
   data() {
     return {
