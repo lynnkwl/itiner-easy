@@ -221,6 +221,7 @@ export default {
       isOpenNow: false,
       twelvehrtime: "",
       dates: [],
+      citycoords: {},
     };
   },
     methods: {
@@ -243,7 +244,6 @@ async getweather() {
                 'http://api.weatherapi.com/v1/forecast.json?key=' + weatherkey + '&q=' + city + '&days=' + days
             );
             console.log(response.data);
-
             var weather = response.data.forecast.forecastday;
             var weatherarray = [];
 
@@ -387,10 +387,31 @@ async searchBothAttractions(city) {
     this.final_activities = [...new Set(this.final_activities)];
     console.log(this.final_activities);
     await this.managetime();
+    await this.getLatLng();
+    await this.initMap();
     },
 
 
-
+    async getLatLng (){
+      var city = this.town;
+      this.citycoords = {};
+      var request = {
+        query: `${city}`,
+        fields: ['name', 'geometry'],
+      };
+      var service = new google.maps.places.PlacesService(document.createElement('div'));
+      return new Promise((resolve, reject) => {
+      service.findPlaceFromQuery(request, (results, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+          this.citycoords = results[0].geometry.location;
+          console.log(this.citycoords);
+          resolve(results); // Resolve the promise with the search results
+        } else {
+          console.error(`Error: ${status}`);
+          reject(status); // Reject the promise with the error status
+        }
+      })});
+    },
 
   async managetime() {
   this.days = this.sliderValue;
@@ -660,11 +681,11 @@ async checkOpenStatus(placeId, checkTime, date) {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
       this.isOpenNow = false;
       console.log(place);
-      if (place.opening_hours) {
+      var openingHours = place.opening_hours;
+      if (openingHours.periods && openingHours.periods[day]) {
         // Convert checkTime to a Date object for the specific date you want to check
         var checkDate = new Date(date);
         var day = checkDate.getDay();
-        var openingHours = place.opening_hours;
         let openTime = openingHours.periods[day].open.time;
         openTime = parseInt(openTime);
         checkTime = parseInt(checkTime);
@@ -675,6 +696,9 @@ async checkOpenStatus(placeId, checkTime, date) {
         } else {
           this.isOpenNow = false;
         }
+      }
+      else{
+        this.isOpenNow = true;
       }
       console.log(
         place.name + ' is open at ' + checkTime + ': ' + (this.isOpenNow ? 'Yes' : 'No')
@@ -691,7 +715,7 @@ async checkOpenStatus(placeId, checkTime, date) {
     async initMap() {
       const city = this.town;
       const mapOptions = {
-        center: { lat: 0, lng: 0 }, // Replace with the coordinates of your city
+        center: this.citycoords, // Replace with the coordinates of your city
         zoom: 10, // Adjust the zoom level as needed
       };
 
