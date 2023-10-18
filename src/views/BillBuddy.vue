@@ -34,6 +34,29 @@
         <div class="form-group">
           <button class="btn btn-primary" @click="addExpense">Add Expense</button>
         </div>
+        <h3>Expense Table</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>expenseName</th>
+              <th>expenseAmount</th>
+              <th>peopleOwingNames</th>
+              <th>peopleOwingAmount</th>
+              <th>personOwedName</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr v-for="expense in expenses">
+              <td>{{ expense.expenseName }}</td>
+              <td>{{ expense.expenseAmount }}</td>
+              <td>{{ expense.peopleOwingNames }}</td>
+              <td>{{ expense.peopleOwingAmount }}</td>
+              <td>{{ expense.personOwedName }}</td>
+            </tr>
+
+          </tbody>
+        </table>
       </div>
     </div>
   </body>
@@ -48,7 +71,6 @@ import {
 
 // Declaring the database data points we need
 const db = getFirestore();
-const colRef = collection(db, 'books');
 const tripsRef = collection(db, 'trips',);
 const europeRef = collection(tripsRef, 'cj8jL4yrzvKTAMaY4RWp', 'europe')
 const expensesRef = collection(europeRef, 'd52Dh6oAGG6sXBbRV2Dp', 'expenses');
@@ -70,6 +92,7 @@ export default {
         personOwedName: null,
         peopleOwingAmount: null
       },
+      expenses: [],
       // This is for the list of people who owe money
       inputValue: '',
       list: []
@@ -97,7 +120,7 @@ export default {
 
       // Adding the expense to the whoOwesWho collection
       // TODO
-      
+
     },
     // Supporting function for addExpense()
     addToList() {
@@ -108,6 +131,14 @@ export default {
     removeFromList(index) {
       this.list.splice(index, 1);
     },
+  },
+  async created() {
+    const querySnapshot = await getDocs(expensesRef);
+    querySnapshot.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      console.log(doc.id, " => ", doc.data());
+      this.expenses.push(doc.data());
+    });
   }
 }
 
