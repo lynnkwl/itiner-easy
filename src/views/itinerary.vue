@@ -207,7 +207,7 @@ export default {
       town: "",
       outgoing: "",
       transport: "",
-      strongIndependentWoman: false, // To store the strongindependentwoman checkbox value
+      strongIndependentWoman: false,
       places: [], // To store search results
       selectedPlaces: [], // To store selected places
       interestsresults: [],
