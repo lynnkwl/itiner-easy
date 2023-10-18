@@ -27,8 +27,9 @@ const handleSignOut = () => {
 </script>
 
 <template>
+<div id='body' style="background-color: lightblue;">
   <nav>
-    <nav class="navbar navbar-dark" style="background-color: #05c8f7;"
+    <nav class="navbar navbar-dark"
       aria-label="Second navbar example">
       <div class="container-fluid">
 
@@ -38,27 +39,28 @@ const handleSignOut = () => {
         </button> -->
 
         <div class="collapse navbar-collapse" id="navbarsExample02">
-          <div class="navbar-nav me-auto">
-            <router-link class='navbar-btn' to="/">Home</router-link>
+          <div class="navbar-nav">
+            <span style="color: black;">[LOGO]</span>
+            <router-link to="/"><button class='navbar-btn'>Home</button></router-link>
             &nbsp; 
-            <router-link class='navbar-btn' to="/itinerary">Itinerary</router-link> 
+            <router-link to="/itinerary"><button class='navbar-btn'>Itinerary</button></router-link> 
             &nbsp;
-            <router-link class='navbar-btn' to="/toolpage">Tools</router-link> 
+            <router-link to="/toolpage"><button class='navbar-btn'>Tools</button></router-link> 
             &nbsp;
-            <router-link class='navbar-btn' to="/feed">Feed</router-link> 
+            <router-link to="/feed"><button class='navbar-btn'>Feed</button></router-link> 
             &nbsp;
-            <router-link class='navbar-btn' to="/billbuddy">BillBuddy</router-link> 
+            <router-link to="/billbuddy"><button class='navbar-btn'>BillBuddy</button></router-link> 
             &nbsp;
-            <router-link class='navbar-btn' to="/register">Register</router-link> 
+            <router-link to="/register"><button class='navbar-btn'>Register</button></router-link> 
             &nbsp;
-            <router-link class='navbar-btn' to="/sign-in">Login</router-link> 
+            <router-link to="/sign-in"><button class='navbar-btn'>Login</button></router-link> 
             &nbsp;
-            <router-link class='navbar-btn' style="color: blue;" to="/profile">Profile</router-link> 
+            <router-link to="/profile"><button class='navbar-btn' style="color: blue;">Profile</button></router-link> 
           </div>
-          <div class="position-absolute top-0 start-50 translate-middle-x">
+          <!-- <div id='logo' class="position-absolute top-0 start-50 translate-middle-x">
             <a href="#"><img src="./components/logo/itiner-easy.svg" style="width: 100px; height: 100px; margin-top: -15px;"
                 alt="itiner-easy logo"></a>
-          </div>
+          </div> -->
         </div>
       </div>
     </nav>
@@ -67,14 +69,24 @@ const handleSignOut = () => {
     <button @click="handleSignOut" v-if="isLoggedIn">Sign Out</button>
   </nav>
   <router-view />
+</div>
 </template>
 
 <style scoped>
+
+body {
+  background-color: #05c8f7;
+  height: 100vh;
+}
+
+/* LOGO */
 .logo {
   height: 6em;
   padding: 1.5em;
   will-change: filter;
   transition: filter 300ms;
+  margin: 0;
+  padding: 0;
 }
 
 .logo:hover {
@@ -85,6 +97,7 @@ const handleSignOut = () => {
   filter: drop-shadow(0 0 2em #42b883aa);
 }
 
+/* NAVBAR ELEMENTS */
 .navbar-btn {
   display: flex-horizontal;
   background-color: #05c8f7;
@@ -92,6 +105,11 @@ const handleSignOut = () => {
   padding: 5px 5px;
   border-radius: 5px;
   text-decoration: none;
+  margin: 0px 10px;
+}
+.navbar-btn:hover {
+  text-decoration: underline;
+  border: 1px solid #05c8f7;
 }
 
 .navbar {
@@ -101,12 +119,16 @@ const handleSignOut = () => {
   padding: 10px 20px;
   border-radius: 5px;
   text-decoration: none;
-  margin: auto;
-  justify-content: center;
-  align-items: center;
+  position: absolute;
+  top: 5px;
 }
 
-.nav-item{
-  list-style-type:none;
+.navbar-nav{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 }
+
 </style>
