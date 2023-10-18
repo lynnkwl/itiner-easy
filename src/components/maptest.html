@@ -125,7 +125,9 @@ function checkOpenStatus() {
         // Convert checkTime to a Date object for the specific date you want to check
         var checkDate = new Date('2023-10-19');
         var day = checkDate.getDay();
+        console.log(place);
         console.log(day);
+        console.log(place.opening_hours);
         var openingHours = place.opening_hours;
         console.log(openingHours.periods[0].open.time);
         let openTime = openingHours.periods[day].open.time;
