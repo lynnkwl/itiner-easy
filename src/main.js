@@ -43,9 +43,11 @@ app.mount('#app');
 
 // init services
 const db = getFirestore();
+export { db };
 
 // collection ref
 const colRef = collection(db, 'books');
+export { colRef };
 
 // get collection data
 getDocs(colRef)
@@ -61,20 +63,20 @@ getDocs(colRef)
 })
 
 // adding documents
- const addBookForm = document.querySelector('.add')
- addBookForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    addDoc(colRef, {
-      title: addBookForm.title.value,
-      author: addBookForm.author.value,
- })
- .then(() => {
+//  const addBookForm = document.querySelector('.add')
+//  addBookForm.addEventListener('submit', (e) => {
+//     e.preventDefault();
+//     addDoc(colRef, {
+//       title: addBookForm.title.value,
+//       author: addBookForm.author.value,
+//  })
+//  .then(() => {
   // addBookForm.reset()
- })
-})
+//  })
+// })
 
 //  deleting documents
-const deleteBookForm = document.querySelector('.delete')
-deleteBookForm.addEventListener('submit', (e) => {
-  e.preventDefault();
-})
+// const deleteBookForm = document.querySelector('.delete')
+// deleteBookForm.addEventListener('submit', (e) => {
+//   e.preventDefault();
+// })
