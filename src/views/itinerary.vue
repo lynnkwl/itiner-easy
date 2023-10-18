@@ -152,7 +152,7 @@
   <div v-for="(day, index) in activitiesandtime" :key="index">
     <table>
       <tr>
-        <th colspan="4">Day {{ index + 1 }}</th>
+        <th colspan="4">Day {{ index + 1 }} Date: {{ day.date }}</th>
       </tr>
       <tr>
         <th>Activity</th>
@@ -392,7 +392,7 @@ async searchBothAttractions(city) {
 
 
 
-    async managetime() {
+  async managetime() {
   this.days = this.sliderValue;
   this.activitiesandtime = [];
 
@@ -407,18 +407,21 @@ async searchBothAttractions(city) {
       if (this.final_activities.length === 0) {
         console.log("No more activities to add.");
         break;
-      } else {
-        //convert timeint to string with pm or am
-        await this.formattimestrfrom24hourto12hour(timeint); 
-        console.log(this.twelvehrtime);       
+      } 
+      else {
+        //convert timeint to string with pm or am     
         //checkopenstatus if business is open at that time if closed find another place
         var randomIndex = Math.floor(Math.random() * this.final_activities.length);
         var randomactivity = this.final_activities[randomIndex];
-        await this.checkOpenStatus(randomactivity.place_id, this.twelvehrtime);
+        console.log(randomactivity);
+        console.log(randomactivity.place_id);
+        console.log(timeint);
+        await this.checkOpenStatus(randomactivity.place_id, timeint, this.dates[i]);
+        console.log(this.isOpenNow);
         while (this.isOpenNow == false) {
           randomIndex = Math.floor(Math.random() * this.final_activities.length);
           randomactivity = this.final_activities[randomIndex];
-          await this.checkOpenStatus(randomactivity.place_id, this.twelvehrtime);
+          await this.checkOpenStatus(randomactivity.place_id, timeint, this.dates[i]);
         }
         
         var activitytime = 0;
@@ -652,7 +655,7 @@ async formattimestrfrom24hourto12hour(input) {
       }
     }
     ,
-    async checkOpenStatus(placeId, checkTime) {
+    async checkOpenStatus(placeId, checkTime, date) {
   var request = {
     placeId: placeId,
     fields: ['name', 'opening_hours'],
@@ -661,25 +664,27 @@ async formattimestrfrom24hourto12hour(input) {
   var service = new google.maps.places.PlacesService(map); // Assuming 'map' is accessible
 
   return new Promise((resolve, reject) => {
-    service.getDetails(request, (place, status) => {
+    service.getDetails(request, function (place, status) {
       if (status === google.maps.places.PlacesServiceStatus.OK) {
-        var isOpenNow = false;
+        this.isOpenNow = false;
 
         if (place.opening_hours) {
-          var checkDate = new Date('2023-10-16 ' + checkTime);
-
+          // Convert checkTime to a Date object for the specific date you want to check
+          var checkDate = date;
+          var day = checkDate.getDay();
+          console.log(day);
           var openingHours = place.opening_hours;
-          openingHours.periods.forEach((period) => {
-            if (
-              checkDate >= new Date('2023-10-16 ' + period.open.time) &&
-              checkDate <= new Date('2023-10-16 ' + period.close.time)
-            ) {
-              this.isOpenNow = true;
-            }
-            else{
-              this.isOpenNow = false;
-            }
-          });
+          console.log(openingHours.periods[0].open.time);
+          let openTime = openingHours.periods[day].open.time;
+          let closeTime = openingHours.periods[day].close.time;
+          // console.log(openingHours.periods.close.time);
+          checkTime = parseInt(checkTime);
+          if (openTime <= checkTime && closeTime >= checkTime) {
+            this.isOpenNow = true;
+          }
+          else{
+            this.isOpenNow = false;
+          }
         }
 
         console.log(
@@ -693,6 +698,50 @@ async formattimestrfrom24hourto12hour(input) {
     });
   });
 },
+async checkOpenStatus(placeId, checkTime, date) {
+  var request = {
+    placeId: placeId,
+    fields: ['name', 'opening_hours'],
+  };
+
+  var service = new google.maps.places.PlacesService(map); // Assuming 'map' is accessible
+
+  return new Promise((resolve, reject) => {
+    service.getDetails(request, function (place, status) {
+      if (status === google.maps.places.PlacesServiceStatus.OK) {
+        var isOpenNow = false;
+
+        if (place.opening_hours) {
+          // Convert checkTime to a Date object for the specific date you want to check
+          var checkDate = date;
+          var day = checkDate.getDay();
+          var openingHours = place.opening_hours;
+          let openTime = openingHours.periods[day].open.time;
+          openTime = parseInt(openTime);
+          checkTime = parseInt(checkTime);
+          let closeTime = openingHours.periods[day].close.time;
+          closeTime = parseInt(closeTime);        
+        console.log(openingHours.periods.close.time);
+        if (openTime <= checkTime && (closeTime >= checkTime || closeTime <= openTime)) {
+          this.isOpenNow = true;
+        }
+          else{
+           this.isOpenNow = false;
+          }
+        }
+
+        console.log(
+          place.name + ' is open at ' + checkTime + ': ' + (isOpenNow ? 'Yes' : 'No')
+        );
+        resolve(isOpenNow); // Resolve the promise with the isOpenNow value
+      } else {
+        console.error(`Error: ${status}`);
+        reject(status); // Reject the promise with the error status
+      }
+    });
+  });
+},
+
     async initMap() {
       const city = this.town;
       const mapOptions = {
