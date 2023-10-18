@@ -13,7 +13,9 @@ import { getAuth } from "firebase/auth";
 import { getAnalytics } from "firebase/analytics";
 // TODO: Add SDKs for Firebase products that you want to use
 //popupwindow
-import Buefy from 'buefy';
+import Vuetify from 'vuetify';
+
+createApp.use(Vuetify);
 
 // https://firebase.google.com/docs/web/setup#available-libraries
 
