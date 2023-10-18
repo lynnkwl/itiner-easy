@@ -219,6 +219,7 @@ export default {
       suggested_activities: [],
       isOpenNow: false,
       twelvehrtime: "",
+      dates: [],
     };
   },
     methods: {
@@ -233,6 +234,7 @@ async getweather() {
     return new Promise(async (resolve, reject) => {
         var city = this.town;
         var days = this.sliderValue;
+        this.dates = [];
 
         try {
             var weatherkey ="cfb27632a44746f6aaf01356231409";
@@ -247,7 +249,9 @@ async getweather() {
             for (var i = 0; i < weather.length; i++) {
                 var weatherobj = {};
                 weatherarray.push(weather[i].day.condition.text);
+                this.dates.push(weather[i].date);
             }
+            console.log(this.dates);
 
             resolve(weatherarray);
         } catch (error) {
@@ -398,13 +402,15 @@ async searchBothAttractions(city) {
     var day = {};
     day.activities = [];
     day.day = i + 1;
+    day.date = this.dates[i];
     while (timeint < maxtimeint) {
       if (this.final_activities.length === 0) {
         console.log("No more activities to add.");
         break;
       } else {
         //convert timeint to string with pm or am
-        await formattimestrfrom24hourto12hour(timeint);        
+        await this.formattimestrfrom24hourto12hour(timeint); 
+        console.log(this.twelvehrtime);       
         //checkopenstatus if business is open at that time if closed find another place
         var randomIndex = Math.floor(Math.random() * this.final_activities.length);
         var randomactivity = this.final_activities[randomIndex];
@@ -464,25 +470,19 @@ async formatTime(minutes) {
 },
 
 
-async formattimestrfrom24hourto12hour(time) {
-  var time = time.split(":");
-  var hours = Number(time[0]);
-  var minutes = Number(time[1]);
-  var timevalue;
+async formattimestrfrom24hourto12hour(input) {
+  const strTime = input.toString().padStart(4, '0'); // Pad with leading zeros
+  const hours = strTime.substring(0, 2); // Extract hours
+  const minutes = strTime.substring(2); // Extract minutes
 
-  if (hours > 0 && hours <= 12) {
-    timevalue = "" + hours;
-  } else if (hours > 12) {
-    timevalue = "" + (hours - 12);
-  } else if (hours == 0) {
-    timevalue = "12";
+  // Convert to a format like "09:00 AM" or "09:00 PM"
+  //if first string no 0 then add 0
+  if (hours.substring(0, 1) != 0) {
+    this.twelvehrtime = `${hours}:${minutes}`
   }
-
-  timevalue += minutes < 10 ? ":0" + minutes : ":" + minutes; // get minutes
-  timevalue += hours >= 12 ? " PM" : " AM"; // get AM/PM
-
-  this.twelvehrtime = timevalue;
-},
+  else{
+  this.twelvehrtime = `0${hours % 12}:${minutes}`
+}},
 
 
 
@@ -720,6 +720,7 @@ async formattimestrfrom24hourto12hour(time) {
 ("Please fill in all the fields!");
       }
     else{
+        await this.getweather();
         await this.getactivitieslist();
     }
     },
@@ -729,6 +730,7 @@ async formattimestrfrom24hourto12hour(time) {
 ("Please fill in all the fields!");
       }
     else{
+        await this.getweather();
         this.strongIndependentWoman = true;
         await this.getlist2();
     }

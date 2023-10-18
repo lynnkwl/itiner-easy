@@ -18,6 +18,11 @@
         </input>
         <button onclick="geteateriesnearby()">Hungry?</button>
     </div>
+    <div id="isopen">
+        <input name="time" id="time" placeholder="What time is it?">
+        </input>
+        <button onclick="checkOpenStatus()">Is it open?</button>
+    </div>
 </body>
 
     <script>
@@ -102,26 +107,31 @@ function geteateriesnearby(){
     }
   }
 }
-function checkOpenStatus(placeId, checkTime) {
+function checkOpenStatus() {
+  let checkTime = document.getElementById('time').value;
+  var placeId = "ChIJIyHR_58Z2jERGs8ou1UQWKg"; // Replace with your place ID
   var request = {
     placeId: placeId,
     fields: ['name', 'opening_hours'],
   };
 
+  var service = new google.maps.places.PlacesService(map); // Assuming 'map' is accessible
+
   service.getDetails(request, function (place, status) {
-    if (status == google.maps.places.PlacesServiceStatus.OK) {
+    if (status === google.maps.places.PlacesServiceStatus.OK) {
       var isOpenNow = false;
 
       if (place.opening_hours) {
-        // Convert checkTime to a Date object
+        // Convert checkTime to a Date object for the specific date you want to check
         var checkDate = new Date('2023-10-16 ' + checkTime);
 
         var openingHours = place.opening_hours;
+        console.log(openingHours);
         openingHours.periods.forEach(function (period) {
-          if (
-            checkDate >= new Date('2023-10-16 ' + period.open.time) &&
-            checkDate <= new Date('2023-10-16 ' + period.close.time)
-          ) {
+          var openTime = new Date('2023-10-16 ' + period.open.time);
+          var closeTime = new Date('2023-10-16 ' + period.close.time);
+
+          if (checkDate >= openTime && checkDate <= closeTime) {
             isOpenNow = true;
           }
         });
@@ -130,6 +140,8 @@ function checkOpenStatus(placeId, checkTime) {
       console.log(
         place.name + ' is open at ' + checkTime + ': ' + (isOpenNow ? 'Yes' : 'No')
       );
+    } else {
+      console.error(`Error: ${status}`);
     }
   });
 }
