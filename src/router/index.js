@@ -18,7 +18,8 @@ const router = createRouter({
         //gotobillbuddy.vue
         {path: "/billbuddy", component: () => import("../views/BillBuddy.vue")},
         {path: "/itinerary", component: () => import("../views/itinerary.vue")},
-        {path: "/profile", component: () => import("../views/Profile.vue")},
+        {path: "/itinerary", component: () => import("../views/Profile.vue")},
+        {path: "/add-trip", component: () => import("../views/addtrip.vue")},
     ],
 });
 
