@@ -18,118 +18,137 @@
         </input>
         <button onclick="geteateriesnearby()">Hungry?</button>
     </div>
+    <div id="isopen">
+        <input name="time" id="time" placeholder="What time is it?">
+        </input>
+        <button onclick="checkOpenStatus()">Is it open?</button>
+    </div>
 </body>
 
     <script>
     
 
-      function initMap() {
+//       function initMap() {
 
-    var pointA = new google.maps.LatLng(51.7519, -1.2578);
-    var pointB = new google.maps.LatLng(50.8429, -0.1313);
-    myOptions = {
-      zoom: 7,
-      center: pointA
-    },
-    map = new google.maps.Map(document.getElementById('map'), myOptions),
-    // Instantiate a directions service.
-    directionsService = new google.maps.DirectionsService,
-    directionsDisplay = new google.maps.DirectionsRenderer({
-      map: map
-    }),
-    markerA = new google.maps.Marker({
-      position: pointA,
-      title: "point A",
-      label: "A",
-      map: map
-    }),
-    markerB = new google.maps.Marker({
-      position: pointB,
-      title: "point B",
-      label: "B",
-      map: map
-    });
+//     var pointA = new google.maps.LatLng(51.7519, -1.2578);
+//     var pointB = new google.maps.LatLng(50.8429, -0.1313);
+//     myOptions = {
+//       zoom: 7,
+//       center: pointA
+//     },
+//     map = new google.maps.Map(document.getElementById('map'), myOptions),
+//     // Instantiate a directions service.
+//     directionsService = new google.maps.DirectionsService,
+//     directionsDisplay = new google.maps.DirectionsRenderer({
+//       map: map
+//     }),
+//     markerA = new google.maps.Marker({
+//       position: pointA,
+//       title: "point A",
+//       label: "A",
+//       map: map
+//     }),
+//     markerB = new google.maps.Marker({
+//       position: pointB,
+//       title: "point B",
+//       label: "B",
+//       map: map
+//     });
 
-  // get route from A to B
-  calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, pointB);
+//   // get route from A to B
+//   calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, pointB);
 
-}
+// }
 
 
 
-function calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, pointB) {
-  directionsService.route({
-    origin: pointA,
-    destination: pointB,
-    travelMode: google.maps.TravelMode.DRIVING
-  }, function(response, status) {
-    if (status == google.maps.DirectionsStatus.OK) {
-      directionsDisplay.setDirections(response);
-      console.log(response);
-    } else {
-      window.alert('Directions request failed due to ' + status);
-    }
-  });
-}
+// function calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, pointB) {
+//   directionsService.route({
+//     origin: pointA,
+//     destination: pointB,
+//     travelMode: google.maps.TravelMode.DRIVING
+//   }, function(response, status) {
+//     if (status == google.maps.DirectionsStatus.OK) {
+//       directionsDisplay.setDirections(response);
+//       console.log(response);
+//     } else {
+//       window.alert('Directions request failed due to ' + status);
+//     }
+//   });
+// }
 
-function geteateriesnearby(){
-    var geocoder = new google.maps.Geocoder();
-    var postalCode = document.getElementById('location').value;
-    geocoder.geocode({ address: postalCode }, function (results, status) {
-    if (status === google.maps.GeocoderStatus.OK) {
-      var location = results[0].geometry.location;
-      var request = {
-        location: location,
-        radius: '500',
-        type: ['restaurant'],
-        componentRestrictions: { country: "sg" }
-      };
+// function geteateriesnearby(){
+//     var geocoder = new google.maps.Geocoder();
+//     var postalCode = document.getElementById('location').value;
+//     geocoder.geocode({ address: postalCode }, function (results, status) {
+//     if (status === google.maps.GeocoderStatus.OK) {
+//       var location = results[0].geometry.location;
+//       var request = {
+//         location: location,
+//         radius: '500',
+//         type: ['restaurant'],
+//         componentRestrictions: { country: "sg" }
+//       };
 
-      service = new google.maps.places.PlacesService(map);
-      service.nearbySearch(request, callback);
-    } else {
-      console.error('Geocode was not successful for the following reason: ' + status);
-    }
-  });
+//       service = new google.maps.places.PlacesService(map);
+//       service.nearbySearch(request, callback);
+//     } else {
+//       console.error('Geocode was not successful for the following reason: ' + status);
+//     }
+//   });
 
-  function callback(results, status) {
-    if (status == google.maps.places.PlacesServiceStatus.OK) {
-      for (var i = 0; i < results.length; i++) {
-        var place = results[i];
-        console.log(place);
-        checkOpenStatus(place.place_id, '12:00 PM'); // Change the time as needed
-      }
-    }
-  }
-}
-function checkOpenStatus(placeId, checkTime) {
+//   function callback(results, status) {
+//     if (status == google.maps.places.PlacesServiceStatus.OK) {
+//       for (var i = 0; i < results.length; i++) {
+//         var place = results[i];
+//         console.log(place);
+//         checkOpenStatus(place.place_id, '12:00 PM'); // Change the time as needed
+//       }
+//     }
+//   }
+// }
+function checkOpenStatus() {
+  let checkTime = document.getElementById('time').value;
+  var placeId = "ChIJMxZ-kwQZ2jERdsqftXeWCWI"; // Replace with your place ID
   var request = {
     placeId: placeId,
     fields: ['name', 'opening_hours'],
   };
 
+  var service = new google.maps.places.PlacesService(map); // Assuming 'map' is accessible
+
   service.getDetails(request, function (place, status) {
-    if (status == google.maps.places.PlacesServiceStatus.OK) {
+    if (status === google.maps.places.PlacesServiceStatus.OK) {
       var isOpenNow = false;
 
       if (place.opening_hours) {
-        // Convert checkTime to a Date object
-        var checkDate = new Date('2023-10-16 ' + checkTime);
-
+        // Convert checkTime to a Date object for the specific date you want to check
+        var checkDate = new Date('2023-10-19');
+        var day = checkDate.getDay();
+        console.log(place);
+        console.log(day);
+        console.log(place.opening_hours);
         var openingHours = place.opening_hours;
-        openingHours.periods.forEach(function (period) {
-          if (
-            checkDate >= new Date('2023-10-16 ' + period.open.time) &&
-            checkDate <= new Date('2023-10-16 ' + period.close.time)
-          ) {
-            isOpenNow = true;
-          }
-        });
+        console.log(openingHours.periods[0].open.time);
+        let openTime = openingHours.periods[day].open.time;
+        openTime = parseInt(openTime);
+        console.log(openTime);
+        checkTime = parseInt(checkTime);
+        let closeTime = openingHours.periods[day].close.time;
+        closeTime = parseInt(closeTime);
+        console.log(closeTime);
+        
+        // console.log(openingHours.periods.close.time);
+        if (openTime <= checkTime && (closeTime >= checkTime || closeTime <= openTime)) {
+          isOpenNow = true;
+        }
       }
 
       console.log(
         place.name + ' is open at ' + checkTime + ': ' + (isOpenNow ? 'Yes' : 'No')
       );
+    } else {
+      console.error(`Error: ${status}`);
     }
   });
 }

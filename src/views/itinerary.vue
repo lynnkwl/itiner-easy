@@ -148,19 +148,39 @@
     <div id="map-container">
       <div id="map"></div>
   </div>
-  <table v-for="day in days">
-    <tr>
-      <th colspan = 3>Day {{ day }}</th>
-    </tr>
-    <th>Time</th>
-    <th>Activity</th>
-    <th>Route</th>
-    <tr v-for="activity in activitiesandtime" :key="activity.name">
-      <td>{{ activity.time}} - {{ activity.endtime}}</td>
-      <td>{{ activity.name }}</td>
-      <td>{{ activity.transport }}</td>
-    </tr>
-  </table>
+  <!-- create table each day -->
+  <div v-for="(day, index) in activitiesandtime" :key="index">
+    <table>
+      <tr>
+        <th colspan="4">Day {{ index + 1 }} Date: {{ day.date }}</th>
+      </tr>
+      <tr>
+        <th>Activity</th>
+        <th>Time</th>
+        <th>Address</th>
+        <th>Transport</th>
+      </tr>
+      <tbody>
+        <tr v-for="activity in day.activities" :key="activity.name">
+          <td>
+            <label>
+              {{ activity.name }}
+            </label>
+          </td>
+          <td>
+            {{ activity.time }} - {{ activity.endtime }} n
+          </td>
+
+          <td>
+            {{ activity.address }}
+          </td>
+          <td>
+            {{ activity.transport }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+</div>
 </div>
 <div>
   <button @click="checkempty">Generate Itinerary</button>
@@ -188,15 +208,20 @@ export default {
       town: "",
       outgoing: "",
       transport: "",
-      strongIndependentWoman: false, // To store the strongindependentwoman checkbox value
+      strongIndependentWoman: false,
       places: [], // To store search results
       selectedPlaces: [], // To store selected places
       interestsresults: [],
       generatenow: false,
+      map: null,
       days: 0,
       final_activities : [],
       activitiesandtime: [],
       suggested_activities: [],
+      isOpenNow: false,
+      twelvehrtime: "",
+      dates: [],
+      citycoords: {},
     };
   },
     methods: {
@@ -211,6 +236,7 @@ async getweather() {
     return new Promise(async (resolve, reject) => {
         var city = this.town;
         var days = this.sliderValue;
+        this.dates = [];
 
         try {
             var weatherkey ="cfb27632a44746f6aaf01356231409";
@@ -218,14 +244,15 @@ async getweather() {
                 'http://api.weatherapi.com/v1/forecast.json?key=' + weatherkey + '&q=' + city + '&days=' + days
             );
             console.log(response.data);
-
             var weather = response.data.forecast.forecastday;
             var weatherarray = [];
 
             for (var i = 0; i < weather.length; i++) {
                 var weatherobj = {};
                 weatherarray.push(weather[i].day.condition.text);
+                this.dates.push(weather[i].date);
             }
+            console.log(this.dates);
 
             resolve(weatherarray);
         } catch (error) {
@@ -236,16 +263,15 @@ async getweather() {
 //getplaces
 async searchBothAttractions(city) {
     var city = this.town;
-    const request = {
+    var request = {
         query: `Tourist Attractions in ${city}`,
-        fields: ['name', 'formatted_address','types', 'business_status', 'location'],
+        fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours', 'website', 'place_id'],
     };
 
 
 
-    const service = new google.maps.places.PlacesService(document.createElement('div'));
-    const outdoorplaces = ['park','zoo','amusement_park',''];
-    // const outdoo
+    var service = new google.maps.places.PlacesService(document.createElement('div'));
+
 
     return new Promise((resolve, reject) => {
     service.textSearch(request, (results, status) => {
@@ -264,16 +290,15 @@ async searchBothAttractions(city) {
     var city = this.town;
 
     this.suggested_activities = [];
-    const request = {
+    var request = {
         query: `Tourist Attractions in ${city}`,
         fields: ['name', 'formatted_address','types', 'business_status', 'location'],
     };
 
     this.getinterests(city);
 
-    const service = new google.maps.places.PlacesService(document.createElement('div'));
-    const outdoorplaces = ['park','zoo','amusement_park',''];
-    // const outdoo
+    var service = new google.maps.places.PlacesService(document.createElement('div'));
+
 
     service.textSearch(request, (results, status) => {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
@@ -289,7 +314,8 @@ async searchBothAttractions(city) {
         }
         //remove any duplicates in suggest_activities
         this.suggested_activities = [...new Set(this.suggested_activities)];
-        
+        console.log(this.suggested_activities);
+        console.log(this.strongIndependentWoman);
       }
       
          else {
@@ -361,26 +387,65 @@ async searchBothAttractions(city) {
     this.final_activities = [...new Set(this.final_activities)];
     console.log(this.final_activities);
     await this.managetime();
+    await this.getLatLng();
+    await this.initMap();
     },
 
 
+    async getLatLng (){
+      var city = this.town;
+      this.citycoords = {};
+      var request = {
+        query: `${city}`,
+        fields: ['name', 'geometry'],
+      };
+      var service = new google.maps.places.PlacesService(document.createElement('div'));
+      return new Promise((resolve, reject) => {
+      service.findPlaceFromQuery(request, (results, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+          this.citycoords = results[0].geometry.location;
+          console.log(this.citycoords);
+          resolve(results); // Resolve the promise with the search results
+        } else {
+          console.error(`Error: ${status}`);
+          reject(status); // Reject the promise with the error status
+        }
+      })});
+    },
 
-
-    async managetime() {
+  async managetime() {
   this.days = this.sliderValue;
   this.activitiesandtime = [];
 
   for (var i = 0; i < this.days; i++) {
     let timeint = 900;
     let maxtimeint = 2100;
-
+    var day = {};
+    day.activities = [];
+    day.day = i + 1;
+    day.date = this.dates[i];
     while (timeint < maxtimeint) {
       if (this.final_activities.length === 0) {
         console.log("No more activities to add.");
         break;
-      } else {
+      } 
+      else {
+        //convert timeint to string with pm or am     
+        //checkopenstatus if business is open at that time if closed find another place
         var randomIndex = Math.floor(Math.random() * this.final_activities.length);
         var randomactivity = this.final_activities[randomIndex];
+        console.log(randomactivity);
+        console.log(randomactivity.place_id);
+        console.log(timeint);
+        console.log(this.dates[i]);
+        await this.checkOpenStatus(randomactivity.place_id, timeint, this.dates[i]);
+        console.log(this.isOpenNow);
+        while (this.isOpenNow == false) {
+          randomIndex = Math.floor(Math.random() * this.final_activities.length);
+          randomactivity = this.final_activities[randomIndex];
+          await this.checkOpenStatus(randomactivity.place_id, timeint, this.dates[i]);
+        }
+        
         var activitytime = 0;
 
         // Adjust activity time calculation as needed
@@ -397,18 +462,23 @@ async searchBothAttractions(city) {
           endtime: await this.formatTime(timeint + activitytime), // Format endtime as a string
           address: randomactivity.formatted_address,
           transport: this.transport,
-        };
+        };    
+        //store activities in each day
+
+        day.activities.push(activity);
 
         // Update 'timeint' for the next activity
         timeint = timeint + activitytime;
 
         // Add the activity to 'activitiesandtime' and remove it from 'final_activities'
-        this.activitiesandtime.push(activity);
+
         this.final_activities.splice(randomIndex, 1);
 
         console.log("Added activity:", activity);
       }
     }
+    this.activitiesandtime.push(day);
+
   }
 
   // Debugging: Log the contents of activitiesandtime
@@ -425,19 +495,32 @@ async formatTime(minutes) {
 },
 
 
+async formattimestrfrom24hourto12hour(input) {
+  const strTime = input.toString().padStart(4, '0'); // Pad with leading zeros
+  const hours = strTime.substring(0, 2); // Extract hours
+  const minutes = strTime.substring(2); // Extract minutes
+
+  // Convert to a format like "09:00 AM" or "09:00 PM"
+  //if first string no 0 then add 0
+  if (hours.substring(0, 1) != 0) {
+    this.twelvehrtime = `${hours}:${minutes}`
+  }
+  else{
+  this.twelvehrtime = `0${hours % 12}:${minutes}`
+}},
 
     
 
     //   to search for attractions in a city
     async searchIndoorAttractions(city) {
     var city = this.town;
-    const request = {
+    var request = {
         query: `Shopping malls and mueseums and aquariums in ${city}`,
-        fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours', 'website'],
+        fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours', 'website', 'place_id'],
     };
 
 
-    const service = new google.maps.places.PlacesService(document.createElement('div'));
+    var service = new google.maps.places.PlacesService(document.createElement('div'));
     return new Promise((resolve, reject) => {
     service.textSearch(request, (results, status) => {
       if (status === google.maps.places.PlacesServiceStatus.OK) {
@@ -454,12 +537,12 @@ async formatTime(minutes) {
 
     async searchOutdoorAttractions(city) {
     var city = document.getElementById("country").value;
-    const request = {
+    var request = {
         query: `Outdoor Tourist Attractions in ${city}`,
-        fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours', 'website'],
+        fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours', 'website', 'place_id'],
     };
     
-    const service = new google.maps.places.PlacesService(document.createElement('div'));
+    var service = new google.maps.places.PlacesService(document.createElement('div'));
 
     return new Promise((resolve, reject) => {
     service.textSearch(request, (results, status) => {
@@ -495,11 +578,11 @@ async formatTime(minutes) {
   },
   async SearchMuseums(city) {
     var city = this.town;
-    const request = {
+    var request = {
         query: `Museums in ${city}`,
-        fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours', 'website'],
+        fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours', 'website', 'place_id'],
     };
-    const service = new google.maps.places.PlacesService(document.createElement('div'));
+    var service = new google.maps.places.PlacesService(document.createElement('div'));
     return new Promise((resolve, reject) => {
     service.textSearch(request, (results, status) => {
       if (status === google.maps.places.PlacesServiceStatus.OK) {
@@ -516,18 +599,19 @@ async formatTime(minutes) {
 
     async searchShoppingMalls(city) {
       var city = this.town;
-    const request = {
+      var request = {
         query: `Shopping malls in ${city}`,
-        fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours', 'website'],
+        fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours', 'website', 'place_id'],
     };
 
-    const service = new google.maps.places.PlacesService(document.createElement('div'));
+    var service = new google.maps.places.PlacesService(document.createElement('div'));
 
     return new Promise((resolve, reject) => {
     service.textSearch(request, (results, status) => {
       if (status === google.maps.places.PlacesServiceStatus.OK) {
         this.interestsresults = this.interestsresults.concat(results);
         console.log(this.interestsresults);
+        console.log(this.suggested_activities);
         resolve(results); // Resolve the promise with the search results
       } else {
         console.error(`Error: ${status}`);
@@ -540,12 +624,12 @@ async formatTime(minutes) {
 
     async  searchgardens(city) {
     var city = this.town;
-    const request = {
+    var request = {
         query: `Gardens and parks in ${city}`,
-        fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours', 'website'],
+        fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours.periods', 'website', 'place_id'],
     };
 
-    const service = new google.maps.places.PlacesService(document.createElement('div'));
+    var service = new google.maps.places.PlacesService(document.createElement('div'));
 
     return new Promise((resolve, reject) => {
     service.textSearch(request, (results, status) => {
@@ -581,53 +665,57 @@ async formatTime(minutes) {
           console.error('Geocode was not successful for the following reason: ' + status);
         }
       },
-    )},
-    callback(results, status) {
-      if (status == google.maps.places.PlacesServiceStatus.OK) {
-        for (var i = 0; i < results.length; i++) {
-          var place = results[i];
-          console.log(place);
-          this.checkOpenStatus(place.place_id, '12:00 PM'); // Change the time as needed
+    )}
+    ,
+
+async checkOpenStatus(placeId, checkTime, date) {
+  var request = {
+    placeId: placeId,
+    fields: ['name', 'opening_hours'],
+  };
+
+  var service = new google.maps.places.PlacesService(document.createElement('div')); // Assuming 'map' is accessible
+
+  return new Promise((resolve, reject) => {
+  service.getDetails(request, (place, status) => {
+    if (status === google.maps.places.PlacesServiceStatus.OK) {
+      this.isOpenNow = false;
+      console.log(place);
+      var openingHours = place.opening_hours;
+      if (openingHours.periods && openingHours.periods[day]) {
+        // Convert checkTime to a Date object for the specific date you want to check
+        var checkDate = new Date(date);
+        var day = checkDate.getDay();
+        let openTime = openingHours.periods[day].open.time;
+        openTime = parseInt(openTime);
+        checkTime = parseInt(checkTime);
+        let closeTime = openingHours.periods[day].close.time;
+        closeTime = parseInt(closeTime);        
+        if (openTime <= checkTime && (closeTime >= checkTime || closeTime <= openTime)) {
+          this.isOpenNow = true;
+        } else {
+          this.isOpenNow = false;
         }
       }
+      else{
+        this.isOpenNow = true;
+      }
+      console.log(
+        place.name + ' is open at ' + checkTime + ': ' + (this.isOpenNow ? 'Yes' : 'No')
+      );
+      resolve(this.isOpenNow); // Resolve the promise with the isOpenNow value
+    } else {
+      console.error(`Error: ${status}`);
+      reject(status); // Reject the promise with the error status
     }
-    ,
-    async checkOpenStatus(placeId, checkTime) {
-      var request = {
-        placeId: placeId,
-        fields: ['name', 'opening_hours'],
-      };
+  });
+});
+},
 
-      var service = new google.maps.places.PlacesService(map); // Assuming 'map' is accessible
-
-      service.getDetails(request, (place, status) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
-          var isOpenNow = false;
-
-          if (place.opening_hours) {
-            var checkDate = new Date('2023-10-16 ' + checkTime);
-
-            var openingHours = place.opening_hours;
-            openingHours.periods.forEach((period) => {
-              if (
-                checkDate >= new Date('2023-10-16 ' + period.open.time) &&
-                checkDate <= new Date('2023-10-16 ' + period.close.time)
-              ) {
-                isOpenNow = true;
-              }
-            });
-          }
-
-          console.log(
-            place.name + ' is open at ' + checkTime + ': ' + (isOpenNow ? 'Yes' : 'No')
-          );
-        }
-      });
-    },
     async initMap() {
       const city = this.town;
       const mapOptions = {
-        center: { lat: 0, lng: 0 }, // Replace with the coordinates of your city
+        center: this.citycoords, // Replace with the coordinates of your city
         zoom: 10, // Adjust the zoom level as needed
       };
 
@@ -651,17 +739,20 @@ async formatTime(minutes) {
 ("Please fill in all the fields!");
       }
     else{
+        await this.getweather();
         await this.getactivitieslist();
     }
     },
-    async checkempty2(){
+async checkempty2(){
     if (!this.town || !this.sliderValue || !this.outgoing || !this.transport) {
         window.alert
 ("Please fill in all the fields!");
       }
     else{
-        this.strongIndependentWoman = true;
-        await this.getlist2();
+      this.strongIndependentWoman = true;
+      await this.getweather();
+      await this.getlist2();
+
     }
     },
 },
