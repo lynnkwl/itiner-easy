@@ -195,11 +195,10 @@ import axios from 'axios'; // Import Axios
 
 export default {
   mounted(){
-    const script = document.createElement('script');
-    script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCrtlMuj3mZnI5NGVkgw5ME1hZL-XEtRzI&libraries=places&callback=initMap';
-    script.defer = true;
-    script.async = true;
-    document.head.appendChild(script);
+    this.map = new google.maps.Map(this.$refs.map, {
+      center: { lat: 37.7749, lng: -122.4194 },
+      zoom: 8,
+    });
   },
   data() {
     return {
@@ -213,6 +212,7 @@ export default {
       selectedPlaces: [], // To store selected places
       interestsresults: [],
       generatenow: false,
+      map: null,
       days: 0,
       final_activities : [],
       activitiesandtime: [],
@@ -315,7 +315,8 @@ async searchBothAttractions(city) {
         }
         //remove any duplicates in suggest_activities
         this.suggested_activities = [...new Set(this.suggested_activities)];
-        
+        console.log(this.suggested_activities);
+        console.log(this.strongIndependentWoman);
       }
       
          else {
@@ -591,6 +592,7 @@ async formattimestrfrom24hourto12hour(input) {
       if (status === google.maps.places.PlacesServiceStatus.OK) {
         this.interestsresults = this.interestsresults.concat(results);
         console.log(this.interestsresults);
+        console.log(this.suggested_activities);
         resolve(results); // Resolve the promise with the search results
       } else {
         console.error(`Error: ${status}`);
@@ -655,56 +657,14 @@ async formattimestrfrom24hourto12hour(input) {
       }
     }
     ,
-    async checkOpenStatus(placeId, checkTime, date) {
-  var request = {
-    placeId: placeId,
-    fields: ['name', 'opening_hours'],
-  };
 
-  var service = new google.maps.places.PlacesService(map); // Assuming 'map' is accessible
-
-  return new Promise((resolve, reject) => {
-    service.getDetails(request, function (place, status) {
-      if (status === google.maps.places.PlacesServiceStatus.OK) {
-        this.isOpenNow = false;
-
-        if (place.opening_hours) {
-          // Convert checkTime to a Date object for the specific date you want to check
-          var checkDate = date;
-          var day = checkDate.getDay();
-          console.log(day);
-          var openingHours = place.opening_hours;
-          console.log(openingHours.periods[0].open.time);
-          let openTime = openingHours.periods[day].open.time;
-          let closeTime = openingHours.periods[day].close.time;
-          // console.log(openingHours.periods.close.time);
-          checkTime = parseInt(checkTime);
-          if (openTime <= checkTime && closeTime >= checkTime) {
-            this.isOpenNow = true;
-          }
-          else{
-            this.isOpenNow = false;
-          }
-        }
-
-        console.log(
-          place.name + ' is open at ' + checkTime + ': ' + (isOpenNow ? 'Yes' : 'No')
-        );
-        resolve(isOpenNow); // Resolve the promise with the isOpenNow value
-      } else {
-        console.error(`Error: ${status}`);
-        reject(status); // Reject the promise with the error status
-      }
-    });
-  });
-},
 async checkOpenStatus(placeId, checkTime, date) {
   var request = {
     placeId: placeId,
     fields: ['name', 'opening_hours'],
   };
 
-  var service = new google.maps.places.PlacesService(map); // Assuming 'map' is accessible
+  var service = new google.maps.places.PlacesService(this.map); // Assuming 'map' is accessible
 
   return new Promise((resolve, reject) => {
     service.getDetails(request, function (place, status) {
@@ -773,15 +733,16 @@ async checkOpenStatus(placeId, checkTime, date) {
         await this.getactivitieslist();
     }
     },
-    async checkempty2(){
+async checkempty2(){
     if (!this.town || !this.sliderValue || !this.outgoing || !this.transport) {
         window.alert
 ("Please fill in all the fields!");
       }
     else{
-        await this.getweather();
-        this.strongIndependentWoman = true;
-        await this.getlist2();
+      this.strongIndependentWoman = true;
+      await this.getweather();
+      await this.getlist2();
+
     }
     },
 },
