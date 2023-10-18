@@ -52,6 +52,7 @@ const colRef = collection(db, 'books');
 const tripsRef = collection(db, 'trips',);
 const europeRef = collection(tripsRef, 'cj8jL4yrzvKTAMaY4RWp', 'europe')
 const expensesRef = collection(europeRef, 'd52Dh6oAGG6sXBbRV2Dp', 'expenses');
+const whoOwesWhoRef = collection(europeRef, 'd52Dh6oAGG6sXBbRV2Dp', 'whoOwesWho');
 
 // Exporting the data to firebase
 export default {
@@ -76,13 +77,16 @@ export default {
   },
   // Methods for adding data to firebase
   methods: {
+    // This function retrieves user input and adds it to the database. (Both in expenses and whoOwesWho)
     addExpense() {
       // Assigns the value of list to the peopleOwingNames object
       this.expense.peopleOwingNames = this.list;
-      // Assigns the value to peopleOwingAmount object
-      console.log(Number((this.expense.expenseAmount / this.expense.peopleOwingNames.length).toFixed(2)));
+
+      // Assigns the amount owed to peopleOwingAmount object
       var peopleOwingAmount = Number((this.expense.expenseAmount / this.expense.peopleOwingNames.length).toFixed(2));
       this.expense.peopleOwingAmount = peopleOwingAmount;
+
+      // Adds the expense to the database
       addDoc(expensesRef, this.expense)
         .then(function (docRef) {
           console.log("Document written with ID: ", docRef.id);
@@ -90,6 +94,10 @@ export default {
         .catch(function (error) {
           console.error("Error adding document: ", error);
         });
+
+      // Adding the expense to the whoOwesWho collection
+      // TODO
+      
     },
     // Supporting function for addExpense()
     addToList() {
@@ -114,6 +122,7 @@ getDocs(tripsRef)
   .catch((err) => {
     console.log(err.message)
   })
+
 getDocs(europeRef)
   .then((snapshot) => {
     let books = [];
@@ -138,22 +147,15 @@ getDocs(expensesRef)
     console.log(err.message)
   })
 
-// adding documents
-//  const addBookForm = document.querySelector('.add')
-//  addBookForm.addEventListener('submit', (e) => {
-//     e.preventDefault();
-//     addDoc(colRef, {
-//       title: addBookForm.title.value,
-//       author: addBookForm.author.value,
-//  })
-//  .then(() => {
-// addBookForm.reset()
-//  })
-// })
-
-//  deleting documents
-// const deleteBookForm = document.querySelector('.delete')
-// deleteBookForm.addEventListener('submit', (e) => {
-//   e.preventDefault();
-// })
+getDocs(whoOwesWhoRef)
+  .then((snapshot) => {
+    let books = [];
+    snapshot.docs.forEach((doc) => {
+      books.push({ ...doc.data(), id: doc.id })
+    })
+    console.log(books);
+  })
+  .catch((err) => {
+    console.log(err.message)
+  })
 </script>
