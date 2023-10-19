@@ -192,6 +192,9 @@
             {{ activity.address }}
           </td>
           <td>
+            <a href="#" @click="showLocation(activity)">Show on Map</a>
+          </td> 
+          <td>
             {{ activity.transport }}
           </td>
         </tr>
@@ -295,7 +298,7 @@ async searchBothAttractions(city) {
     var city = this.town;
     var request = {
         query: `Tourist Attractions in ${city}`,
-        fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours', 'website', 'place_id'],
+        fields: ['name', 'formatted_address','types', 'business_status', 'geometry', 'opening_hours', 'website', 'place_id'],
     };
 
 
@@ -322,7 +325,7 @@ async searchBothAttractions(city) {
     this.suggested_activities = [];
     var request = {
         query: `Tourist Attractions in ${city}`,
-        fields: ['name', 'formatted_address','types', 'business_status', 'location'],
+        fields: ['name', 'formatted_address','types', 'business_status', 'geometry'],
     };
 
     this.getinterests(city);
@@ -492,6 +495,7 @@ async searchBothAttractions(city) {
           endtime: await this.formatTime(timeint + activitytime), // Format endtime as a string
           address: randomactivity.formatted_address,
           transport: this.transport,
+          location: randomactivity.geometry,
         };    
         //store activities in each day
 
@@ -546,7 +550,7 @@ async formattimestrfrom24hourto12hour(input) {
     var city = this.town;
     var request = {
         query: `Shopping malls and mueseums and aquariums in ${city}`,
-        fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours', 'website', 'place_id'],
+        fields: ['name', 'formatted_address','types', 'business_status', 'geometry', 'opening_hours', 'website', 'place_id'],
     };
 
 
@@ -569,7 +573,7 @@ async formattimestrfrom24hourto12hour(input) {
     var city = document.getElementById("country").value;
     var request = {
         query: `Outdoor Tourist Attractions in ${city}`,
-        fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours', 'website', 'place_id'],
+        fields: ['name', 'formatted_address','types', 'business_status', 'geometry', 'opening_hours', 'website', 'place_id'],
     };
     
     var service = new google.maps.places.PlacesService(document.createElement('div'));
@@ -610,7 +614,7 @@ async formattimestrfrom24hourto12hour(input) {
     var city = this.town;
     var request = {
         query: `Museums in ${city}`,
-        fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours', 'website', 'place_id'],
+        fields: ['name', 'formatted_address','types', 'business_status', 'geometry', 'opening_hours', 'website', 'place_id'],
     };
     var service = new google.maps.places.PlacesService(document.createElement('div'));
     return new Promise((resolve, reject) => {
@@ -631,7 +635,7 @@ async formattimestrfrom24hourto12hour(input) {
       var city = this.town;
       var request = {
         query: `Shopping malls in ${city}`,
-        fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours', 'website', 'place_id'],
+        fields: ['name', 'formatted_address','types', 'business_status', 'geometry', 'opening_hours', 'website', 'place_id'],
     };
 
     var service = new google.maps.places.PlacesService(document.createElement('div'));
@@ -656,7 +660,7 @@ async formattimestrfrom24hourto12hour(input) {
     var city = this.town;
     var request = {
         query: `Gardens and parks in ${city}`,
-        fields: ['name', 'formatted_address','types', 'business_status', 'location', 'opening_hours.periods', 'website', 'place_id'],
+        fields: ['name', 'formatted_address','types', 'business_status', 'geometry', 'opening_hours.periods', 'website', 'place_id'],
     };
 
     var service = new google.maps.places.PlacesService(document.createElement('div'));
@@ -740,6 +744,24 @@ async checkOpenStatus(placeId, checkTime, date) {
     }
   });
 });
+},
+
+async showLocation(place){
+  var map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 15,
+        center: place.geometry.location,
+      });
+      var marker = new google.maps.Marker({
+        position: place.geometry.location,
+        map: map,
+        title: place.name,
+}
+      );
+      var infowindow = new google.maps.InfoWindow();
+      infowindow.setContent('<div><strong>' + place.name + '</strong><br>' +
+        'Place ID: ' + place.place_id + '<br>' +
+        place.formatted_address + '</div>');
+      infowindow.open(map, marker);
 },
 
 
