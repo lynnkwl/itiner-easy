@@ -175,7 +175,7 @@
         <th>Activity</th>
         <th>Time</th>
         <th>Address</th>
-        <th>Transport</th>
+        <th>Details</th>
       </tr>
       <tbody>
         <tr v-for="activity in day.activities" :key="activity.name">
@@ -200,6 +200,15 @@
         </tr>
       </tbody>
     </table>
+    <table>
+      <tr colspan = "3"><th>Eateries</th></tr>
+      <tr><th>Name</th><th>Address</th><th>Price Level</th><th>Rating</th><th>Map Details</th></tr>
+      <tbody>
+        <tr>
+          
+        </tr>
+      </tbody>
+    </table>
 </div>
 </div>
 <div>
@@ -213,18 +222,6 @@
 <script >
 import axios from 'axios'; // Import Axios
 import { initMap } from '../main.js';
-// import { Loader, Map } from "google-maps";
-
-// const loader = new Loader({
-//   apiKey: "YOUR_API_KEY",
-//   version: "weekly",
-// });
-// loader.load().then(() => {
-//   const map = new Map(document.getElementById("map"), {
-//     center: { lat: 37.7749, lng: -122.4194 },
-//     zoom: 12,
-//   });
-// });
 
 export default {
   mounted(){
@@ -359,33 +356,6 @@ async searchBothAttractions(city) {
     });
     },
 
-
-//   async getlist() {
-//     try {
-//   var weather = await this.getweather(); // Wait for getweather to finish
-//   console.log(weather);
-//   var preferences = this.outgoing;
-//   this.city = this.town;
-//   this.days = this.sliderValue;
-
-//   for (var i = 0; i < weather.length; i++) {
-//     if (weather[i].indexOf("Rain") >= 0 || weather[i].indexOf("hazy") >= 0) {
-//       await this.searchIndoorAttractions(); // Wait for searchIndoorAttractions() to finish
-//     } else if (preferences == "Indoor") {
-//       await this.searchIndoorAttractions(); // Wait for searchIndoorAttractions() to finish
-//     } else if (preferences == "Both") {
-//       await this.searchBothAttractions(); // Wait for searchBothAttractions() to finish
-//     } else {
-//       await this.searchOutdoorAttractions(); // Wait for searchOutdoorAttractions() to finish
-//     }
-//   }
-
-// } catch (error) {
-//   console.error(error);
-// }
-// },
-
-
   async getactivitieslist(){
     this.final_activities = [];
     this.places = [];
@@ -499,7 +469,7 @@ async searchBothAttractions(city) {
           transport: this.transport,
           location: randomactivity.geometry,
           url: "'https://www.google.com/search?q=" + randomactivity.name + "&rlz=1C1CHBF_enSG941SG941&oq=google&aqs=chrome..69i57j69i59j69i60l3j69i65l2.1001j0j7&sourceid=chrome&ie=UTF-8'",
-        };    
+        }; 
         //store activities in each day
 
         day.activities.push(activity);
@@ -682,25 +652,31 @@ async formattimestrfrom24hourto12hour(input) {
   });
 },
     
-    async getEateriesNearby(activity) {
-      var currentloc = activity.location.location;
+    async geteateriesnearby(){
+    var geocoder = new google.maps.Geocoder();
+    var postalCode = document.getElementById('location').value;
+    geocoder.geocode({ address: postalCode }, function (results, status) {
+    if (status === google.maps.GeocoderStatus.OK) {
+      var location = results[0].geometry.location;
       var request = {
-        location: currentloc,
+        location: location,
         radius: '500',
-        type: ['restaurant']
-      };
-      var service = new google.maps.places.PlacesService(document.createElement('div'));
-      return new Promise((resolve, reject) => {
-      service.nearbySearch(request, (results, status) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
-          console.log(results);
-          resolve(results); // Resolve the promise with the search results
-        } else {
-          console.error(`Error: ${status}`);
-          reject(status); // Reject the promise with the error status
-        }
-      })});
+        type: ['restaurant'],
+      }
+      var service = new google.maps.places.PlacesService(map);
+      service.nearbySearch(request, callback);
+    } else {
+      console.error('Geocode was not successful for the following reason: ' + status);
+    }})},
+    async callback(results, status) {
+    if (status == google.maps.places.PlacesServiceStatus.OK) {
+      for (var i = 0; i < 5; i++) {
+        var place = results[i];
+        console.log(place);
+        checkOpenStatus(place.place_id); // Change the time as needed
+      }
     }
+  }
     ,
 
 async checkOpenStatus(place, checkTime, date) {
@@ -717,7 +693,7 @@ async checkOpenStatus(place, checkTime, date) {
       this.isOpenNow = false;
       console.log(place);
       var openingHours = place.opening_hours;
-      if (openingHours.periods !=  null && openingHours.periods[day] != null) {
+      if (openingHours.periods !=  null || openingHours.periods[day] != null) {
         // Convert checkTime to a Date object for the specific date you want to check
         var checkDate = new Date(date);
         var day = checkDate.getDay();

@@ -87,8 +87,22 @@ function geteateriesnearby(){
         location: location,
         radius: '500',
         type: ['restaurant'],
-        componentRestrictions: { country: "sg" }
-      };
+      }
+      var service = new google.maps.places.PlacesService(map);
+      service.nearbySearch(request, callback);
+    } else {
+      console.error('Geocode was not successful for the following reason: ' + status);
+    }})}; 
+    function callback(results, status) {
+    if (status == google.maps.places.PlacesServiceStatus.OK) {
+      for (var i = 0; i < 5; i++) {
+        var place = results[i];
+        console.log(place);
+        checkOpenStatus(place.place_id); // Change the time as needed
+      }
+    }
+  }
+
 
 //       service = new google.maps.places.PlacesService(map);
 //       service.nearbySearch(request, callback);
@@ -96,6 +110,7 @@ function geteateriesnearby(){
 //       console.error('Geocode was not successful for the following reason: ' + status);
 //     }
 //   });
+
 
 //   function callback(results, status) {
 //     if (status == google.maps.places.PlacesServiceStatus.OK) {
@@ -109,7 +124,7 @@ function geteateriesnearby(){
 // }
 function checkOpenStatus() {
   let checkTime = document.getElementById('time').value;
-  var placeId = "ChIJMxZ-kwQZ2jERdsqftXeWCWI"; // Replace with your place ID
+  var placeId = "ChIJMxZ-"; // Replace with your place ID
   var request = {
     placeId: placeId,
     fields: ['name', 'opening_hours'],
