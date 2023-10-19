@@ -38,11 +38,13 @@
         <table>
           <thead>
             <tr>
-              <th>expenseName</th>
-              <th>expenseAmount</th>
-              <th>peopleOwingNames</th>
-              <th>peopleOwingAmount</th>
-              <th>personOwedName</th>
+              <th>Expense Name</th>
+              <th>Expense Amount</th>
+              <th>People Owing Names</th>
+              <th>People Owing Amount</th>
+              <th>Person Owed Name</th>
+              <th>Delete Expense</th>
+              <th>Update Expense</th>
             </tr>
           </thead>
 
@@ -58,7 +60,22 @@
               <td><button @click="deleteExpense(index, docId)">Delete Expense</button></td>
               <td><button @click="updateExpense(index, docId)">Update Expense</button></td>
             </tr>
+          </tbody>
+        </table>
+        <h3>whoOwesWho Table</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
 
+          <tbody>
+            <tr v-for="key in Object.keys(whoOwesWho)" :key="index">
+              <td>{{ key }}</td>
+              <td>{{ whoOwesWho[key] }}</td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -98,6 +115,7 @@ export default {
       },
       expenses: [],
       docId: [],
+      whoOwesWho: {},
       // This is for the list of people who owe money
       inputValue: '',
       list: [],
@@ -126,7 +144,22 @@ export default {
 
       // Adding the expense to the whoOwesWho collection
       // TODO
-      
+      // 1. Check if the personOwedName is already in the whoOwesWho collection
+      console.log(this.expense)
+      console.log(this.expense.personOwedName)
+      console.log(this.expense.peopleOwingNames)
+      console.log(this.whoOwesWho)
+      if (this.expense.personOwedName in this.whoOwesWho) {
+        console.log("Person already in whoOwesWho")
+        // 2. If it is, add the peopleOwingAmount to the existing amount
+        this.whoOwesWho[this.expense.personOwedName] += this.expense.peopleOwingAmount;
+      } else {
+        console.log("Person not in whoOwesWho")
+        // 3. If it isn't, add the personOwedName and peopleOwingAmount to the whoOwesWho collection
+        this.whoOwesWho[this.expense.personOwedName] = this.expense.peopleOwingAmount;
+      }
+      // 2. If it is, add the peopleOwingAmount to the existing amount
+
     },
 
     // Supporting function for addExpense()
@@ -176,44 +209,16 @@ export default {
       this.docId.push(doc.id);
       this.expenses.push(doc.data());
     });
-  }
+
+    const querySnapshot1 = await getDocs(whoOwesWhoRef);
+    querySnapshot1.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      console.log(doc.id, " => ", doc.data());
+      this.whoOwesWho = doc.data();
+      console.log(this.whoOwesWho)
+    });
+  },
 }
-
-getDocs(tripsRef)
-  .then((snapshot) => {
-    let books = [];
-    snapshot.docs.forEach((doc) => {
-      books.push({ ...doc.data(), id: doc.id })
-    })
-    console.log(books);
-  })
-  .catch((err) => {
-    console.log(err.message)
-  })
-
-getDocs(europeRef)
-  .then((snapshot) => {
-    let books = [];
-    snapshot.docs.forEach((doc) => {
-      books.push({ ...doc.data(), id: doc.id })
-    })
-    console.log(books);
-  })
-  .catch((err) => {
-    console.log(err.message)
-  })
-
-getDocs(expensesRef)
-  .then((snapshot) => {
-    let books = [];
-    snapshot.docs.forEach((doc) => {
-      books.push({ ...doc.data(), id: doc.id })
-    })
-    console.log(books);
-  })
-  .catch((err) => {
-    console.log(err.message)
-  })
 
 getDocs(whoOwesWhoRef)
   .then((snapshot) => {
