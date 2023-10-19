@@ -47,14 +47,16 @@
           </thead>
 
           <tbody>
-            <tr v-for="expense in expenses">
+            <tr v-for="(expense, index) in expenses" :key="index">
               <td>{{ expense.expenseName }}</td>
               <td>{{ expense.expenseAmount }}</td>
               <td>
-                <td v-for="name in expense.peopleOwingNames">{{ name }}</td>
+              <td v-for="name in expense.peopleOwingNames">{{ name }}</td>
               </td>
               <td>{{ expense.peopleOwingAmount }}</td>
               <td>{{ expense.personOwedName }}</td>
+              <td><button @click="deleteExpense(index, docId)">Delete Expense</button></td>
+              <td><button @click="updateExpense(index, docId)">Update Expense</button></td>
             </tr>
 
           </tbody>
@@ -68,7 +70,7 @@
 // Importing the functions we need from firebase
 import {
   getFirestore, collection, getDocs,
-  addDoc, deleteDoc, doc
+  addDoc, deleteDoc, doc, updateDoc, setDoc, query
 } from "firebase/firestore";
 
 // Declaring the database data points we need
@@ -95,11 +97,13 @@ export default {
         peopleOwingAmount: null
       },
       expenses: [],
+      docId: [],
       // This is for the list of people who owe money
       inputValue: '',
-      list: []
+      list: [],
     }
   },
+
   // Methods for adding data to firebase
   methods: {
     // This function retrieves user input and adds it to the database. (Both in expenses and whoOwesWho)
@@ -122,23 +126,54 @@ export default {
 
       // Adding the expense to the whoOwesWho collection
       // TODO
-
+      
     },
+
     // Supporting function for addExpense()
     addToList() {
       this.list.push(this.inputValue);
       this.inputValue = '';
     },
+
     // Supporting function for addExpense()
     removeFromList(index) {
       this.list.splice(index, 1);
     },
+
+    // Delete expense from database
+    async deleteExpense(index, docId) {
+      deleteDoc(doc(expensesRef, docId[index]))
+        .then(() => {
+          console.log("Document successfully deleted!");
+        }).catch((error) => {
+          console.error("Error removing document: ", error);
+        });
+    },
+
+    // Update expense in database
+    async updateExpense(index, docId) {
+      updateDoc(doc(expensesRef, docId[index]), {
+        expenseName: "Updated Expense Name",
+        expenseAmount: 100,
+        peopleOwingNames: ["Updated Name 1", "Updated Name 2"],
+        peopleOwingAmount: 50,
+        personOwedName: "Updated Person Owed Name"
+      })
+      .then(() => {
+        console.log("Document successfully updated!");
+      })
+      .catch((error) => {
+        // The document probably doesn't exist.
+        console.error("Error updating document: ", error);
+      });
+    }
   },
   async created() {
     const querySnapshot = await getDocs(expensesRef);
     querySnapshot.forEach((doc) => {
       // doc.data() is never undefined for query doc snapshots
       console.log(doc.id, " => ", doc.data());
+      this.docId.push(doc.id);
       this.expenses.push(doc.data());
     });
   }
