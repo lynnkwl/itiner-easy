@@ -27,48 +27,26 @@ const handleSignOut = () => {
 </script>
 
 <template>
-<div id='body' style="background-color: lightblue;">
-  <nav>
-    <nav class="navbar navbar-dark"
-      aria-label="Second navbar example">
-      <div class="container-fluid">
-
-        <!-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample02"
-          aria-controls="navbarsExample02" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button> -->
-
-        <div class="collapse navbar-collapse" id="navbarsExample02">
-          <div class="navbar-nav">
-            <span style="color: black;">[LOGO]</span>
-            <router-link to="/"><button class='navbar-btn'>Home</button></router-link>
-            &nbsp; 
-            <router-link to="/itinerary"><button class='navbar-btn'>Itinerary</button></router-link> 
-            &nbsp;
-            <router-link to="/toolpage"><button class='navbar-btn'>Tools</button></router-link> 
-            &nbsp;
-            <router-link to="/feed"><button class='navbar-btn'>Feed</button></router-link> 
-            &nbsp;
-            <router-link to="/billbuddy"><button class='navbar-btn'>BillBuddy</button></router-link> 
-            &nbsp;
-            <router-link to="/register"><button class='navbar-btn'>Register</button></router-link> 
-            &nbsp;
-            <router-link to="/sign-in"><button class='navbar-btn'>Login</button></router-link> 
-            &nbsp;
-            <router-link to="/profile"><button class='navbar-btn' style="color: blue;">Profile</button></router-link> 
-          </div>
-          <!-- <div id='logo' class="position-absolute top-0 start-50 translate-middle-x">
-            <a href="#"><img src="./components/logo/itiner-easy.svg" style="width: 100px; height: 100px; margin-top: -15px;"
-                alt="itiner-easy logo"></a>
-          </div> -->
-        </div>
-      </div>
-    </nav>
-
-
-    <button @click="handleSignOut" v-if="isLoggedIn">Sign Out</button>
-  </nav>
-  <router-view />
+ <div class="navbar bg-blue-400">
+  <div class="flex-1">
+    <a class="btn btn-lg btn-ghost normal-case text-xl"><img class="h-20" src="./components/logo/itiner-easy.svg"></a>
+  </div>
+  <div class="flex-none">
+    <ul class="menu menu-horizontal px-1">
+      <li><a class="text-gray-900 hover:text-white">Link</a></li>
+      <li>
+        <details>
+          <summary class="text-gray-900 hover:text-white">
+            Parent
+          </summary>
+          <ul class="p-2 bg-blue-800">
+            <li><a class="text-gray-900 hover:text-white">Link 1</a></li>
+            <li><a class="text-gray-900 hover:text-white">Link 2</a></li>
+          </ul>
+        </details>
+      </li>
+    </ul>
+  </div>
 </div>
 </template>
 
