@@ -233,6 +233,8 @@ export default {
     script.defer = true;
     script.async = true;
     document.head.appendChild(script);
+    window.history.scrollRestoration = "manual";
+
   },
   data() {
     return {
@@ -749,10 +751,10 @@ async checkOpenStatus(placeId, checkTime, date) {
 async showLocation(place){
   var map = new google.maps.Map(document.getElementById("map"), {
         zoom: 15,
-        center: place.geometry.location,
+        center: place.location.location,
       });
       var marker = new google.maps.Marker({
-        position: place.geometry.location,
+        position: place.location.location,
         map: map,
         title: place.name,
 }
