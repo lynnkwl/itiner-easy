@@ -19,9 +19,15 @@
     "vuetify": "^3.3.22"
   },
   "devDependencies": {
+    "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@tailwindcss/forms": "^0.5.6",
+    "@tailwindcss/typography": "^0.5.10",
     "@vitejs/plugin-vue": "^4.4.0",
+    "autoprefixer": "^10.4.16",
     "esbuild": "^0.19.4",
     "file-loader": "^6.2.0",
+    "postcss": "^8.4.31",
+    "tailwindcss": "^3.3.3",
     "vite": "^4.4.11",
     "webpack": "^5.89.0"
   }
