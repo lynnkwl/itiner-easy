@@ -16,5 +16,6 @@ export default {
     typography,
     forms,
     aspectRatio,
+    require("daisyui")
   ],
 }
