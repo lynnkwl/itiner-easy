@@ -233,6 +233,8 @@ export default {
     script.defer = true;
     script.async = true;
     document.head.appendChild(script);
+    window.history.scrollRestoration = "manual";
+
   },
   data() {
     return {
