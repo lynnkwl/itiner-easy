@@ -176,6 +176,7 @@
         <th>Time</th>
         <th>Address</th>
         <th>Details</th>
+        <th>Hungry?</th>
       </tr>
       <tbody>
         <tr v-for="activity in day.activities" :key="activity.name">
@@ -195,17 +196,34 @@
             <a href="#" @click="showLocation(activity)">Show on Map</a>
           </td> 
           <td>
-            {{ activity.transport }}
+            <a href="#" @click="geteateriesnearby(activity)">Find Eateries Nearby</a>
           </td>
         </tr>
       </tbody>
     </table>
-    <table>
+    <table v-if="eateries.length>0">
       <tr colspan = "3"><th>Eateries</th></tr>
       <tr><th>Name</th><th>Address</th><th>Price Level</th><th>Rating</th><th>Map Details</th></tr>
       <tbody>
-        <tr>
-          
+        <tr v-for="eatery in eateries" :key="eatery.name">
+          <td>
+            <label>
+              {{ eatery.name }}
+            </label>
+          </td>
+          <td>
+            {{ eatery.formatted_address}}
+          </td>
+          <td>
+            {{ eatery.price_level }}
+          </td>
+          <td>
+            {{ eatery.rating }}
+          </td>
+          <td>
+            <a href="#" @click="showLocation(eatery)">Show on Map</a>
+          </td>
+
         </tr>
       </tbody>
     </table>
@@ -248,6 +266,7 @@ export default {
       map: null,
       days: 0,
       final_activities : [],
+      eateries: [],
       activitiesandtime: [],
       suggested_activities: [],
       isOpenNow: false,
@@ -465,9 +484,9 @@ async searchBothAttractions(city) {
           name: randomactivity.name,
           time: await this.formatTime(timeint), // Format time as a string
           endtime: await this.formatTime(timeint + activitytime), // Format endtime as a string
-          address: randomactivity.formatted_address,
+          formatted_address: randomactivity.formatted_address,
           transport: this.transport,
-          location: randomactivity.geometry,
+          geometry: randomactivity.geometry,
           url: "'https://www.google.com/search?q=" + randomactivity.name + "&rlz=1C1CHBF_enSG941SG941&oq=google&aqs=chrome..69i57j69i59j69i60l3j69i65l2.1001j0j7&sourceid=chrome&ie=UTF-8'",
         }; 
         //store activities in each day
@@ -652,31 +671,24 @@ async formattimestrfrom24hourto12hour(input) {
   });
 },
     
-    async geteateriesnearby(){
-    var geocoder = new google.maps.Geocoder();
-    var postalCode = document.getElementById('location').value;
-    geocoder.geocode({ address: postalCode }, function (results, status) {
-    if (status === google.maps.GeocoderStatus.OK) {
-      var location = results[0].geometry.location;
-      var request = {
-        location: location,
-        radius: '500',
-        type: ['restaurant'],
-      }
+    async geteateriesnearby(activity){
+    this.eateries = [];
+    var geometry = activity.geometry;
+    var request = {
+      location: geometry.location,
+      radius: '500',
+      type: ['restaurant'],
+    };
       var service = new google.maps.places.PlacesService(map);
-      service.nearbySearch(request, callback);
-    } else {
-      console.error('Geocode was not successful for the following reason: ' + status);
-    }})},
-    async callback(results, status) {
-    if (status == google.maps.places.PlacesServiceStatus.OK) {
-      for (var i = 0; i < 5; i++) {
+      service.nearbySearch(request, (results, status) => {
+    if (status === google.maps.places.PlacesServiceStatus.OK) {
+      for (var i = 0; i < results.length; i++) {
         var place = results[i];
         console.log(place);
-        checkOpenStatus(place.place_id); // Change the time as needed
+        this.eateries.push(place);
       }
     }
-  }
+  })}
     ,
 
 async checkOpenStatus(place, checkTime, date) {
@@ -729,10 +741,10 @@ async checkOpenStatus(place, checkTime, date) {
 async showLocation(place){
   var map = new google.maps.Map(document.getElementById("map"), {
         zoom: 15,
-        center: place.location.location,
+        center: place.geometry.location,
       });
       var marker = new google.maps.Marker({
-        position: place.location.location,
+        position: place.geometry.location,
         map: map,
         title: place.name,
 }
@@ -740,7 +752,7 @@ async showLocation(place){
       var infowindow = new google.maps.InfoWindow({
         // content: "Name:" + place.name + "<br>" + "Address:" + place.formatted_address,
         content: `<div style="color:black">`+
-          "Name:" + place.name + "<br>" + "Address:" + place.address
+          "Name:" + place.name + "<br>" + "Address:" + place.formatted_address
           + "<br><a href=" + place.url + ">Click here for more information</a>"
           +`</div>`,
       });
