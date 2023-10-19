@@ -473,12 +473,12 @@ async searchBothAttractions(city) {
         console.log(randomactivity.place_id);
         console.log(timeint);
         console.log(this.dates[i]);
-        await this.checkOpenStatus(randomactivity.place_id, timeint, this.dates[i]);
+        await this.checkOpenStatus(randomactivity, timeint, this.dates[i]);
         console.log(this.isOpenNow);
         while (this.isOpenNow == false) {
           randomIndex = Math.floor(Math.random() * this.final_activities.length);
           randomactivity = this.final_activities[randomIndex];
-          await this.checkOpenStatus(randomactivity.place_id, timeint, this.dates[i]);
+          await this.checkOpenStatus(randomactivity, timeint, this.dates[i]);
         }
         
         var activitytime = 0;
@@ -498,6 +498,7 @@ async searchBothAttractions(city) {
           address: randomactivity.formatted_address,
           transport: this.transport,
           location: randomactivity.geometry,
+          url: "'https://www.google.com/search?q=" + randomactivity.name + "&rlz=1C1CHBF_enSG941SG941&oq=google&aqs=chrome..69i57j69i59j69i60l3j69i65l2.1001j0j7&sourceid=chrome&ie=UTF-8'",
         };    
         //store activities in each day
 
@@ -702,10 +703,10 @@ async formattimestrfrom24hourto12hour(input) {
     }
     ,
 
-async checkOpenStatus(placeId, checkTime, date) {
+async checkOpenStatus(place, checkTime, date) {
   var request = {
-    placeId: placeId,
-    fields: ['name', 'opening_hours'],
+    placeId: place.place_id,
+    fields: ['name', 'opening_hours', 'url'],
   };
 
   var service = new google.maps.places.PlacesService(document.createElement('div')); // Assuming 'map' is accessible
@@ -716,7 +717,7 @@ async checkOpenStatus(placeId, checkTime, date) {
       this.isOpenNow = false;
       console.log(place);
       var openingHours = place.opening_hours;
-      if (openingHours.periods && openingHours.periods[day]) {
+      if (openingHours.periods !=  null && openingHours.periods[day] != null) {
         // Convert checkTime to a Date object for the specific date you want to check
         var checkDate = new Date(date);
         var day = checkDate.getDay();
@@ -727,12 +728,15 @@ async checkOpenStatus(placeId, checkTime, date) {
         closeTime = parseInt(closeTime);        
         if (openTime <= checkTime && (closeTime >= checkTime || closeTime <= openTime)) {
           this.isOpenNow = true;
+          //add url into place
+          place.url = place.url + "&output=embed";
         } else {
           this.isOpenNow = false;
         }
       }
       else{
         this.isOpenNow = true;
+        place.url = place.url + "&output=embed";
       }
       console.log(
         place.name + ' is open at ' + checkTime + ': ' + (this.isOpenNow ? 'Yes' : 'No')
@@ -758,11 +762,15 @@ async showLocation(place){
 }
       );
       var infowindow = new google.maps.InfoWindow({
-        content: "Name:" + place.name + "<br>" + "Address:" + place.formatted_address,
+        // content: "Name:" + place.name + "<br>" + "Address:" + place.formatted_address,
+        content: `<div style="color:black">`+
+          "Name:" + place.name + "<br>" + "Address:" + place.address
+          + "<br><a href=" + place.url + ">Click here for more information</a>"
+          +`</div>`,
       });
       // infowindow is blank
       marker.addListener("click", () => {
-        infowindow.open(map, marker);
+        infowindow.open({anchor: marker, map});
       });
       
       
