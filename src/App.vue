@@ -28,23 +28,29 @@ const handleSignOut = () => {
 
 <template>
  <div class="navbar bg-blue-400">
-  <div class="flex-1">
-    <a class="btn btn-lg btn-ghost normal-case text-xl"><img class="h-20" src="./components/logo/itiner-easy.svg"></a>
+  <div class="place-content-evenly flex-nowrap">
+    <div class="flex-1">
+    <a class="btn btn-lg btn-ghost normal-case text-xl"><img class="h-20 w-20" src="./components/logo/itiner-easy.svg"></a>
   </div>
-  <div class="flex-none">
     <ul class="menu menu-horizontal px-1">
-      <li><a class="text-gray-900 hover:text-white">Link</a></li>
+      <button class="btn bg-inherit text-gray-900 text-xl hover:text-white hover:bg-inherit">Home</button>
+      <button class="btn bg-inherit text-gray-900 text-xl hover:text-white hover:bg-inherit">Itinerary</button>
       <li>
         <details>
-          <summary class="text-gray-900 hover:text-white">
-            Parent
+          <summary class="text-gray-900 text-xl hover:text-white focus:bg-blue-500">
+            Tools
           </summary>
-          <ul class="p-2 bg-blue-800">
-            <li><a class="text-gray-900 hover:text-white">Link 1</a></li>
-            <li><a class="text-gray-900 hover:text-white">Link 2</a></li>
+          <ul class="p-2 bg-blue-600 ">
+            <li><a class="text-gray-900 text-lg hover:text-white ">Converter</a></li>
+            <li><a class="text-gray-900 text-lg hover:text-white">Translator</a></li>
           </ul>
         </details>
       </li>
+      <button class="btn bg-inherit text-gray-900 text-xl hover:text-white hover:bg-inherit">Feed</button>
+      <button class="btn bg-inherit text-gray-900 text-xl hover:text-white hover:bg-inherit">BillBuddy</button>
+      <button class="btn bg-inherit text-gray-900 text-xl hover:text-white hover:bg-inherit">Sign Up</button>
+      <button class="underline btn bg-inherit text-white text-xl hover:text-blue-500 hover:bg-inherit">Sign In</button>
+
     </ul>
   </div>
 </div>
