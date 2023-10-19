@@ -7,6 +7,7 @@ import router from "./router";
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getAnalytics } from "firebase/analytics";
+
 // TODO: Add SDKs for Firebase products that you want to use
 //popupwindow
 // import Buefy from 'buefy';
@@ -24,6 +25,21 @@ const firebaseConfig = {
   appId: "1:396066188905:web:ba749c0e78930a57c77cf8",
   measurementId: "G-SZVP36N6L4"
 };
+export function initMap(coords){
+  if (typeof google === 'object' && typeof google.maps === 'object') {
+    var options = {
+      zoom: 8,
+      center: coords
+    }
+    var map = new google.maps.Map(document.getElementById('map'), options);
+    
+  } else {
+    // The Google Maps JavaScript API is not loaded
+    // You can display an error message or try to load the API again
+    console.error('Error: Google Maps JavaScript API is not loaded');
+  }
+
+}
 
 // Initialize Firebase
 const firebaseApp = initializeApp(firebaseConfig);
