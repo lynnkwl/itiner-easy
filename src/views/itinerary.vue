@@ -681,27 +681,25 @@ async formattimestrfrom24hourto12hour(input) {
   });
 },
     
-    async getEateriesNearby() {
-      var geocoder = new google.maps.Geocoder();
-      var postalCode = this.postalCode;
-
-      geocoder.geocode({ address: postalCode }, (results, status) => {
-        if (status === google.maps.GeocoderStatus.OK) {
-          var location = results[0].geometry.location;
-          var request = {
-            location: location,
-            radius: '500',
-            type: ['restaurant'],
-            componentRestrictions: { country: "sg" }
-          };
-
-          var service = new google.maps.places.PlacesService(map);
-          service.nearbySearch(request, this.callback);
+    async getEateriesNearby(activity) {
+      var currentloc = activity.location.location;
+      var request = {
+        location: currentloc,
+        radius: '500',
+        type: ['restaurant']
+      };
+      var service = new google.maps.places.PlacesService(document.createElement('div'));
+      return new Promise((resolve, reject) => {
+      service.nearbySearch(request, (results, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+          console.log(results);
+          resolve(results); // Resolve the promise with the search results
         } else {
-          console.error('Geocode was not successful for the following reason: ' + status);
+          console.error(`Error: ${status}`);
+          reject(status); // Reject the promise with the error status
         }
-      },
-    )}
+      })});
+    }
     ,
 
 async checkOpenStatus(placeId, checkTime, date) {
@@ -759,11 +757,17 @@ async showLocation(place){
         title: place.name,
 }
       );
-      var infowindow = new google.maps.InfoWindow();
-      infowindow.setContent('<div><strong>' + place.name + '</strong><br>' +
-        'Place ID: ' + place.place_id + '<br>' +
-        place.formatted_address + '</div>');
-      infowindow.open(map, marker);
+      var infowindow = new google.maps.InfoWindow({
+        content: "Name:" + place.name + "<br>" + "Address:" + place.formatted_address,
+      });
+      // infowindow is blank
+      marker.addListener("click", () => {
+        infowindow.open(map, marker);
+      });
+      
+      
+      
+
 },
 
 

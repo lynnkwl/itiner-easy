@@ -77,18 +77,18 @@
 //   });
 // }
 
-// function geteateriesnearby(){
-//     var geocoder = new google.maps.Geocoder();
-//     var postalCode = document.getElementById('location').value;
-//     geocoder.geocode({ address: postalCode }, function (results, status) {
-//     if (status === google.maps.GeocoderStatus.OK) {
-//       var location = results[0].geometry.location;
-//       var request = {
-//         location: location,
-//         radius: '500',
-//         type: ['restaurant'],
-//         componentRestrictions: { country: "sg" }
-//       };
+function geteateriesnearby(){
+    var geocoder = new google.maps.Geocoder();
+    var postalCode = document.getElementById('location').value;
+    geocoder.geocode({ address: postalCode }, function (results, status) {
+    if (status === google.maps.GeocoderStatus.OK) {
+      var location = results[0].geometry.location;
+      var request = {
+        location: location,
+        radius: '500',
+        type: ['restaurant'],
+        componentRestrictions: { country: "sg" }
+      };
 
 //       service = new google.maps.places.PlacesService(map);
 //       service.nearbySearch(request, callback);
