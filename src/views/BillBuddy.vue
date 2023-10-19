@@ -50,7 +50,9 @@
             <tr v-for="expense in expenses">
               <td>{{ expense.expenseName }}</td>
               <td>{{ expense.expenseAmount }}</td>
-              <td>{{ expense.peopleOwingNames }}</td>
+              <td>
+                <td v-for="name in expense.peopleOwingNames">{{ name }}</td>
+              </td>
               <td>{{ expense.peopleOwingAmount }}</td>
               <td>{{ expense.personOwedName }}</td>
             </tr>
