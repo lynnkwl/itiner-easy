@@ -13,7 +13,7 @@
             <ul class="md:flex md:items-center md:px-0 px-3 md:pb-0 pb-10 md:static absolute bg-blue-400 md:w-auto w-full top-20 duration-75 ease-in"
             :class="[ opened ? 'menu-open' : 'menu-close']">
                 <li class="md:mx-4 md:my-0 my-6 " v-for="link in Links">
-                    <router-link :to=link.linkz ><a @click="MenuOpen" class="text-x1 hover:text-blue">{{ link.name }}</a></router-link>
+                    <router-link :to=link.linkz ><a @click="MenuOpen" class="text-2xl hover:text-blue">{{ link.name }}</a></router-link>
                 </li>
                 <Button></Button>
             </ul>
