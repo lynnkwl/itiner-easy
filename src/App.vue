@@ -1,32 +1,10 @@
 <script setup>
 
-import { onMounted, ref } from 'vue';
-import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
-import router from './router';
+import Navbar from "./components/navbar.vue"
 
-const isLoggedIn = ref(false);
-
-let auth;
-onMounted(() => {
-  auth = getAuth();
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      isLoggedIn.value = true;
-    }
-    else {
-      isLoggedIn.value = false;
-    }
-  });
-});
-
-const handleSignOut = () => {
-  signOut(auth).thenn(() => {
-    router.push("/");
-  })
-};
 </script>
 
-<template>
+<!-- <template>
  <div class="navbar h-5 bg-blue-400 rounded-none">
   <div class="place-content-evenly flex-nowrap">
     <a class="btn btn-lg btn-ghost normal-case text-xl"><img class="h-20 w-20" src="./components/logo/itiner-easy.svg"></a>
@@ -61,15 +39,18 @@ const handleSignOut = () => {
 
 <router-view />
 
+</template> -->
+
+<template>
+  <div class="bg-white h-screen">
+    <Navbar />
+  </div>
+
+  
 </template>
 
 <style>
 
-body {
-  background-color: #F9FAFB;;
-  height: 100vh;
-}
 
-/* LOGO */
 
 </style>

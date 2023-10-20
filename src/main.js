@@ -1,4 +1,5 @@
 import { createApp } from 'vue';
+import { BootstrapIconsPlugin } from 'bootstrap-icons-vue';
 import './style.css';
 import App from './App.vue';
 import router from "./router";
@@ -48,6 +49,7 @@ const analytics = getAnalytics(firebaseApp);
 
 const app = createApp(App);
 
+app.use(BootstrapIconsPlugin);
 app.use(router);
 
 app.mount('#app');
