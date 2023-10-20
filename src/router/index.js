@@ -6,15 +6,17 @@ const router = createRouter({
     history : createWebHistory(),
     routes: [
         { path: "/", component: () => import("../views/home/Home.vue")},
-        { path: "/register", component: () => import("../views/Register.vue")},
+        { path: "/sign-up", component: () => import("../views/SignUp.vue")},
         { path: "/sign-in", component: () => import("../views/SignIn.vue")},
         { path: "/feed", component: () => import("../views/Feed.vue"),
         
         meta:{
             requiresAuth:true
         }},
-        //go to toolpage.vue
-        {path: "/toolpage", component: () => import("../views/Toolpage.vue")},
+        //go to converter or translator
+        {path: "/translator", component: () => import("../views/Translator.vue")},
+        {path: "/converter", component: () => import("../views/Converter.vue")},
+
         //gotobillbuddy.vue
         {path: "/billbuddy", component: () => import("../views/BillBuddy.vue")},
         {path: "/itinerary", component: () => import("../views/itinerary.vue")},
