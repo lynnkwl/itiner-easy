@@ -1,0 +1,97 @@
+<template>
+    
+    <div class="h-24 bg-blue-400 text-gray-100 py-3.5 px-6 shadow md:flex justify-between items-center">
+        <div class="flex items-center cursor-pointer">
+            <span class="text-blue-600 text-x1 mr-1">
+                <img src="./logo/itiner-easy.svg">
+            </span>
+        </div>
+        <span @click="MenuOpen" class="absolute md:hidden right-6 top-5 cursor-pointer text-4xl">
+            <i :class="['bi', opened ? 'bi-x' : 'bi-filter-left']"></i>
+        </span>
+        <div>
+            <ul class="md:flex md:items-center md:px-0 px-3 md:pb-0 pb-10 md:static absolute bg-blue-400 md:w-auto w-full top-20 duration-75 ease-in"
+            :class="[ opened ? 'menu-open' : 'menu-close']">
+                <li class="md:mx-4 md:my-0 my-6 " v-for="link in Links">
+                    <router-link :to=link.linkz ><a @click="MenuOpen" class="text-x1 hover:text-blue">{{ link.name }}</a></router-link>
+                </li>
+                <Button></Button>
+            </ul>
+        </div>
+        
+    </div>
+    
+    <router-view />
+</template>
+
+<script>
+import { onMounted, ref } from 'vue';
+import Button from './button.vue'
+import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
+import router from '../router/index.js';
+
+const isLoggedIn = ref(false);
+
+let auth;
+onMounted(() => {
+  auth = getAuth();
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      isLoggedIn.value = true;
+    }
+    else {
+      isLoggedIn.value = false;
+    }
+  });
+});
+
+const handleSignOut = () => {
+  signOut(auth).thenn(() => {
+    router.push("/");
+  })
+};
+
+
+export default {
+    components:{
+        Button
+    },
+    setup(){
+        var opened = ref(false);
+        let Links = [
+            {name: "Home", linkz: "/"},
+            {name: "Itinerary", linkz: "/itinerary"},
+            {name: "Translator", linkz:"/translator"},
+            {name: "Converter", linkz:"/converter"},
+            {name:"Feed", linkz:"/feed"},
+            {name:"Billbuddy", linkz:"/billbuddy"},
+            {name:"Sign up", linkz:"/sign-up"},
+            {name:"Sign in", linkz:"/sign-in"},
+            {name:"Profile", linkz:"/profile"}
+    ]
+        function MenuOpen(){
+            opened.value = !opened.value;
+        }
+        return {Links,opened, MenuOpen}
+    }
+    
+}
+</script>
+
+<style scoped>
+.menu-open {
+    left: 0;
+    z-index: 1;
+    
+}
+
+.menu-close{
+    left:-100%;
+}
+
+img {
+    width: auto;
+    height: 150px;
+}
+
+</style>
