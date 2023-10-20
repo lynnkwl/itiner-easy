@@ -82,8 +82,9 @@
       </div>
     </div>
   </nav> -->
-
-
+<br>
+<br>
+<br>
 <div class="Mainbody">
 
 
@@ -190,7 +191,7 @@
           </td>
 
           <td>
-            {{ activity.address }}
+            {{ activity.formatted_address}}
           </td>
           <td>
             <a href="#" @click="showLocation(activity)">Show on Map</a>
@@ -212,7 +213,7 @@
             </label>
           </td>
           <td>
-            {{ eatery.formatted_address}}
+            {{ eatery.vicinity}}
           </td>
           <td>
             {{ eatery.price_level }}
@@ -414,6 +415,18 @@ async searchBothAttractions(city) {
     await this.getLatLng();
     await initMap(this.citycoords);
     },
+    async converttime(time, act){
+  // time = 940; //goal is to convert this to 1110
+
+    let addhour = Math.floor(act/60);
+    let addmin = act%60;
+    let formattime = time + addhour*100 + addmin;
+    while(formattime % 100 > 59){
+      formattime = formattime + (Math.floor(formattime/100))%60;
+    }
+    return formattime;
+    }
+    ,
 
 
     async getLatLng (){
@@ -458,10 +471,6 @@ async searchBothAttractions(city) {
         //checkopenstatus if business is open at that time if closed find another place
         var randomIndex = Math.floor(Math.random() * this.final_activities.length);
         var randomactivity = this.final_activities[randomIndex];
-        console.log(randomactivity);
-        console.log(randomactivity.place_id);
-        console.log(timeint);
-        console.log(this.dates[i]);
         await this.checkOpenStatus(randomactivity, timeint, this.dates[i]);
         console.log(this.isOpenNow);
         while (this.isOpenNow == false) {
@@ -474,16 +483,58 @@ async searchBothAttractions(city) {
 
         // Adjust activity time calculation as needed
         if (randomactivity.types.includes("park") || randomactivity.types.includes("zoo") || randomactivity.types.includes("amusement_park")) {
-          activitytime = 200;
+          activitytime = 120;
         } else {
-          activitytime = 300;
+          activitytime = 180;
         }
-
+        //gettraveltime
+        var traveltime = 0;
+        if(day.activities.length > 0){
+          var lastactivity = day.activities[day.activities.length - 1];
+          var lastactivitycoords = lastactivity.geometry.location;
+          var randomactivitycoords = randomactivity.geometry.location;
+          var request = {
+            origin: lastactivitycoords,
+            destination: randomactivitycoords,
+            travelMode: this.transport,
+          };
+          console.log(lastactivity);
+          var service = new google.maps.DirectionsService();
+          //use promise
+          await new Promise((resolve, reject) => {
+            service.route(request, (result, status) => {
+              if (status == 'OK') {
+                traveltime = result.routes[0].legs[0].duration.value;
+                traveltime = Math.round(traveltime / 60);
+                resolve(result);
+              }
+              else{
+                reject(status);
+              }
+            });
+          });
+        }
+        // Add travel time to 'timeint'
+        //if result resolved
+        if(traveltime !=0){
+        var endtime = await this.converttime(timeint, traveltime);
+        var travelactivity = {
+          name: "Travel from " + lastactivity.name + " to " + randomactivity.name,
+          time: await this.formatTime(timeint),
+          endtime: await this.formatTime(endtime),
+          formatted_address: "Travel",
+          transport: this.transport,
+          // geometry: randomactivity.geometry,
+        };
+        day.activities.push(travelactivity);
+        timeint = endtime;
+        }
         // Create the activity object
+        var endtime = await this.converttime(timeint, activitytime);
         var activity = {
           name: randomactivity.name,
           time: await this.formatTime(timeint), // Format time as a string
-          endtime: await this.formatTime(timeint + activitytime), // Format endtime as a string
+          endtime: await this.formatTime(endtime), // Format endtime as a string
           formatted_address: randomactivity.formatted_address,
           transport: this.transport,
           geometry: randomactivity.geometry,
@@ -494,8 +545,7 @@ async searchBothAttractions(city) {
         day.activities.push(activity);
 
         // Update 'timeint' for the next activity
-        timeint = timeint + activitytime;
-
+        timeint = endtime;
         // Add the activity to 'activitiesandtime' and remove it from 'final_activities'
 
         this.final_activities.splice(randomIndex, 1);
@@ -691,51 +741,44 @@ async formattimestrfrom24hourto12hour(input) {
   })}
     ,
 
-async checkOpenStatus(place, checkTime, date) {
-  var request = {
-    placeId: place.place_id,
-    fields: ['name', 'opening_hours', 'url'],
-  };
-
-  var service = new google.maps.places.PlacesService(document.createElement('div')); // Assuming 'map' is accessible
-
+    async checkOpenStatus(place, checkTime, date) {
   return new Promise((resolve, reject) => {
-  service.getDetails(request, (place, status) => {
-    if (status === google.maps.places.PlacesServiceStatus.OK) {
-      this.isOpenNow = false;
-      console.log(place);
-      var openingHours = place.opening_hours;
-      if (openingHours.periods !=  null || openingHours.periods[day] != null) {
-        // Convert checkTime to a Date object for the specific date you want to check
-        var checkDate = new Date(date);
-        var day = checkDate.getDay();
-        let openTime = openingHours.periods[day].open.time;
-        openTime = parseInt(openTime);
-        checkTime = parseInt(checkTime);
-        let closeTime = openingHours.periods[day].close.time;
-        closeTime = parseInt(closeTime);        
-        if (openTime <= checkTime && (closeTime >= checkTime || closeTime <= openTime)) {
-          this.isOpenNow = true;
-          //add url into place
-          place.url = place.url + "&output=embed";
-        } else {
-          this.isOpenNow = false;
+    var request = {
+      placeId: place.place_id,
+      fields: ["opening_hours"]
+    };
+    var service = new google.maps.places.PlacesService(document.createElement('div')); // Assuming 'map' is accessible
+    service.getDetails(request, (place, status) => {
+      if (status === google.maps.places.PlacesServiceStatus.OK) {
+        this.isOpenNow = false;
+        console.log(place);
+        var openingHours = place.opening_hours;
+        if (openingHours && openingHours.periods != null && openingHours.periods[day] != null) {
+          // Convert checkTime to a Date object for the specific date you want to check
+          var checkDate = new Date(date);
+          var day = checkDate.getDay();
+          let openTime = openingHours.periods[day].open.time;
+          openTime = parseInt(openTime);
+          checkTime = parseInt(checkTime);
+          let closeTime = openingHours.periods[day].close.time;
+          closeTime = parseInt(closeTime);        
+          if (openTime <= checkTime && (closeTime >= checkTime || closeTime <= openTime)) {
+            this.isOpenNow = true;
+            //add url into place
+          } else {
+            this.isOpenNow = false;
+          }
         }
+        else{
+          this.isOpenNow = true;
+          place.url = place.url + "&output=embed";
+        }
+        resolve(); // Resolve the promise with no parameter
+      } else {
+        reject(status); // Reject the promise with the status parameter
       }
-      else{
-        this.isOpenNow = true;
-        place.url = place.url + "&output=embed";
-      }
-      console.log(
-        place.name + ' is open at ' + checkTime + ': ' + (this.isOpenNow ? 'Yes' : 'No')
-      );
-      resolve(this.isOpenNow); // Resolve the promise with the isOpenNow value
-    } else {
-      console.error(`Error: ${status}`);
-      reject(status); // Reject the promise with the error status
-    }
+    });
   });
-});
 },
 
 async showLocation(place){
@@ -782,6 +825,9 @@ async showLocation(place){
         await this.getactivitieslist();
     }
     },
+
+
+ 
 async checkempty2(){
     if (!this.town || !this.sliderValue || !this.outgoing || !this.transport) {
         window.alert
@@ -794,6 +840,10 @@ async checkempty2(){
 
     }
     },
+
+
+
+    
 },
   };
 

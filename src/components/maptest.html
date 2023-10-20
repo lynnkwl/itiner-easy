@@ -62,20 +62,20 @@
 
 
 
-// function calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, pointB) {
-//   directionsService.route({
-//     origin: pointA,
-//     destination: pointB,
-//     travelMode: google.maps.TravelMode.DRIVING
-//   }, function(response, status) {
-//     if (status == google.maps.DirectionsStatus.OK) {
-//       directionsDisplay.setDirections(response);
-//       console.log(response);
-//     } else {
-//       window.alert('Directions request failed due to ' + status);
-//     }
-//   });
-// }
+function calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, pointB) {
+  directionsService.route({
+    origin: pointA,
+    destination: pointB,
+    travelMode: google.maps.TravelMode.DRIVING
+  }, function(response, status) {
+    if (status == google.maps.DirectionsStatus.OK) {
+      directionsDisplay.setDirections(response);
+      console.log(response);
+    } else {
+      window.alert('Directions request failed due to ' + status);
+    }
+  });
+}
 
 function geteateriesnearby(){
     var geocoder = new google.maps.Geocoder();
@@ -122,6 +122,22 @@ function geteateriesnearby(){
 //     }
 //   }
 // }
+//convertime from int to 24hr time
+
+convertime(955);
+function convertime(time){
+  // time = 940; //goal is to convert this to 1110
+
+  act  = 90;
+  addhour = Math.floor(act/60);
+  addmin = act%60;
+  formattime = time + addhour*100 + addmin;
+  while(formattime % 100 > 59){
+    formattime = formattime + (Math.floor(formattime/100))%60;
+  }
+  console.log(formattime);
+}
+
 function checkOpenStatus() {
   let checkTime = document.getElementById('time').value;
   var placeId = "ChIJMxZ-"; // Replace with your place ID
@@ -132,6 +148,8 @@ function checkOpenStatus() {
 
   var service = new google.maps.places.PlacesService(map); // Assuming 'map' is accessible
 
+
+  
   service.getDetails(request, function (place, status) {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
       var isOpenNow = false;
