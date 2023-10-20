@@ -191,7 +191,7 @@
           </td>
 
           <td>
-            {{ activity.address }}
+            {{ activity.formatted_address}}
           </td>
           <td>
             <a href="#" @click="showLocation(activity)">Show on Map</a>
@@ -415,6 +415,18 @@ async searchBothAttractions(city) {
     await this.getLatLng();
     await initMap(this.citycoords);
     },
+    async converttime(time, act){
+  // time = 940; //goal is to convert this to 1110
+
+    let addhour = Math.floor(act/60);
+    let addmin = act%60;
+    let formattime = time + addhour*100 + addmin;
+    while(formattime % 100 > 59){
+      formattime = formattime + (Math.floor(formattime/100))%60;
+    }
+    return formattime;
+    }
+    ,
 
 
     async getLatLng (){
@@ -471,13 +483,13 @@ async searchBothAttractions(city) {
 
         // Adjust activity time calculation as needed
         if (randomactivity.types.includes("park") || randomactivity.types.includes("zoo") || randomactivity.types.includes("amusement_park")) {
-          activitytime = 200;
+          activitytime = 120;
         } else {
-          activitytime = 300;
+          activitytime = 180;
         }
         //gettraveltime
         var traveltime = 0;
-        if(day.activities.length > 1){
+        if(day.activities.length > 0){
           var lastactivity = day.activities[day.activities.length - 1];
           var lastactivitycoords = lastactivity.geometry.location;
           var randomactivitycoords = randomactivity.geometry.location;
@@ -493,6 +505,7 @@ async searchBothAttractions(city) {
             service.route(request, (result, status) => {
               if (status == 'OK') {
                 traveltime = result.routes[0].legs[0].duration.value;
+                traveltime = Math.round(traveltime / 60);
                 resolve(result);
               }
               else{
@@ -504,22 +517,24 @@ async searchBothAttractions(city) {
         // Add travel time to 'timeint'
         //if result resolved
         if(traveltime !=0){
-        timeint = timeint + traveltime;
+        var endtime = await this.converttime(timeint, traveltime);
         var travelactivity = {
           name: "Travel from " + lastactivity.name + " to " + randomactivity.name,
           time: await this.formatTime(timeint),
-          endtime: await this.formatTime(timeint + traveltime),
+          endtime: await this.formatTime(endtime),
           formatted_address: "Travel",
           transport: this.transport,
           // geometry: randomactivity.geometry,
         };
         day.activities.push(travelactivity);
+        timeint = endtime;
         }
         // Create the activity object
+        var endtime = await this.converttime(timeint, activitytime);
         var activity = {
           name: randomactivity.name,
           time: await this.formatTime(timeint), // Format time as a string
-          endtime: await this.formatTime(timeint + activitytime), // Format endtime as a string
+          endtime: await this.formatTime(endtime), // Format endtime as a string
           formatted_address: randomactivity.formatted_address,
           transport: this.transport,
           geometry: randomactivity.geometry,
@@ -530,8 +545,7 @@ async searchBothAttractions(city) {
         day.activities.push(activity);
 
         // Update 'timeint' for the next activity
-        timeint = timeint + activitytime;
-
+        timeint = endtime;
         // Add the activity to 'activitiesandtime' and remove it from 'final_activities'
 
         this.final_activities.splice(randomIndex, 1);
