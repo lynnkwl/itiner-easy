@@ -71,7 +71,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.1s ease-out; /* Adjust the duration for a smoother effect */
+  transition: transform 0.05s ease-out; /* Adjust the duration for a smoother effect */
 }
 
 .eye-image {
