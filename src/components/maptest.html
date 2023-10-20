@@ -62,20 +62,20 @@
 
 
 
-// function calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, pointB) {
-//   directionsService.route({
-//     origin: pointA,
-//     destination: pointB,
-//     travelMode: google.maps.TravelMode.DRIVING
-//   }, function(response, status) {
-//     if (status == google.maps.DirectionsStatus.OK) {
-//       directionsDisplay.setDirections(response);
-//       console.log(response);
-//     } else {
-//       window.alert('Directions request failed due to ' + status);
-//     }
-//   });
-// }
+function calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, pointB) {
+  directionsService.route({
+    origin: pointA,
+    destination: pointB,
+    travelMode: google.maps.TravelMode.DRIVING
+  }, function(response, status) {
+    if (status == google.maps.DirectionsStatus.OK) {
+      directionsDisplay.setDirections(response);
+      console.log(response);
+    } else {
+      window.alert('Directions request failed due to ' + status);
+    }
+  });
+}
 
 function geteateriesnearby(){
     var geocoder = new google.maps.Geocoder();
