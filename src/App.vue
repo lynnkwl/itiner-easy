@@ -58,6 +58,9 @@ const handleSignOut = () => {
     </ul>
   </div>
 </div>
+
+<router-view />
+
 </template>
 
 <style>
