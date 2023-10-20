@@ -27,108 +27,49 @@ const handleSignOut = () => {
 </script>
 
 <template>
-<div id='body' style="background-color: lightblue;">
-  <nav>
-    <nav class="navbar navbar-dark"
-      aria-label="Second navbar example">
-      <div class="container-fluid">
+ <div class="navbar h-5 bg-blue-400 rounded-none">
+  <div class="place-content-evenly flex-nowrap">
+    <a class="btn btn-lg btn-ghost normal-case text-xl"><img class="h-20 w-20" src="./components/logo/itiner-easy.svg"></a>
+    <ul class="menu menu-horizontal px-1">
+      <router-link to="/">
+        <button class="btn bg-inherit text-gray-900 text-xl hover:text-white hover:bg-inherit">Home</button>
+      </router-link>
+      <router-link to="/itinerary">
+        <button class="btn bg-inherit text-gray-900 text-xl hover:text-white hover:bg-inherit">Itinerary</button>
+      </router-link> 
+      <li>
+        <details>
+          <summary class="pt-2 font-sans text-gray-900 text-xl font-semibold hover:text-white">
+            TOOLS
+          </summary>
+          <ul class="p-2 bg-blue-600 ">
+            <router-link to="/translator"><li><a class="text-gray-900 text-lg hover:text-white">Translator</a></li></router-link> 
+            <router-link to="/converter"><li><a class="text-gray-900 text-lg hover:text-white ">Converter</a></li></router-link> 
+          </ul>
+        </details>
+      </li>
+      <router-link to="/feed"><button class="btn bg-inherit text-gray-900 text-xl hover:text-white hover:bg-inherit">Feed</button></router-link> 
+      <router-link to="/billbuddy"><button class="btn bg-inherit text-gray-900 text-xl hover:text-white hover:bg-inherit">BillBuddy</button></router-link>
+      <router-link to="/sign-up"><button class="btn bg-inherit text-gray-900 text-xl hover:text-white hover:bg-inherit">Sign Up</button></router-link>
+      <router-link to="/sign-in"><button class="mr-2 blue btn bg-inherit text-white text-xl hover:text-blue-500 hover:bg-inherit">Sign In</button></router-link>
+      <router-link to="/profile"><button class="blue btn bg-inherit text-white text-xl hover:text-blue-500 hover:bg-inherit">Profile</button></router-link>
+      
 
-        <!-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample02"
-          aria-controls="navbarsExample02" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button> -->
-
-        <div class="collapse navbar-collapse" id="navbarsExample02">
-          <div class="navbar-nav">
-            <span style="color: black;">[LOGO]</span>
-            <router-link to="/"><button class='navbar-btn'>Home</button></router-link>
-            &nbsp; 
-            <router-link to="/itinerary"><button class='navbar-btn'>Itinerary</button></router-link> 
-            &nbsp;
-            <router-link to="/toolpage"><button class='navbar-btn'>Tools</button></router-link> 
-            &nbsp;
-            <router-link to="/feed"><button class='navbar-btn'>Feed</button></router-link> 
-            &nbsp;
-            <router-link to="/billbuddy"><button class='navbar-btn'>BillBuddy</button></router-link> 
-            &nbsp;
-            <router-link to="/register"><button class='navbar-btn'>Register</button></router-link> 
-            &nbsp;
-            <router-link to="/sign-in"><button class='navbar-btn'>Login</button></router-link> 
-            &nbsp;
-            <router-link to="/profile"><button class='navbar-btn' style="color: blue;">Profile</button></router-link> 
-          </div>
-          <!-- <div id='logo' class="position-absolute top-0 start-50 translate-middle-x">
-            <a href="#"><img src="./components/logo/itiner-easy.svg" style="width: 100px; height: 100px; margin-top: -15px;"
-                alt="itiner-easy logo"></a>
-          </div> -->
-        </div>
-      </div>
-    </nav>
-
-
-    <button @click="handleSignOut" v-if="isLoggedIn">Sign Out</button>
-  </nav>
-  <router-view />
+    </ul>
+  </div>
 </div>
+
+<router-view />
+
 </template>
 
-<style scoped>
+<style>
 
 body {
-  background-color: #05c8f7;
+  background-color: #F9FAFB;;
   height: 100vh;
 }
 
 /* LOGO */
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-  margin: 0;
-  padding: 0;
-}
-
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-
-/* NAVBAR ELEMENTS */
-.navbar-btn {
-  display: flex-horizontal;
-  background-color: #05c8f7;
-  color: white;
-  padding: 5px 5px;
-  border-radius: 5px;
-  text-decoration: none;
-  margin: 0px 10px;
-}
-.navbar-btn:hover {
-  text-decoration: underline;
-  border: 1px solid #05c8f7;
-}
-
-.navbar {
-  display: flex;
-  background-color: #05c8f7;
-  color: white;
-  padding: 10px 20px;
-  border-radius: 5px;
-  text-decoration: none;
-  position: absolute;
-  top: 5px;
-}
-
-.navbar-nav{
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-}
 
 </style>
