@@ -67,7 +67,8 @@ export default {
             {name:"Billbuddy", linkz:"/billbuddy"},
             {name:"Sign up", linkz:"/sign-up"},
             {name:"Sign in", linkz:"/sign-in"},
-            {name:"Profile", linkz:"/profile"}
+            {name:"Tools", linkz:"/tools"},
+
     ]
         function MenuOpen(){
             opened.value = !opened.value;
