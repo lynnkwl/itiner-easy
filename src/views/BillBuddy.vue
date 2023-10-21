@@ -53,7 +53,7 @@
               <td>{{ expense.expenseName }}</td>
               <td>{{ expense.expenseAmount }}</td>
               <td>
-              <td v-for="name in expense.peopleOwingNames">{{ name }}</td>
+              <td v-for="name in expense.peopleOwingNames">{{ name }} &nbsp;</td>
               </td>
               <td>{{ expense.peopleOwingAmount }}</td>
               <td>{{ expense.personOwedName }}</td>
@@ -81,6 +81,7 @@
         <div class="form-group">
           <button class="btn btn-primary" @click="breakeven">Breakeven</button>
         </div>
+        <div id="amountToPay"></div>
       </div>
     </div>
   </body>
@@ -213,10 +214,12 @@ export default {
             if (this.whoOwesWho[key2] < 0) {
               if (this.whoOwesWho[key] > -this.whoOwesWho[key2]) {
                 console.log(key + " pays " + -this.whoOwesWho[key2] + " to " + key2);
+                document.getElementById("amountToPay").innerHTML += key + " pays " + -this.whoOwesWho[key2] + " to " + key2 + "<br>";
                 this.whoOwesWho[key] += this.whoOwesWho[key2];
                 this.whoOwesWho[key2] = 0;
-              } else {
+              } else if (this.whoOwesWho[key] != 0){
                 console.log(key + " pays " + this.whoOwesWho[key] + " to " + key2);
+                document.getElementById("amountToPay").innerHTML += key + " pays " + this.whoOwesWho[key] + " to " + key2 + "<br>";
                 this.whoOwesWho[key2] += this.whoOwesWho[key];
                 this.whoOwesWho[key] = 0;
               }
