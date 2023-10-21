@@ -78,6 +78,9 @@
             </tr>
           </tbody>
         </table>
+        <div class="form-group">
+          <button class="btn btn-primary" @click="breakeven">Breakeven</button>
+        </div>
       </div>
     </div>
   </body>
@@ -151,15 +154,15 @@ export default {
       console.log(this.whoOwesWho)
       if (this.expense.personOwedName in this.whoOwesWho) {
         console.log("Person already in whoOwesWho")
-        // 2. If it is, add the peopleOwingAmount to the existing amount
-        this.whoOwesWho[this.expense.personOwedName] -= this.expense.peopleOwingAmount;
+        // 2. If it is, add the expenseAmount to the existing amount
+        this.whoOwesWho[this.expense.personOwedName] -= this.expense.expenseAmount;
       } else {
         console.log("Person not in whoOwesWho")
         // 3. If it isn't, add the personOwedName and peopleOwingAmount to the whoOwesWho collection
-        this.whoOwesWho[this.expense.personOwedName] = this.expense.peopleOwingAmount;
+        this.whoOwesWho[this.expense.personOwedName] = Number(-this.expense.expenseAmount);
       }
       // 1. Check if the peopleOwingNames is already in the whoOwesWho collection
-      for (let i=0;i<this.expense.peopleOwingNames.length;i++) {
+      for (let i = 0; i < this.expense.peopleOwingNames.length; i++) {
         console.log(this.expense.peopleOwingNames[i]);
         if (this.expense.peopleOwingNames[i] in this.whoOwesWho) {
           console.log("Person already in whoOwesWho")
@@ -173,13 +176,13 @@ export default {
       }
       // Update the whoOwesWho collection in firebase
       updateDoc(doc(whoOwesWhoRef, 'BVTPIgEat4pbUPsNPx7i'), this.whoOwesWho)
-      .then(() => {
-        console.log("Document successfully updated!");
-      })
-      .catch((error) => {
-        // The document probably doesn't exist.
-        console.error("Error updating document: ", error);
-      });
+        .then(() => {
+          console.log("Document successfully updated!");
+        })
+        .catch((error) => {
+          // The document probably doesn't exist.
+          console.error("Error updating document: ", error);
+        });
     },
 
     // Supporting function for addExpense()
@@ -191,6 +194,38 @@ export default {
     // Supporting function for addExpense()
     removeFromList(index) {
       this.list.splice(index, 1);
+    },
+
+    // Function to breakeven expenses
+    breakeven() {
+      console.log(this.whoOwesWho)
+      for (let key in this.whoOwesWho) {
+        if (this.whoOwesWho[key] > 0) {
+          console.log(key + " owes " + this.whoOwesWho[key]);
+        } else if (this.whoOwesWho[key] < -0.011) {
+          console.log(key + " is owed " + -this.whoOwesWho[key]);
+        } else {
+          console.log(key + " is breakeven");
+        }
+        console.log(key)
+        while (this.whoOwesWho[key] > 0) {
+          for (let key2 in this.whoOwesWho) {
+            if (this.whoOwesWho[key2] < 0) {
+              if (this.whoOwesWho[key] > -this.whoOwesWho[key2]) {
+                console.log(key + " pays " + -this.whoOwesWho[key2] + " to " + key2);
+                this.whoOwesWho[key] += this.whoOwesWho[key2];
+                this.whoOwesWho[key2] = 0;
+              } else {
+                console.log(key + " pays " + this.whoOwesWho[key] + " to " + key2);
+                this.whoOwesWho[key2] += this.whoOwesWho[key];
+                this.whoOwesWho[key] = 0;
+              }
+            }
+          }
+        }
+
+      }
+
     },
 
     // Delete expense from database
@@ -212,13 +247,13 @@ export default {
         peopleOwingAmount: 50,
         personOwedName: "Updated Person Owed Name"
       })
-      .then(() => {
-        console.log("Document successfully updated!");
-      })
-      .catch((error) => {
-        // The document probably doesn't exist.
-        console.error("Error updating document: ", error);
-      });
+        .then(() => {
+          console.log("Document successfully updated!");
+        })
+        .catch((error) => {
+          // The document probably doesn't exist.
+          console.error("Error updating document: ", error);
+        });
     }
   },
   async created() {
