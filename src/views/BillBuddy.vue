@@ -93,7 +93,7 @@ import {
 // Declaring the database data points we need
 const db = getFirestore();
 const tripsRef = collection(db, 'trips',);
-const europeRef = collection(tripsRef, 'cj8jL4yrzvKTAMaY4RWp', 'europe')
+const europeRef = collection(tripsRef, 'cj8jL4yrzvKTAMaY4RWp', 'europe');
 const expensesRef = collection(europeRef, 'd52Dh6oAGG6sXBbRV2Dp', 'expenses');
 const whoOwesWhoRef = collection(europeRef, 'd52Dh6oAGG6sXBbRV2Dp', 'whoOwesWho');
 
@@ -152,14 +152,34 @@ export default {
       if (this.expense.personOwedName in this.whoOwesWho) {
         console.log("Person already in whoOwesWho")
         // 2. If it is, add the peopleOwingAmount to the existing amount
-        this.whoOwesWho[this.expense.personOwedName] += this.expense.peopleOwingAmount;
+        this.whoOwesWho[this.expense.personOwedName] -= this.expense.peopleOwingAmount;
       } else {
         console.log("Person not in whoOwesWho")
         // 3. If it isn't, add the personOwedName and peopleOwingAmount to the whoOwesWho collection
         this.whoOwesWho[this.expense.personOwedName] = this.expense.peopleOwingAmount;
       }
-      // 2. If it is, add the peopleOwingAmount to the existing amount
-
+      // 1. Check if the peopleOwingNames is already in the whoOwesWho collection
+      for (let i=0;i<this.expense.peopleOwingNames.length;i++) {
+        console.log(this.expense.peopleOwingNames[i]);
+        if (this.expense.peopleOwingNames[i] in this.whoOwesWho) {
+          console.log("Person already in whoOwesWho")
+          // 2. If it is, add the peopleOwingAmount to the existing amount
+          this.whoOwesWho[this.expense.peopleOwingNames[i]] += this.expense.peopleOwingAmount;
+        } else {
+          console.log("Person not in whoOwesWho")
+          // 3. If it isn't, add the personOwedName and peopleOwingAmount to the whoOwesWho collection
+          this.whoOwesWho[this.expense.peopleOwingNames[i]] = this.expense.peopleOwingAmount;
+        }
+      }
+      // Update the whoOwesWho collection in firebase
+      updateDoc(doc(whoOwesWhoRef, 'BVTPIgEat4pbUPsNPx7i'), this.whoOwesWho)
+      .then(() => {
+        console.log("Document successfully updated!");
+      })
+      .catch((error) => {
+        // The document probably doesn't exist.
+        console.error("Error updating document: ", error);
+      });
     },
 
     // Supporting function for addExpense()
