@@ -170,7 +170,13 @@
   <div v-for="(day, index) in activitiesandtime" :key="index">
     <table>
       <tr>
-        <th colspan="4">Day {{ index + 1 }} Date: {{ day.date }}</th>
+        <th colspan="4">Day {{ index + 1 }}</th>
+      </tr> 
+        <tr>
+          <th>Date: {{ day.date }}</th>
+        </tr> 
+      <tr>
+        <th>Weather Condition: {{ day.weather }}</th><th v-if="day.weather.includes('sunny')">Bring sunscreen!</th><th v-if="day.weather.includes('hazy')">Bring a mask!</th><th v-if="day.weather.includes('rain')">Bring an umbrella!</th>
       </tr>
       <tr>
         <th>Activity</th>
@@ -281,6 +287,7 @@ export default {
       final_activities : [],
       eateries: [],
       activitiesandtime: [],
+      weatherData: [],
       suggested_activities: [],
       isOpenNow: false,
       twelvehrtime: "",
@@ -310,10 +317,12 @@ async getweather() {
             console.log(response.data);
             var weather = response.data.forecast.forecastday;
             var weatherarray = [];
+  
 
             for (var i = 0; i < weather.length; i++) {
                 var weatherobj = {};
                 weatherarray.push(weather[i].day.condition.text);
+                this.weatherData = weatherarray;
                 this.dates.push(weather[i].date);
             }
             console.log(this.dates);
@@ -479,6 +488,7 @@ async searchBothAttractions(city) {
     day.activities = [];
     day.day = i + 1;
     day.date = this.dates[i];
+    day.weather = this.weatherData[i];
     while (timeint < maxtimeint) {
       if (this.final_activities.length === 0) {
         console.log("No more activities to add.");
@@ -561,7 +571,6 @@ async searchBothAttractions(city) {
         //store activities in each day
 
         day.activities.push(activity);
-
         // Update 'timeint' for the next activity
         timeint = endtime;
         // Add the activity to 'activitiesandtime' and remove it from 'final_activities'
