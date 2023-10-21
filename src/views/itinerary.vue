@@ -198,16 +198,16 @@
           </td> 
           <td>
             <!-- if its a travel display route -->
-            <a v-if="activity.name.includes('Travel')" href="#" @click="displaydirectionsonmap(day.activities[day.activities.indexOf(activity) - 1].geometry.location, day.activities[day.activities.indexOf(activity) + 1].geometry.location)">Show Route</a>
+            <a v-if="activity.name.includes('Travel')" href="#" @click="displaydirectionsonmap(day.activities[day.activities.indexOf(activity) - 1].geometry.location, day.activities[day.activities.indexOf(activity) + 1].geometry.location)">How to get there!</a>
             <!-- if its not a travel display eateries -->
-            <a v-else href="#" @click="geteateriesnearby(activity)">Show Eateries</a>
+            <a v-else href="#" @click="geteateriesnearby(activity)">Where to eat!</a>
           </td>
         </tr>
       </tbody>
     </table>
     <table v-if="eateries.length>0">
       <tr colspan = "3"><th>Eateries</th></tr>
-      <tr><th>Name</th><th>Address</th><th>Price Level</th><th>Rating</th><th>Map Details</th><th>Show me the way!</th></tr>
+      <tr><th>Name</th><th>Address</th><th>Price Level</th><th>Rating</th><th>Map Details</th><th>How to get there!</th></tr>
       <tbody>
         <tr v-for="eatery in eateries" :key="eatery.name">
           <td>
@@ -228,7 +228,7 @@
             <a href="#" @click="showLocation(eatery)">Show on Map</a>
           </td>
           <td>
-            <a href="#" @click="displaydirectionsonmap(day.activities[day.activities.indexOf(activity) - 1].geometry.location, eatery.geometry.location)">Show Route</a>
+            <a href="#" @click="displaydirectionsonmap(eatery.origin, eatery.geometry.location)">Show Route</a>
           </td>
 
         </tr>
@@ -568,6 +568,7 @@ async searchBothAttractions(city) {
 }
 ,
 async displaydirectionsonmap(origin, destination){
+  event.preventDefault();
   var directionsService = new google.maps.DirectionsService();
   var directionsRenderer = new google.maps.DirectionsRenderer();
   var map = new google.maps.Map(document.getElementById('map'), {
@@ -750,7 +751,12 @@ async formattimestrfrom24hourto12hour(input) {
 },
     
     async geteateriesnearby(activity){
+    event.preventDefault();
     this.eateries = [];
+    var map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 15,
+        center: activity.geometry.location,
+      });
     var geometry = activity.geometry;
     var request = {
       location: geometry.location,
@@ -763,6 +769,7 @@ async formattimestrfrom24hourto12hour(input) {
       for (var i = 0; i < results.length; i++) {
         var place = results[i];
         console.log(place);
+        place.origin = geometry.location;
         this.eateries.push(place);
       }
     }
@@ -810,6 +817,7 @@ async formattimestrfrom24hourto12hour(input) {
 },
 
 async showLocation(place){
+  event.preventDefault();
   var map = new google.maps.Map(document.getElementById("map"), {
         zoom: 15,
         center: place.geometry.location,
