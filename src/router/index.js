@@ -16,6 +16,7 @@ const router = createRouter({
         //go to converter or translator
         {path: "/translator", component: () => import("../views/Translator.vue")},
         {path: "/converter", component: () => import("../views/Converter.vue")},
+        {path: "/tools" , component: () => import("../views/Toolpage.vue")},
 
         //gotobillbuddy.vue
         {path: "/billbuddy", component: () => import("../views/BillBuddy.vue")},
