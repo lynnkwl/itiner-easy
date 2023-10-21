@@ -85,6 +85,9 @@
 <script>
 import axios from 'axios'; // Import Axios
 export default {
+  mounted() {
+    this.getLanguages();
+  },
   data() {
     return {
       country: '',
@@ -246,7 +249,7 @@ export default {
 
       })    },
   },
-  created() {
+    () {
     this.getLanguages();
     this.getCurrencyList();
   },
