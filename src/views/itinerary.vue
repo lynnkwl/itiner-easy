@@ -177,7 +177,7 @@
         <th>Time</th>
         <th>Address</th>
         <th>Details</th>
-        <th>Hungry?</th>
+        <th>Show me!</th>
       </tr>
       <tbody>
         <tr v-for="activity in day.activities" :key="activity.name">
@@ -197,14 +197,17 @@
             <a href="#" @click="showLocation(activity)">Show on Map</a>
           </td> 
           <td>
-            <a href="#" @click="geteateriesnearby(activity)">Find Eateries Nearby</a>
+            <!-- if its a travel display route -->
+            <a v-if="activity.name.includes('Travel')" href="#" @click="displaydirectionsonmap(day.activities[day.activities.indexOf(activity) - 1].geometry.location, day.activities[day.activities.indexOf(activity) + 1].geometry.location)">Show Route</a>
+            <!-- if its not a travel display eateries -->
+            <a v-else href="#" @click="geteateriesnearby(activity)">Show Eateries</a>
           </td>
         </tr>
       </tbody>
     </table>
     <table v-if="eateries.length>0">
       <tr colspan = "3"><th>Eateries</th></tr>
-      <tr><th>Name</th><th>Address</th><th>Price Level</th><th>Rating</th><th>Map Details</th></tr>
+      <tr><th>Name</th><th>Address</th><th>Price Level</th><th>Rating</th><th>Map Details</th><th>Show me the way!</th></tr>
       <tbody>
         <tr v-for="eatery in eateries" :key="eatery.name">
           <td>
@@ -223,6 +226,9 @@
           </td>
           <td>
             <a href="#" @click="showLocation(eatery)">Show on Map</a>
+          </td>
+          <td>
+            <a href="#" @click="displaydirectionsonmap(day.activities[day.activities.indexOf(activity) - 1].geometry.location, eatery.geometry.location)">Show Route</a>
           </td>
 
         </tr>
@@ -561,7 +567,29 @@ async searchBothAttractions(city) {
   console.log("Final activitiesandtime:", this.activitiesandtime);
 }
 ,
-
+async displaydirectionsonmap(origin, destination){
+  var directionsService = new google.maps.DirectionsService();
+  var directionsRenderer = new google.maps.DirectionsRenderer();
+  var map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 7,
+    center: { lat: 41.85, lng: -87.65 }
+  });
+  directionsRenderer.setMap(map);
+  directionsService.route(
+    {
+      origin: origin,
+      destination: destination,
+      travelMode: this.transport,
+    },
+    (response, status) => {
+      if (status === "OK") {
+        directionsRenderer.setDirections(response);
+      } else {
+        window.alert("Directions request failed due to " + status);
+      }
+    }
+  );
+},
 async formatTime(minutes) {
   const hours = Math.floor(minutes / 100);
   const mins = minutes % 100;
