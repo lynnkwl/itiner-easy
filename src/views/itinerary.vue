@@ -247,6 +247,12 @@
 <script >
 import axios from 'axios'; // Import Axios
 import { initMap } from '../main.js';
+import {
+  getFirestore, collection, getDocs,
+  addDoc, deleteDoc, doc, updateDoc, setDoc, query
+} from "firebase/firestore";
+const db = getFirestore();
+
 
 export default {
   mounted(){
