@@ -153,7 +153,7 @@
                 {{ act.formatted_address }}
               </td>
               <td>
-                <input type="checkbox" :value="act.name" v-model="selectedPlaces" />
+                <input type="checkbox" :value="act" v-model="selectedPlaces">
               </td>
             </tr>
           </tbody>
@@ -350,7 +350,7 @@ async searchBothAttractions(city) {
     this.suggested_activities = [];
     var request = {
         query: `Tourist Attractions in ${city}`,
-        fields: ['name', 'formatted_address','types', 'business_status', 'geometry'],
+        fields: ['name', 'formatted_address','types', 'business_status', 'geometry', 'opening_hours', 'website', 'place_id'],
     };
 
     this.getinterests(city);
@@ -383,6 +383,7 @@ async searchBothAttractions(city) {
     },
 
   async getactivitieslist(){
+    console.log(this.selectedPlaces[0]);
     this.final_activities = [];
     this.places = [];
     if(this.outgoing == "Indoor"){
@@ -410,8 +411,13 @@ async searchBothAttractions(city) {
     else{
         this.final_activities = this.final_activities.concat(this.selectedPlaces);
         if(this.final_activities< 5 * this.days){
-            this.final_activities = this.final_activities.concat(this.interestsresults);
-            this.final_activities = this.final_activities.concat(this.places);
+            //fill up with other activities from interestsresults or this.places  until 5 activities per day
+            while(this.final_activities.length < 5 * this.days){
+                var combinedact = this.places.concat(this.interestsresults);
+                var randomIndex = Math.floor(Math.random() * combinedact.length);
+                var randomactivity = combinedact[randomIndex];
+                this.final_activities.push(randomactivity);
+            }
         }
     }
 
