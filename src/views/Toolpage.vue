@@ -49,8 +49,7 @@
     </div>
 
         </div>
-      </div>
-
+        
 </template>
 
 <script>
@@ -220,7 +219,7 @@ export default {
 
       })    },
   },
-    () {
+    created() {
     this.getLanguages();
     this.getCurrencyList();
   },
