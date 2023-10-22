@@ -67,7 +67,7 @@
           <thead>
             <tr>
               <th>Name</th>
-              <th>Amount</th>
+              <th>Amount Owed</th>
             </tr>
           </thead>
 
@@ -147,12 +147,7 @@ export default {
         });
 
       // Adding the expense to the whoOwesWho collection
-      // TODO
       // 1. Check if the personOwedName is already in the whoOwesWho collection
-      console.log(this.expense)
-      console.log(this.expense.personOwedName)
-      console.log(this.expense.peopleOwingNames)
-      console.log(this.whoOwesWho)
       if (this.expense.personOwedName in this.whoOwesWho) {
         console.log("Person already in whoOwesWho")
         // 2. If it is, add the expenseAmount to the existing amount
@@ -178,12 +173,20 @@ export default {
       // Update the whoOwesWho collection in firebase
       updateDoc(doc(whoOwesWhoRef, 'BVTPIgEat4pbUPsNPx7i'), this.whoOwesWho)
         .then(() => {
-          console.log("Document successfully updated!");
+          console.log("whoOwesWho successfully updated!");
         })
         .catch((error) => {
           // The document probably doesn't exist.
           console.error("Error updating document: ", error);
         });
+
+      // Reset the values of the expense object
+      this.expense.expenseName = null;
+      this.expense.expenseAmount = null;
+      this.expense.peopleOwingNames = null;
+      this.expense.personOwedName = null;
+      this.expense.peopleOwingAmount = null;
+      this.list = [];
     },
 
     // Supporting function for addExpense()
