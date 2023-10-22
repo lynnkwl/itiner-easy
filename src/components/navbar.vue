@@ -3,7 +3,7 @@
     <div class=" bg-blue-400 text-gray-100 py-3.5 px-6 shadow md:flex justify-between items-center">
         <div class="flex items-center cursor-pointer">
             <span class="text-blue-600 text-x1 mr-1">
-                <img class="h-20 w-20" src="./logo/itiner-easy.svg">
+                <img class="h-20 w-20 max-w-none" src="./logo/itiner-easy.svg">
             </span>
         </div>
         <span @click="MenuOpen" class="absolute md:hidden right-6 top-5 cursor-pointer text-4xl">
@@ -15,10 +15,8 @@
                 <li class="md:mx-4 md:my-0 my-6 " v-for="link in Links">
                     <router-link :to=link.linkz ><a @click="MenuOpen" class="text-2xl hover:text-blue">{{ link.name }}</a></router-link>
                 </li>
-                <Button></Button>
             </ul>
         </div>
-        
     </div>
     
     <router-view />
