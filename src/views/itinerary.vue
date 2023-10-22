@@ -237,13 +237,16 @@
             <a href="#" @click="displaydirectionsonmap(eatery.origin, eatery.geometry.location)">Show Route</a>
           </td>
           <td>
-            I want to eat here<input id = "eateries{{ index }}" type="radio" :value="eatery" @click="addeaterytotrip(eatery)" v-model="selectedEateries">
+            I want to eat here<input name = "eateries{{ index }}" type="radio" :value="eatery" @click="addeaterytotrip(eatery,)" v-model="selectedEateries">
           </td>
           
         </tr>
       </tbody>
     </table>
 </div>
+</div>
+<div v-else>
+  <h3>Please input a city and Click on Generate Itinerary to get started!</h3>
 </div>
 <div>
   <button @click="checkempty">Generate Itinerary</button>
@@ -487,6 +490,7 @@ async searchBothAttractions(city) {
   for (var i = 0; i < this.days; i++) {
     let timeint = 900;
     let maxtimeint = 2100;
+    var actorder = 0;
     var day = {};
     day.activities = [];
     day.day = i + 1;
@@ -511,7 +515,6 @@ async searchBothAttractions(city) {
         }
         
         var activitytime = 0;
-
         // Adjust activity time calculation as needed
         if (randomactivity.types.includes("park") || randomactivity.types.includes("zoo") || randomactivity.types.includes("amusement_park")) {
           activitytime = 120;
@@ -555,14 +558,18 @@ async searchBothAttractions(city) {
           endtime: await this.formatTime(endtime),
           formatted_address: "Travel",
           transport: this.transport,
+          order : actorder,
           // geometry: randomactivity.geometry,
         };
+        actorder = actorder + 1;
         day.activities.push(travelactivity);
         timeint = endtime;
         }
         // Create the activity object
         var endtime = await this.converttime(timeint, activitytime);
         var activity = {
+          order : actorder,
+          day : i,
           name: randomactivity.name,
           time: await this.formatTime(timeint), // Format time as a string
           endtime: await this.formatTime(endtime), // Format endtime as a string
@@ -572,7 +579,7 @@ async searchBothAttractions(city) {
           url: "'https://www.google.com/search?q=" + randomactivity.name + "&rlz=1C1CHBF_enSG941SG941&oq=google&aqs=chrome..69i57j69i59j69i60l3j69i65l2.1001j0j7&sourceid=chrome&ie=UTF-8'",
         }; 
         //store activities in each day
-
+        actorder = actorder + 1;
         day.activities.push(activity);
         // Update 'timeint' for the next activity
         timeint = endtime;
@@ -794,6 +801,7 @@ async formattimestrfrom24hourto12hour(input) {
         var place = results[i];
         console.log(place);
         place.origin = geometry.location;
+        place.order = activity.order;
         this.eateries.push(place);
       }
     }
@@ -870,9 +878,9 @@ async showLocation(place){
 },
 
 
-
-
-    
+async loadingppage(){
+  var radio = document.getElementsByName("outgoing");
+},    
 
     
   async checkempty(){
@@ -889,8 +897,14 @@ async showLocation(place){
     var radio = document.getElementsByName("eateries");
     for (var i = 0; i < radio.length; i++) {
         if (radio[i].checked) {
-            this.final_activities.push(radio[i].value);
+            let neworder = radio[i].value.order;
+            let neweatery = radio[i].value;
+            neweatery.day = radio[i].value.day;
+            neweatery.time = formatTime(radio[i].value.time);
+            neweatery.endtime = formatTime(radio[i].value.endtime);
+            this.activitiesandtime[neweatery.day].activities.splice(neworder, 0, neweatery);
         }
+
     }
   },
 
