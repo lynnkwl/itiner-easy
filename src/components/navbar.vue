@@ -25,29 +25,7 @@
 <script>
 import { onMounted, ref } from 'vue';
 import Button from './button.vue'
-import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
 import router from '../router/index.js';
-
-const isLoggedIn = ref(false);
-
-let auth;
-onMounted(() => {
-  auth = getAuth();
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      isLoggedIn.value = true;
-    }
-    else {
-      isLoggedIn.value = false;
-    }
-  });
-});
-
-const handleSignOut = () => {
-  signOut(auth).thenn(() => {
-    router.push("/");
-  })
-};
 
 
 export default {

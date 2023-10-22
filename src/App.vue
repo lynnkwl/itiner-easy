@@ -3,6 +3,31 @@
 import Navbar from "./components/navbar.vue"
 import Footer from "./components/footer.vue"
 
+import { onMounted, ref } from 'vue';
+import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
+import router from './router/index.js';
+
+const isLoggedIn = ref(false);
+
+let auth;
+onMounted(() => {
+  auth = getAuth();
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      isLoggedIn.value = true;
+    }
+    else {
+      isLoggedIn.value = false;
+    }
+  });
+});
+
+const handleSignOut = () => {
+  signOut(auth).thenn(() => {
+    router.push("/");
+  })
+};
+
 </script>
 
 <!-- <template>
@@ -44,7 +69,8 @@ import Footer from "./components/footer.vue"
 
 <template>
   <div class="bg-white h-screen">
-    <Navbar />
+    <!-- <Navbar /> -->
+    <router-view/>
   </div>
   <div>
     <Footer></Footer>
