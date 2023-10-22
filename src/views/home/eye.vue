@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="eye-container" :style="{ transform: 'translateY(' + scrollPosition + 'px)' }">
-      <div class="eye-frame">
+      <div class="eye-frame" :style="{ backgroundColor: frameBackgroundColor }">
         <img :src="frameUrls[index]" alt="Eye Frame" class="eye-image" />
       </div>
     </div>
@@ -13,44 +13,44 @@ export default {
   data() {
     return {
       frames: [],
-      frameUrls: [`src/assets/eye/000.jpg`], // Array to store image URLs
+      frameUrls: [`src/assets/eye/000.png`],
       scrollPosition: 0,
-      index: 0, // Index of the image to be displayed
+      index: 0,
+      frameBackgroundColor: 'transparent', // Initialize with a transparent background
     };
   },
   methods: {
-  handleScroll() {
-    // Calculate the maximum scroll position allowed
-    const maxScrollPosition = (this.frames.length - 1) * 10;
-
-    // Update the scroll position
-    this.scrollPosition = Math.min(window.scrollY, maxScrollPosition);
-
-    // Calculate the index of the image to be displayed
-    const index = Math.floor(this.scrollPosition / 10);
-
-    // Update the index and frameUrls data properties
-    if (index !== this.index) {
-      this.index = index;
-      this.frameUrls = this.frames.map((frame) => `src/assets/eye/${frame}.jpg`);
-    }
+    handleScroll() {
+      const maxScrollPosition = (this.frames.length - 1) * 10;
+      this.scrollPosition = Math.min(window.scrollY, maxScrollPosition);
+      const index = Math.floor(this.scrollPosition / 10);
+      if (index !== this.index) {
+        this.index = index;
+        this.frameUrls = this.frames.map((frame) => `src/assets/eye/${frame}.png`);
+        this.updateFrameBackgroundColor(index); // Call the method to update background color
+      }
+    },
+    updateFrameBackgroundColor(index) {
+      // Set the background color based on the index
+      if (index === this.frames.length - 1) {
+        // If it's the last image, blend it into the page's background color (white)
+        this.frameBackgroundColor = '#b2b2b2';
+      } else {
+        // Otherwise, keep it transparent
+        this.frameBackgroundColor = 'white';
+      }
+    },
   },
-},
   created() {
-    // Generate an array of frame numbers (000 to 273)
-    for (let i = 1; i <= 274; i++) {
+    for (let i = 1; i <= 186; i++) {
       this.frames.push(String(i).padStart(3, "0"));
     }
-
-    // Add an event listener for the 'scroll' event
     window.addEventListener('scroll', this.handleScroll);
   },
   destroyed() {
-    // Remove the event listener when the component is destroyed
     window.removeEventListener('scroll', this.handleScroll);
   },
 };
-
 </script>
 
 <style scoped>
@@ -67,14 +67,17 @@ export default {
 }
 
 .eye-frame {
-  height: 100vh; /* Match the viewport height */
+  height: 100vh;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.05s ease-out; /* Adjust the duration for a smoother effect */
+  transition: transform 0.3s ease-out, background-color 0.5s ease; /* Add transition for background-color */
 }
 
 .eye-image {
   max-width: 100%;
+  width: auto;
+  height: auto;
 }
 </style>
