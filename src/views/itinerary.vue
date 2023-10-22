@@ -252,6 +252,12 @@
   <button @click="checkempty">Generate Itinerary</button>
 
 </div>
+<div v-if="customactivitiesandtime">
+
+</div>
+
+
+
 </template>
 
 
@@ -299,6 +305,7 @@ export default {
       twelvehrtime: "",
       dates: [],
       citycoords: {},
+      customactivitiesandtime: [],
     };
   },
     methods: {
