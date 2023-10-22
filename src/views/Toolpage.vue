@@ -19,6 +19,39 @@
       </div>
       <div class="col-4 pad" style="margin-left: 15px; margin-top: 15px;">
         <div class="card">
+
+          <h3>Currency Converter</h3>
+          <br>
+                    <label for="currencylist">Which currency are you using?</label>
+                    <br><br>
+                        <select name="currencylist" id="currencylist" @change="convertit">
+                            <option v-for="currency in currencyList" :key="currency.key" :value="currency.key">
+                                {{ currency.value }} </option>
+                        </select>
+                    <br><br>
+                    <label for="text">Amount</label>
+                    <br>
+                    <input type="number" id="moneymoneyahhhhh" @change="convertCurrency">
+                    <br>
+                    <br>
+                    <h7>Which Currency do you want to convert to?</h7>
+                    <br><br>
+                    <select name="currencylisttoconvert" id="currencylisttoconvert" @change="convertCurrency">
+                        <option v-for="currency in currencyList" :key="currency.key" :value="currency.key">
+                                {{ currency.value }} </option>
+                    </select>
+                    <h6>Converted amount</h6>
+                    <br>
+                    <div id="convertedmoney" class="background">
+                    <h3>{{ convertedAmount }}</h3>
+                    <h3 v-if="convertedAmount == ''">Please key in a value!</h3>
+                    </div>
+                    <br>
+                    <button @click="convertCurrency" class="btn-primary">Convert</button>
+                    </div>
+                    </div>
+      <div class="col-4 pad" style="margin-left: 15px; margin-top: 15px;">
+        <div class="card">
           <h3>Language Translator</h3>
           <h7>What language are you typing?</h7>
           <br><br>
@@ -49,7 +82,6 @@
     </div>
 
         </div>
-      </div>
 
 </template>
 
@@ -220,7 +252,7 @@ export default {
 
       })    },
   },
-    () {
+    created() {
     this.getLanguages();
     this.getCurrencyList();
   },

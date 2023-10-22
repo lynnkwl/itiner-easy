@@ -106,10 +106,6 @@ export default {
   data() {
     return {
       // Objects of data we want to add to firebase
-      book: {
-        title: null,
-        author: null
-      },
       expense: {
         expenseName: null,
         expenseAmount: null,

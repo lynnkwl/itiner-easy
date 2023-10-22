@@ -82,7 +82,6 @@
       </div>
     </div>
   </nav> -->
-  <Navbar/>
 <br>
 <br>
 <br>
@@ -237,6 +236,9 @@
           <td>
             <a href="#" @click="displaydirectionsonmap(eatery.origin, eatery.geometry.location)">Show Route</a>
           </td>
+          <td>
+            I want to eat here<input id = "eateries{{ index }}" type="radio" :value="eatery" @click="addeaterytotrip(eatery)" v-model="selectedEateries">
+          </td>
 
         </tr>
       </tbody>
@@ -260,12 +262,8 @@ import {
 } from "firebase/firestore";
 const db = getFirestore();
 
-import Navbar from '../components/navbar.vue';
 
 export default {
-  components: {
-    Navbar
-  },
   mounted(){
     const script = document.createElement('script');
     script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCrtlMuj3mZnI5NGVkgw5ME1hZL-XEtRzI&libraries=places&callback=initMap';
@@ -887,7 +885,14 @@ async showLocation(place){
         await this.getactivitieslist();
     }
     },
-
+  async addeaterytotrip(){
+    var radio = document.getElementsByName("eateries");
+    for (var i = 0; i < radio.length; i++) {
+        if (radio[i].checked) {
+            this.final_activities.push(radio[i].value);
+        }
+    }
+  },
 
  
 async checkempty2(){
