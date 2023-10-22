@@ -13,7 +13,7 @@ export default {
   data() {
     return {
       frames: [],
-      frameUrls: [`src/assets/eye/000.png`],
+      frameUrls: [`../../assets/eye/000.png`],
       scrollPosition: 0,
       index: 0,
       frameBackgroundColor: 'transparent', // Initialize with a transparent background
