@@ -82,7 +82,6 @@
       </div>
     </div>
   </nav> -->
-  <Navbar/>
 <br>
 <br>
 <br>
@@ -254,21 +253,14 @@
 <script >
 import axios from 'axios'; // Import Axios
 import { initMap } from '../main.js';
-<<<<<<< Updated upstream
 import {
   getFirestore, collection, getDocs,
   addDoc, deleteDoc, doc, updateDoc, setDoc, query
 } from "firebase/firestore";
 const db = getFirestore();
 
-=======
-import Navbar from '../components/navbar.vue';
->>>>>>> Stashed changes
 
 export default {
-  components: {
-    Navbar
-  },
   mounted(){
     const script = document.createElement('script');
     script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCrtlMuj3mZnI5NGVkgw5ME1hZL-XEtRzI&libraries=places&callback=initMap';

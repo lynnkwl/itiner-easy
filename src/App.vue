@@ -3,8 +3,6 @@
 import Navbar from "./components/navbar.vue"
 import Footer from "./components/footer.vue"
 
-
-
 </script>
 
 <!-- <template>
@@ -46,8 +44,7 @@ import Footer from "./components/footer.vue"
 
 <template>
   <div class="bg-white h-screen">
-    <!-- <Navbar /> -->
-    <router-view />
+    <Navbar />
   </div>
   <div>
     <Footer></Footer>

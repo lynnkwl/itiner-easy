@@ -6,8 +6,8 @@ const router = createRouter({
     history : createWebHistory(),
     routes: [
         { path: "/", component: () => import("../views/home/Home.vue")},
-        { path: "/sign-up", component: () => import("../views/register/SignUp.vue")},
-        { path: "/sign-in", component: () => import("../views/login/SignIn.vue")},
+        { path: "/sign-up", component: () => import("../views/SignUp.vue")},
+        { path: "/sign-in", component: () => import("../views/SignIn.vue")},
         { path: "/feed", component: () => import("../views/Feed.vue"),
         
         meta:{
