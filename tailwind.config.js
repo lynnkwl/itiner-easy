@@ -41,6 +41,7 @@ export default {
     typography,
     forms,
     aspectRatio,
-    require("daisyui")
+    require("daisyui"),
+    require("tailwindcss")
   ],
 }

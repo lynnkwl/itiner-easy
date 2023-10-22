@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <title>BillBuddy</title>
 
   <body>
@@ -84,6 +84,24 @@
       </div>
     </div>
   </body>
+</template> -->
+
+<template>
+  <div class="text-3xl m-7 font-bold">
+    <a>Current trips</a>
+  </div>
+<!-- need to insert a v-if here if there are current trips -->
+  <div class="text-xl m-7 italic">
+    <a>You currently have no trips.</a>
+  </div>
+  <!-- add trip -->
+  <router-link to="/add-trip">
+    <button class="btn btn-neutral ml-7 p-2 text-white btn-xs sm:btn-sm md:btn-md lg:btn-lg">Add a new trip</button>
+  </router-link>
+  <!-- based on the current trip selected, add an expense -->
+  <div class="text-3xl m-7 font-bold">
+    <a>Trip's name expenses</a>
+  </div>
 </template>
 
 <script>

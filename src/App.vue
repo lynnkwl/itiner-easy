@@ -46,6 +46,7 @@ import Footer from "./components/footer.vue"
   <div class="bg-white h-screen">
     <Navbar />
   </div>
+  
   <div>
     <Footer></Footer>
   </div>

@@ -3,7 +3,7 @@
     <div class=" bg-blue-400 text-gray-100 py-3.5 px-6 shadow md:flex justify-between items-center">
         <div class="flex items-center cursor-pointer">
             <span class="text-blue-600 text-x1 mr-1">
-                <img class="h-20 w-20" src="./logo/itiner-easy.svg">
+                <router-link to="/"><img class="h-20 w-20" src="./logo/itiner-easy.svg"></router-link>
             </span>
         </div>
         <span @click="MenuOpen" class="absolute md:hidden right-6 top-5 cursor-pointer text-4xl">
