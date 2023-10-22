@@ -33,7 +33,7 @@ export function initMap(coords){
       center: coords
     }
     var map = new google.maps.Map(document.getElementById('map'), options);
-    
+    this.map = map;
   } else {
     // The Google Maps JavaScript API is not loaded
     // You can display an error message or try to load the API again

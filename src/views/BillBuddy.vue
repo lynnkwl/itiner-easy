@@ -53,7 +53,7 @@
               <td>{{ expense.expenseName }}</td>
               <td>{{ expense.expenseAmount }}</td>
               <td>
-              <td v-for="name in expense.peopleOwingNames">{{ name }}</td>
+              <td v-for="name in expense.peopleOwingNames">{{ name }} &nbsp;</td>
               </td>
               <td>{{ expense.peopleOwingAmount }}</td>
               <td>{{ expense.personOwedName }}</td>
@@ -67,7 +67,7 @@
           <thead>
             <tr>
               <th>Name</th>
-              <th>Amount</th>
+              <th>Amount Owed</th>
             </tr>
           </thead>
 
@@ -78,6 +78,10 @@
             </tr>
           </tbody>
         </table>
+        <div class="form-group">
+          <button class="btn btn-primary" @click="breakeven">Breakeven</button>
+        </div>
+        <div id="amountToPay"></div>
       </div>
     </div>
   </body>
@@ -93,7 +97,7 @@ import {
 // Declaring the database data points we need
 const db = getFirestore();
 const tripsRef = collection(db, 'trips',);
-const europeRef = collection(tripsRef, 'cj8jL4yrzvKTAMaY4RWp', 'europe')
+const europeRef = collection(tripsRef, 'cj8jL4yrzvKTAMaY4RWp', 'europe');
 const expensesRef = collection(europeRef, 'd52Dh6oAGG6sXBbRV2Dp', 'expenses');
 const whoOwesWhoRef = collection(europeRef, 'd52Dh6oAGG6sXBbRV2Dp', 'whoOwesWho');
 
@@ -143,23 +147,46 @@ export default {
         });
 
       // Adding the expense to the whoOwesWho collection
-      // TODO
       // 1. Check if the personOwedName is already in the whoOwesWho collection
-      console.log(this.expense)
-      console.log(this.expense.personOwedName)
-      console.log(this.expense.peopleOwingNames)
-      console.log(this.whoOwesWho)
       if (this.expense.personOwedName in this.whoOwesWho) {
         console.log("Person already in whoOwesWho")
-        // 2. If it is, add the peopleOwingAmount to the existing amount
-        this.whoOwesWho[this.expense.personOwedName] += this.expense.peopleOwingAmount;
+        // 2. If it is, add the expenseAmount to the existing amount
+        this.whoOwesWho[this.expense.personOwedName] -= this.expense.expenseAmount;
       } else {
         console.log("Person not in whoOwesWho")
         // 3. If it isn't, add the personOwedName and peopleOwingAmount to the whoOwesWho collection
-        this.whoOwesWho[this.expense.personOwedName] = this.expense.peopleOwingAmount;
+        this.whoOwesWho[this.expense.personOwedName] = Number(-this.expense.expenseAmount);
       }
-      // 2. If it is, add the peopleOwingAmount to the existing amount
+      // 1. Check if the peopleOwingNames is already in the whoOwesWho collection
+      for (let i = 0; i < this.expense.peopleOwingNames.length; i++) {
+        console.log(this.expense.peopleOwingNames[i]);
+        if (this.expense.peopleOwingNames[i] in this.whoOwesWho) {
+          console.log("Person already in whoOwesWho")
+          // 2. If it is, add the peopleOwingAmount to the existing amount
+          this.whoOwesWho[this.expense.peopleOwingNames[i]] += this.expense.peopleOwingAmount;
+        } else {
+          console.log("Person not in whoOwesWho")
+          // 3. If it isn't, add the personOwedName and peopleOwingAmount to the whoOwesWho collection
+          this.whoOwesWho[this.expense.peopleOwingNames[i]] = this.expense.peopleOwingAmount;
+        }
+      }
+      // Update the whoOwesWho collection in firebase
+      updateDoc(doc(whoOwesWhoRef, 'BVTPIgEat4pbUPsNPx7i'), this.whoOwesWho)
+        .then(() => {
+          console.log("whoOwesWho successfully updated!");
+        })
+        .catch((error) => {
+          // The document probably doesn't exist.
+          console.error("Error updating document: ", error);
+        });
 
+      // Reset the values of the expense object
+      this.expense.expenseName = null;
+      this.expense.expenseAmount = null;
+      this.expense.peopleOwingNames = null;
+      this.expense.personOwedName = null;
+      this.expense.peopleOwingAmount = null;
+      this.list = [];
     },
 
     // Supporting function for addExpense()
@@ -171,6 +198,40 @@ export default {
     // Supporting function for addExpense()
     removeFromList(index) {
       this.list.splice(index, 1);
+    },
+
+    // Function to breakeven expenses
+    breakeven() {
+      console.log(this.whoOwesWho)
+      for (let key in this.whoOwesWho) {
+        if (this.whoOwesWho[key] > 0) {
+          console.log(key + " owes " + this.whoOwesWho[key]);
+        } else if (this.whoOwesWho[key] < -0.011) {
+          console.log(key + " is owed " + -this.whoOwesWho[key]);
+        } else {
+          console.log(key + " is breakeven");
+        }
+        console.log(key)
+        while (this.whoOwesWho[key] > 0) {
+          for (let key2 in this.whoOwesWho) {
+            if (this.whoOwesWho[key2] < 0) {
+              if (this.whoOwesWho[key] > -this.whoOwesWho[key2]) {
+                console.log(key + " pays " + -this.whoOwesWho[key2] + " to " + key2);
+                document.getElementById("amountToPay").innerHTML += key + " pays " + -this.whoOwesWho[key2] + " to " + key2 + "<br>";
+                this.whoOwesWho[key] += this.whoOwesWho[key2];
+                this.whoOwesWho[key2] = 0;
+              } else if (this.whoOwesWho[key] != 0){
+                console.log(key + " pays " + this.whoOwesWho[key] + " to " + key2);
+                document.getElementById("amountToPay").innerHTML += key + " pays " + this.whoOwesWho[key] + " to " + key2 + "<br>";
+                this.whoOwesWho[key2] += this.whoOwesWho[key];
+                this.whoOwesWho[key] = 0;
+              }
+            }
+          }
+        }
+
+      }
+
     },
 
     // Delete expense from database
@@ -192,13 +253,13 @@ export default {
         peopleOwingAmount: 50,
         personOwedName: "Updated Person Owed Name"
       })
-      .then(() => {
-        console.log("Document successfully updated!");
-      })
-      .catch((error) => {
-        // The document probably doesn't exist.
-        console.error("Error updating document: ", error);
-      });
+        .then(() => {
+          console.log("Document successfully updated!");
+        })
+        .catch((error) => {
+          // The document probably doesn't exist.
+          console.error("Error updating document: ", error);
+        });
     }
   },
   async created() {

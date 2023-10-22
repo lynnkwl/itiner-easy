@@ -1,6 +1,7 @@
 <script setup>
 
 import Navbar from "./components/navbar.vue"
+import Footer from "./components/footer.vue"
 
 </script>
 
@@ -44,6 +45,9 @@ import Navbar from "./components/navbar.vue"
 <template>
   <div class="bg-white h-screen">
     <Navbar />
+  </div>
+  <div>
+    <Footer></Footer>
   </div>
 
   
