@@ -1,4 +1,7 @@
 <template>
+    <div>
+      <NavbarLanding /> 
+    </div>
     <div class="eye-scroll" style="background-color: white;">
 
       <div class="eye-container">
@@ -10,11 +13,13 @@
   
   <script>
   import Eye from './eye.vue';
+import NavbarLanding from '../../components/NavbarLanding.vue';
   
   export default {
     components: {
-      Eye,
-    },
+    Eye,
+    NavbarLanding
+},
   };
   </script>
   

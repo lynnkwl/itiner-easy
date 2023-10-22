@@ -37,7 +37,7 @@ export default {
         this.frameBackgroundColor = '#b2b2b2';
       } else {
         // Otherwise, keep it transparent
-        this.frameBackgroundColor = 'transparent';
+        this.frameBackgroundColor = 'white';
       }
     },
   },
