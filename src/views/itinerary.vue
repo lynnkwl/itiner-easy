@@ -239,7 +239,7 @@
           <td>
             I want to eat here<input id = "eateries{{ index }}" type="radio" :value="eatery" @click="addeaterytotrip(eatery)" v-model="selectedEateries">
           </td>
-
+          
         </tr>
       </tbody>
     </table>
