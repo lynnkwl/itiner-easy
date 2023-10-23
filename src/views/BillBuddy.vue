@@ -25,6 +25,37 @@
           <input type="text" placeholder="Who Owes Money (Type and press Enter)" v-model="inputValue" class="form-control"
             @keyup.enter="addToList">
         </div>
+    
+        <div class="form-group">
+          How are we splitting this?
+            <select name="splitmethod" id="splitmethod" v-model="splitmethod">
+              <option value="evenly">Split Evenly</option>
+              <option value="percentage">Split by percentage</option>  
+              <option value="shares">Split by Shares</option>   
+              <option value="custom">Custom Split</option>         
+            </select>
+        </div>
+        <div v-if="splitmethod == 'percentage'">
+          <h3>Split By Percentage</h3>
+          <div class="form-group">
+            <h4 v-for="name in inputValue ">
+              {{ name }} <input type="number" placeholder="Percentage" v-model="expense.peopleOwingAmount" class="form-control">
+            </h4>
+          </div>
+        </div>
+        <div v-if="splitmethod == 'shares'">
+          <h3>Split By Shares</h3>
+          <div class="form-group">
+            <input type="text" placeholder="Number of People" v-model="expense.peopleOwingNames" class="form-control">
+          </div>
+        </div>
+        <div v-if="splitmethod == 'custom'">
+          <h3>Have it your way!</h3>
+          <div class="form-group">
+            <input type="text" placeholder="Number of People" v-model="expense.peopleOwingNames" class="form-control">
+          </div>
+        </div>
+
         <ul>
           <li v-for="(item, index) in list" :key="index">
             {{ item }}
@@ -119,6 +150,7 @@ export default {
       // This is for the list of people who owe money
       inputValue: '',
       list: [],
+      splitmethod: null
     }
   },
 
