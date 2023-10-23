@@ -134,7 +134,7 @@
 // Importing the functions we need from firebase
 import {
   getFirestore, collection, getDocs,
-  addDoc, deleteDoc, doc, updateDoc, setDoc, query
+  addDoc, deleteDoc, doc, updateDoc, setDoc, query, onSnapshot
 } from "firebase/firestore";
 
 // Declaring the database data points we need
@@ -312,12 +312,17 @@ export default {
 
   ,
   async created() {
-    const querySnapshot = await getDocs(expensesRef);
-    querySnapshot.forEach((doc) => {
-      // doc.data() is never undefined for query doc snapshots
-      console.log(doc.id, " => ", doc.data());
-      this.docId.push(doc.id);
-      this.expenses.push(doc.data());
+    // const querySnapshot = await getDocs(expensesRef);
+    onSnapshot(expensesRef, (querySnapshot) => {
+      if (this.expenses.length > 0 ) {
+        this.expenses = [];
+      }
+      querySnapshot.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        console.log(doc.id, " => ", doc.data());
+        this.docId.push(doc.id);
+        this.expenses.push(doc.data());
+      });
     });
 
     const querySnapshot1 = await getDocs(whoOwesWhoRef);
