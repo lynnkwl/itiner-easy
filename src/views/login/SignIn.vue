@@ -323,7 +323,7 @@
   .login .inputbox span {
     position: absolute;
     top: 13px;
-    left: 13px;
+    left: 15px;
     font-size: 0.8em;
     transition: 0.6s;
     background-color: #024959;
@@ -334,7 +334,7 @@
   
   .login .inputbox input:focus ~ span,
   .login .inputbox input:valid ~ span {
-    transform: translateX(-13px) translateY(-30px);
+    transform: translateX(-13px) translateY(-27px);
     font-size: 0.8em;
   }
   
