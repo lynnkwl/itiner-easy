@@ -38,7 +38,7 @@
         <div v-if="splitmethod == 'percentage'">
           <h3>Split By Percentage</h3>
           <div class="form-group">
-            <h4 v-for="name in inputValue ">
+            <h4 v-for="name in list ">
               {{ name }} <input type="number" placeholder="Percentage" v-model="expense.peopleOwingAmount" class="form-control">
             </h4>
           </div>
@@ -46,13 +46,17 @@
         <div v-if="splitmethod == 'shares'">
           <h3>Split By Shares</h3>
           <div class="form-group">
-            <input type="text" placeholder="Number of People" v-model="expense.peopleOwingNames" class="form-control">
+            <h4 v-for="name in list ">
+              {{ name }} <input type="number" placeholder="Percentage" v-model="expense.peopleOwingAmount" class="form-control">
+            </h4>
           </div>
         </div>
         <div v-if="splitmethod == 'custom'">
           <h3>Have it your way!</h3>
           <div class="form-group">
-            <input type="text" placeholder="Number of People" v-model="expense.peopleOwingNames" class="form-control">
+            <h4 v-for="name in list ">
+              {{ name }} <input type="number" placeholder="Percentage" v-model="expense.peopleOwingAmount" class="form-control">
+            </h4>          
           </div>
         </div>
 
