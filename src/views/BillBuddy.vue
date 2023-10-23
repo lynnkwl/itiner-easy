@@ -13,26 +13,84 @@
 
       <div class="expense-add">
         <div class="form-group">
-          <input type="text" placeholder="Expense Name" v-model="expense.expenseName" class="form-control">
+          <input type="text" placeholder="Expense Name" v-model="expense.expenseName" class="form-control" required>
         </div>
         <div class="form-group">
-          <input type="text" placeholder="Expense Amount" v-model="expense.expenseAmount" class="form-control">
+          <input type="text" placeholder="Expense Amount" v-model="expense.expenseAmount" class="form-control" required>
         </div>
         <div class="form-group">
-          <input type="text" placeholder="Person Owed" v-model="expense.personOwedName" class="form-control">
+          <input type="text" placeholder="Person Owed" v-model="expense.personOwedName" class="form-control" required>
         </div>
         <div class="form-group">
           <input type="text" placeholder="Who Owes Money (Type and press Enter)" v-model="inputValue" class="form-control"
             @keyup.enter="addToList">
         </div>
+    
+        <div class="form-group">
+          How are we splitting this?
+            <select id="splitmethod" v-model="splitmethod">
+              <option value="evenly">Split Evenly</option>
+              <option value="percentage">Split by percentage</option>  
+              <option value="shares">Split by Shares</option>   
+              <option value="custom">Custom Split</option>         
+            </select>
+        </div>
+        <div v-if="splitmethod == 'percentage'">
+          <h3>Split By Percentage</h3>
+          <div class="form-group">
+            <h4 v-for="(name,index) in list ">
+              {{ name }} <input type="number" placeholder="Percentage" v-model="percentages[index]" class="form-control" @keyup.enter="computeexpense">
+            </h4>
+            <ul>
+              <li v-for="(amt, index) in quicksettleamount" :key="index">
+                {{this.list[index]}} pays {{ amt }}
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div v-if="splitmethod == 'shares'">
+          <h3>Split By Shares</h3>
+          <div class="form-group">
+            <h4 v-for="(name,index) in list ">
+              {{ name }} <input type="number" placeholder="Shares" v-model="shares[index]" class="form-control" @keyup.enter="computeexpense">
+            </h4>
+            <ul>
+              <li v-for="(amt, index) in quicksettleamount" :key="index">
+                {{this.list[index]}} pays {{ amt }}
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div v-if="splitmethod == 'custom'">
+          <h3>Have it your way!</h3>
+          <div class="form-group">
+            <h4 v-for="(name,index) in list ">
+              {{ name }} <input type="number" placeholder="custom" v-model="custom[index]" class="form-control" @keyup.enter="computeexpense" >
+            </h4>
+            <ul>
+              <li v-for="(amt, index) in quicksettleamount" :key="index">
+                {{list[index]}} pays {{ amt }}
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div v-if="splitmethod == 'evenly'">
+          <h3>Split Evenly</h3>
+          <div class="form-group">
+            <h4 v-for="name in list ">
+              {{ name }} pays {{ expense.expenseAmount / list.length }}
+            </h4>
+          </div>
+        </div>
+
         <ul>
           <li v-for="(item, index) in list" :key="index">
-            {{ item }}
-            <button @click="removeFromList(index)">Remove</button>
+            
+            <button class="btn btn-primary" @click="removeFromList(index)">Remove</button> {{ item }}
           </li>
         </ul>
         <div class="form-group">
-          <button class="btn btn-primary" @click="addExpense">Add Expense</button>
+          <button class="btn btn-primary" @click="checkempty">Add Expense</button>
         </div>
         <h3>Expense Table</h3>
         <table>
@@ -72,7 +130,7 @@
           </thead>
 
           <tbody>
-            <tr v-for="key in Object.keys(whoOwesWho)" :key="index">
+            <tr v-for="key in Object.keys(whoOwesWho)">
               <td>{{ key }}</td>
               <td>{{ whoOwesWho[key] }}</td>
             </tr>
@@ -91,7 +149,7 @@
 // Importing the functions we need from firebase
 import {
   getFirestore, collection, getDocs,
-  addDoc, deleteDoc, doc, updateDoc, setDoc, query
+  addDoc, deleteDoc, doc, updateDoc, setDoc, query, onSnapshot
 } from "firebase/firestore";
 
 // Declaring the database data points we need
@@ -119,16 +177,21 @@ export default {
       // This is for the list of people who owe money
       inputValue: '',
       list: [],
+      splitmethod: null,
+      quicksettleamount: [],
+      percentages: [],
+      shares: [],
+      custom: [],
     }
   },
 
   // Methods for adding data to firebase
   methods: {
     // This function retrieves user input and adds it to the database. (Both in expenses and whoOwesWho)
-    addExpense() {
+    async addExpense() {
       // Assigns the value of list to the peopleOwingNames object
       this.expense.peopleOwingNames = this.list;
-
+      console.log(this.expense.peopleOwingNames);
       // Assigns the amount owed to peopleOwingAmount object
       var peopleOwingAmount = Number((this.expense.expenseAmount / this.expense.peopleOwingNames.length).toFixed(2));
       this.expense.peopleOwingAmount = peopleOwingAmount;
@@ -183,12 +246,14 @@ export default {
       this.expense.personOwedName = null;
       this.expense.peopleOwingAmount = null;
       this.list = [];
+    
     },
 
     // Supporting function for addExpense()
     addToList() {
       this.list.push(this.inputValue);
       this.inputValue = '';
+      this.list = this.list.sort();
     },
 
     // Supporting function for addExpense()
@@ -256,15 +321,73 @@ export default {
           // The document probably doesn't exist.
           console.error("Error updating document: ", error);
         });
+    },
+    checkempty(){
+    if (this.expense.expenseName == null || this.expense.expenseAmount == null || this.expense.personOwedName == null || this.list.length == 0){
+      alert("Please fill in all fields")
+    } else {
+      this.addExpense();
     }
   },
+  
+computeexpense(){
+  this.quicksettleamount = [];
+  let amount = this.expense.expenseAmount;
+  if(this.custom.length > 0){
+    let sum = 0
+    for (let i = 0; i < this.custom.length; i++){
+      sum += this.custom[i];
+    }
+    if (sum != this.expense.expenseAmount){
+      alert("Please make sure the percentages add up to the amount owed!")
+    }
+    else{
+      for (let i = 0; i < this.custom.length; i++){
+        this.quicksettleamount.push(this.custom[i]);
+      }
+    }
+  }
+  if(this.shares.length > 0){
+    let totalshares = 0;
+    for (let i = 0; i < this.shares.length; i++){
+      totalshares += this.shares[i];
+    }
+    for (let i = 0; i < this.shares.length; i++){
+      this.quicksettleamount.push(this.shares[i] * amount / totalshares);
+    }
+  }
+  if(this.percentages.length > 0){
+    let totalpercentage = 0;
+    for (let i = 0; i < this.percentages.length; i++){
+      totalpercentage += this.percentages[i];
+    }
+    if (totalpercentage != 100){
+      alert("Please make sure the percentages add up to 100!")
+    }
+    else{
+      for (let i = 0; i < this.percentages.length; i++){
+        this.quicksettleamount.push(this.percentages[i] * amount / 100);
+      }
+
+      
+    }
+
+  }
+
+}
+  },
   async created() {
-    const querySnapshot = await getDocs(expensesRef);
-    querySnapshot.forEach((doc) => {
-      // doc.data() is never undefined for query doc snapshots
-      console.log(doc.id, " => ", doc.data());
-      this.docId.push(doc.id);
-      this.expenses.push(doc.data());
+    // const querySnapshot = await getDocs(expensesRef);
+    onSnapshot(expensesRef, (querySnapshot) => {
+      if (this.expenses.length > 0 ) {
+        this.expenses = [];
+      }
+      querySnapshot.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        console.log(doc.id, " => ", doc.data());
+        this.docId.push(doc.id);
+        this.expenses.push(doc.data());
+      });
     });
 
     const querySnapshot1 = await getDocs(whoOwesWhoRef);
@@ -288,4 +411,8 @@ getDocs(whoOwesWhoRef)
   .catch((err) => {
     console.log(err.message)
   })
+
+
+
+
 </script>
