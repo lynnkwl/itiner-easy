@@ -13,13 +13,13 @@
 
       <div class="expense-add">
         <div class="form-group">
-          <input type="text" placeholder="Expense Name" v-model="expense.expenseName" class="form-control">
+          <input type="text" placeholder="Expense Name" v-model="expense.expenseName" class="form-control" required>
         </div>
         <div class="form-group">
-          <input type="text" placeholder="Expense Amount" v-model="expense.expenseAmount" class="form-control">
+          <input type="text" placeholder="Expense Amount" v-model="expense.expenseAmount" class="form-control" required>
         </div>
         <div class="form-group">
-          <input type="text" placeholder="Person Owed" v-model="expense.personOwedName" class="form-control">
+          <input type="text" placeholder="Person Owed" v-model="expense.personOwedName" class="form-control" required>
         </div>
         <div class="form-group">
           <input type="text" placeholder="Who Owes Money (Type and press Enter)" v-model="inputValue" class="form-control"
@@ -56,7 +56,15 @@
           <div class="form-group">
             <h4 v-for="name in list ">
               {{ name }} <input type="number" placeholder="Percentage" v-model="expense.peopleOwingAmount" class="form-control">
-            </h4>          
+            </h4>      
+          </div>
+        </div>
+        <div v-if="splitmethod == 'evenly'">
+          <h3>Split Evenly</h3>
+          <div class="form-group">
+            <h4 v-for="name in list ">
+              {{ list }} pays {{ expense.expenseAmount / list.length }}
+            </h4>
           </div>
         </div>
 
@@ -67,7 +75,7 @@
           </li>
         </ul>
         <div class="form-group">
-          <button class="btn btn-primary" @click="addExpense">Add Expense</button>
+          <button class="btn btn-primary" @click="checkempty">Add Expense</button>
         </div>
         <h3>Expense Table</h3>
         <table>
@@ -154,17 +162,17 @@ export default {
       // This is for the list of people who owe money
       inputValue: '',
       list: [],
-      splitmethod: null
+      splitmethod: null,
     }
   },
 
   // Methods for adding data to firebase
   methods: {
     // This function retrieves user input and adds it to the database. (Both in expenses and whoOwesWho)
-    addExpense() {
+    async addExpense() {
       // Assigns the value of list to the peopleOwingNames object
       this.expense.peopleOwingNames = this.list;
-
+      console.log(this.expense.peopleOwingNames);
       // Assigns the amount owed to peopleOwingAmount object
       var peopleOwingAmount = Number((this.expense.expenseAmount / this.expense.peopleOwingNames.length).toFixed(2));
       this.expense.peopleOwingAmount = peopleOwingAmount;
@@ -294,6 +302,15 @@ export default {
         });
     }
   },
+  checkempty(){
+    if (this.expense.expenseName == null || this.expense.expenseAmount == null || this.expense.personOwedName == null || this.list.length == 0){
+      alert("Please fill in all fields")
+    } else {
+      this.addExpense();
+    }
+  }
+
+  ,
   async created() {
     const querySnapshot = await getDocs(expensesRef);
     querySnapshot.forEach((doc) => {
