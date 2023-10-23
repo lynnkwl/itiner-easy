@@ -39,10 +39,10 @@
           <h3>Split By Percentage</h3>
           <div class="form-group">
             <h4 v-for="(name,index) in list ">
-              {{ name }} <input type="number" placeholder="Percentage" v-model="percentage[index]" class="form-control" @keyup.enter="computeexpense">
+              {{ name }} <input type="number" placeholder="Percentage" v-model="percentages[index]" class="form-control" @keyup.enter="computeexpense">
             </h4>
             <ul>
-              <li v-for="(amt, index) in percentage" :key="index">
+              <li v-for="(amt, index) in quicksettleamount" :key="index">
                 {{this.list[index]}} pays {{ amt }}
               </li>
             </ul>
@@ -51,11 +51,11 @@
         <div v-if="splitmethod == 'shares'">
           <h3>Split By Shares</h3>
           <div class="form-group">
-            <h4 v-for="name in list ">
+            <h4 v-for="(name,index) in list ">
               {{ name }} <input type="number" placeholder="Shares" v-model="shares[index]" class="form-control" @keyup.enter="computeexpense">
             </h4>
             <ul>
-              <li v-for="(amt, index) in shares" :key="index">
+              <li v-for="(amt, index) in quicksettleamount" :key="index">
                 {{this.list[index]}} pays {{ amt }}
               </li>
             </ul>
@@ -68,7 +68,7 @@
               {{ name }} <input type="number" placeholder="custom" v-model="custom[index]" class="form-control" @keyup.enter="computeexpense" >
             </h4>
             <ul>
-              <li v-for="(amt, index) in custom" :key="index">
+              <li v-for="(amt, index) in quicksettleamount" :key="index">
                 {{list[index]}} pays {{ amt }}
               </li>
             </ul>
