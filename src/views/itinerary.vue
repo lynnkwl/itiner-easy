@@ -85,53 +85,94 @@
 <br>
 <br>
 <br>
-<div class="Mainbody">
+<div class="text-3xl text-center text-blue-400">Let's plan your next trip!</div>
+<br>
+<div class="rounded-lg border-blue bg-blue-100 mx-5">
+  <!-- user input box: start -->
+  <!-- <div class="flex flex-col content-start">
+      <div class="flex justify-center items-center "> 
+          <label class="" for="country">Where are you headed to?</label>
+          &nbsp;
+          &nbsp;
+          <div class="pb-4">
+            <input type="text" id="country" name="City"  v-model="town" class="placeholder-white mt-4 w-80 form-control input-sm rounded bg-blue-400 text-white " placeholder="Enter destination" required>
+          </div> 
+      </div>
+      
+      <div class="slidecontainer flex justify-center items-center">
+          <label class="object-left">For how many days?</label>
+          &nbsp;
+          &nbsp;
+          <div>
+            <input class="w-full" type="range" min="1" max="3" step="1" v-model="sliderValue" @input="sliderChange" required />
+          </div>
+          &nbsp;
+          &nbsp;
+          <p>Days: {{ sliderValue }}</p>
+      </div>
+  </div> -->
 
+  <div class="grid grid-cols-4">
+    <div></div>
+      <div class="flex items-center justify-center">  
+          <label class="" for="country">Where are you headed to?</label>
+      </div>
+      <div class="pb-4 flex items-center justify-center">
+          <input type="text" id="country" name="City"  v-model="town" class="placeholder-white mt-4 form-control input-sm rounded bg-blue-400 text-white " placeholder="Enter destination" required>
+      </div> 
+      <div></div>
 
-    Which City do you want to go to?<input type="text" id="country" name="City"  v-model="town"  class="form-control input-sm" placeholder="Where are you going?" required>"
-    <div class="slidecontainer">
-        For many days?
-        <div>
-    <input type="range" min="1" max="3" step="1" v-model="sliderValue" @input="sliderChange" required />
-    <p>Days: {{ sliderValue }}</p>
-        </div> 
-    
-    </div>
-
-
-
-    What kind of person are you?<br>
-<input type="radio" id="Indoor" value="Indoor" v-model="outgoing" required>
-<label for="Indoor">Indoor</label>
-<input type="radio" id="Outdoor"  value="Outdoor" v-model="outgoing" required>
-<label for="Outdoor">Outdoor</label>
-<input type="radio" id="Both"  value="Both" v-model="outgoing" required >
-<label for="Both">I'm fine with either!</label>
-<br>
-    Are there any places you would prefer to visit?(optional)
-<br>
-    <input type="checkbox" id="Museums" name="interests" value="Museums">
-    <label for="Museums">Museums</label>
-    <input type="checkbox" id="Shopping Malls" name="interests" value="Shopping Malls">
-    <label for="Shopping Malls">Shopping Malls</label>
-    <input type="checkbox" id="Gardens" name="interests" value="Gardens">
-    <label for="Gardens">Gardens</label>
-<br>
-    How will you be getting around?<br>
-     <input type="radio" id="car" value="DRIVING" v-model="transport" required>
-    <label for="car">Car</label>
-    <input type="radio" id="Public Transport" value="TRANSIT"  v-model="transport" required>
-    <label for="Public Transport">Public Transport</label>
-    <input type="radio" id="Cycling" value = "BICYCLING"  v-model="transport" required>
-    <label for="Cycling">Bicycle</label>
-    <input type="radio" id="walking" value="WALKING"  v-model="transport" required>
-    <label for="walking">Walking</label>
-<br>
-<br>
-<br>
-    <button @click="checkempty2" name="strongindependentwoman">I want to choose where I can go!</button><br>
+      <div></div>
+      <div class="slidecontainer flex items-center justify-center">
+          <label class="">For how many days?</label>
+      </div>
+      <div class="flex items-center justify-center place-content-around">
+            <input class="w-1/2" type="range" min="1" max="3" step="1" v-model="sliderValue" @input="sliderChange" required />
+            &nbsp;
+            &nbsp;
+            &nbsp;
+            <p>Days: {{ sliderValue }}</p>
+      </div>
+      <div></div>
+          &nbsp;
+          &nbsp;
+          
+      
+  </div>
+  <!-- user input box: end -->
+          
+          <!-- What kind of person are you?<br>
+              <input type="radio" id="Indoor" value="Indoor" v-model="outgoing" required>
+              <label for="Indoor">Indoor</label>
+              <input type="radio" id="Outdoor"  value="Outdoor" v-model="outgoing" required>
+              <label for="Outdoor">Outdoor</label>
+              <input type="radio" id="Both"  value="Both" v-model="outgoing" required >
+              <label for="Both">I'm fine with either!</label>
+                <br>
+                    Are there any places you would prefer to visit?(optional)
+                <br>
+              <input type="checkbox" id="Museums" name="interests" value="Museums">
+              <label for="Museums">Museums</label>
+              <input type="checkbox" id="Shopping Malls" name="interests" value="Shopping Malls">
+              <label for="Shopping Malls">Shopping Malls</label>
+              <input type="checkbox" id="Gardens" name="interests" value="Gardens">
+              <label for="Gardens">Gardens</label>
+                <br>
+          How will you be getting around?<br>
+          <input type="radio" id="car" value="DRIVING" v-model="transport" required>
+          <label for="car">Car</label>
+          <input type="radio" id="Public Transport" value="TRANSIT"  v-model="transport" required>
+          <label for="Public Transport">Public Transport</label>
+          <input type="radio" id="Cycling" value = "BICYCLING"  v-model="transport" required>
+          <label for="Cycling">Bicycle</label>
+          <input type="radio" id="walking" value="WALKING"  v-model="transport" required>
+          <label for="walking">Walking</label>
+                <br>
+                <br>
+                <br>
+              <button @click="checkempty2" name="strongindependentwoman">I want to choose where I can go!</button><br> -->
+          
 </div>
-
 <div id="selectplaces">
   <div v-if="strongIndependentWoman">
     
