@@ -886,11 +886,11 @@ async showLocation(place){
 
 
 async loadingppage(){
-  var radio = document.getElementsByName("outgoing");
+
 },    
 
     
-  async checkempty(){
+async checkempty(){
     if (!this.town || !this.sliderValue || !this.outgoing || !this.transport) {
         window.alert
 ("Please fill in all the fields!");
