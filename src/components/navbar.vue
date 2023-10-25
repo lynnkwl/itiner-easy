@@ -80,7 +80,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped>erer              hgfdszaáqwt                                                                                                                                c cxx
 .menu-open {
     left: 0;
     z-index: 1;
@@ -88,7 +88,7 @@ export default {
 }
 
 .menu-close{
-    left:-100%;
+    left:100%;
 }
 
 

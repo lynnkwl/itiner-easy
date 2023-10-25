@@ -104,6 +104,7 @@
   </div>
 </template>
 
+
 <script>
 // Importing the functions we need from firebase
 import {
