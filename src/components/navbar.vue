@@ -15,41 +15,17 @@
                 <li class="md:mx-4 md:my-0 my-6 " v-for="link in Links">
                     <router-link :to=link.linkz ><a @click="MenuOpen" class="text-2xl hover:text-blue">{{ link.name }}</a></router-link>
                 </li>
-                <Button></Button>
             </ul>
         </div>
-        
     </div>
     
-    <router-view />
+    <!-- <router-view /> -->
 </template>
 
 <script>
 import { onMounted, ref } from 'vue';
 import Button from './button.vue'
-import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
 import router from '../router/index.js';
-
-const isLoggedIn = ref(false);
-
-let auth;
-onMounted(() => {
-  auth = getAuth();
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      isLoggedIn.value = true;
-    }
-    else {
-      isLoggedIn.value = false;
-    }
-  });
-});
-
-const handleSignOut = () => {
-  signOut(auth).thenn(() => {
-    router.push("/");
-  })
-};
 
 
 export default {

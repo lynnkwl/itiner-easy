@@ -1,37 +1,43 @@
 <template>
-      <div class="col-4 pad" style="margin-left: 15px; margin-top: 15px;">
-        <div class="card">
+  <div class="mx-3 my-3">
+    <div class="card">
+        <div class="bg-blue-500 text-center text-white text-2xl font-bold py-2 px-4 border border-blue-700 rounded">Currency Converter</div>
+        <br>
+        <div class="flex">
+          <!-- to convert: start--> 
+          <div class="flex-col w-1/2">
+              <div class="text-lg mb-2 ">Which currency are you using?</div>
+              <select class="w-9/12 rounded bg-blue-200 cursor-pointer border-2 border-blue-400" name="currencylist" id="currencylist" @change="convertit">
+                      <option v-for="currency in currencyList" :key="currency.key" :value="currency.key">
+                          {{ currency.value }} </option>
+              </select>
+              <br><br>
+              <input class="w-1/2 form-control rounded bg-blue-200 cursor-pointer border-2 border-blue-400" type="number" id="moneymoneyahhhhh" @change="convertCurrency" placeholder="Amount">
+              <br>
+              <br>
+          </div>
+          <!-- to convert: end--> 
 
-          <h3>Currency Converter</h3>
-          <br>
-                    <label for="currencylist">Which currency are you using?</label>
-                    <br><br>
-                        <select name="currencylist" id="currencylist" @change="convertit">
-                            <option v-for="currency in currencyList" :key="currency.key" :value="currency.key">
-                                {{ currency.value }} </option>
-                        </select>
-                    <br><br>
-                    <label for="text">Amount</label>
-                    <br>
-                    <input type="number" id="moneymoneyahhhhh" @change="convertCurrency">
-                    <br>
-                    <br>
-                    <h7>Which Currency do you want to convert to?</h7>
-                    <br><br>
-                    <select name="currencylisttoconvert" id="currencylisttoconvert" @change="convertCurrency">
-                        <option v-for="currency in currencyList" :key="currency.key" :value="currency.key">
-                                {{ currency.value }} </option>
-                    </select>
-                    <h6>Converted amount</h6>
-                    <br>
-                    <div id="convertedmoney" class="background">
-                    <h3>{{ convertedAmount }}</h3>
-                    <h3 v-if="convertedAmount == ''">Please key in a value!</h3>
-                    </div>
-                    <br>
-                    <button @click="convertCurrency" class="btn-primary">Convert</button>
-                    </div>
-                    </div>
+          <!-- converted: start--> 
+          <div class="flex-col w-1/2">
+              <div class="text-lg mb-2 ">Which Currency do you want to convert to?</div>
+                <select class="w-9/12 rounded bg-blue-200 cursor-pointer border-2 border-blue-400" name="currencylisttoconvert" id="currencylisttoconvert" @change="convertCurrency">
+                    <option v-for="currency in currencyList" :key="currency.key" :value="currency.key">
+                            {{ currency.value }} </option>
+                </select>
+              <br><br>
+              <div id="convertedmoney" class="background">
+                <input class="w-1/2 form-control rounded bg-blue-200 cursor-pointer border-2 border-blue-400" v-model="convertedAmount" placeholder="Conversion">
+            </div>
+            <!-- converted: end-->  
+        </div>
+            <br>
+      </div>
+        <div class="flex flex-row justify-center pr-36">
+          <button @click="convertCurrency" class="btn w-36 bg-blue-400 cursor-pointer ">Convert</button>
+        </div>
+    </div>
+  </div>
 </template>
 <script>
 import axios from 'axios'; // Import Axios

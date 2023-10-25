@@ -85,53 +85,94 @@
 <br>
 <br>
 <br>
-<div class="Mainbody">
+<div class="text-3xl text-center text-blue-400">Let's plan your next trip!</div>
+<br>
+<div class="rounded-lg border-blue bg-blue-100 mx-5">
+  <!-- user input box: start -->
+  <!-- <div class="flex flex-col content-start">
+      <div class="flex justify-center items-center "> 
+          <label class="" for="country">Where are you headed to?</label>
+          &nbsp;
+          &nbsp;
+          <div class="pb-4">
+            <input type="text" id="country" name="City"  v-model="town" class="placeholder-white mt-4 w-80 form-control input-sm rounded bg-blue-400 text-white " placeholder="Enter destination" required>
+          </div> 
+      </div>
+      
+      <div class="slidecontainer flex justify-center items-center">
+          <label class="object-left">For how many days?</label>
+          &nbsp;
+          &nbsp;
+          <div>
+            <input class="w-full" type="range" min="1" max="3" step="1" v-model="sliderValue" @input="sliderChange" required />
+          </div>
+          &nbsp;
+          &nbsp;
+          <p>Days: {{ sliderValue }}</p>
+      </div>
+  </div> -->
 
+  <div class="grid grid-cols-4">
+    <div></div>
+      <div class="flex items-center justify-center">  
+          <label class="" for="country">Where are you headed to?</label>
+      </div>
+      <div class="pb-4 flex items-center justify-center">
+          <input type="text" id="country" name="City"  v-model="town" class="placeholder-white mt-4 form-control input-sm rounded bg-blue-400 text-white " placeholder="Enter destination" required>
+      </div> 
+      <div></div>
 
-    Which City do you want to go to?<input type="text" id="country" name="City"  v-model="town"  class="form-control input-sm" placeholder="Where are you going?" required>"
-    <div class="slidecontainer">
-        For many days?
-        <div>
-    <input type="range" min="1" max="3" step="1" v-model="sliderValue" @input="sliderChange" required />
-    <p>Days: {{ sliderValue }}</p>
-        </div> 
-    
-    </div>
-
-
-
-    What kind of person are you?<br>
-<input type="radio" id="Indoor" value="Indoor" v-model="outgoing" required>
-<label for="Indoor">Indoor</label>
-<input type="radio" id="Outdoor"  value="Outdoor" v-model="outgoing" required>
-<label for="Outdoor">Outdoor</label>
-<input type="radio" id="Both"  value="Both" v-model="outgoing" required >
-<label for="Both">I'm fine with either!</label>
-<br>
-    Are there any places you would prefer to visit?(optional)
-<br>
-    <input type="checkbox" id="Museums" name="interests" value="Museums">
-    <label for="Museums">Museums</label>
-    <input type="checkbox" id="Shopping Malls" name="interests" value="Shopping Malls">
-    <label for="Shopping Malls">Shopping Malls</label>
-    <input type="checkbox" id="Gardens" name="interests" value="Gardens">
-    <label for="Gardens">Gardens</label>
-<br>
-    How will you be getting around?<br>
-     <input type="radio" id="car" value="DRIVING" v-model="transport" required>
-    <label for="car">Car</label>
-    <input type="radio" id="Public Transport" value="TRANSIT"  v-model="transport" required>
-    <label for="Public Transport">Public Transport</label>
-    <input type="radio" id="Cycling" value = "BICYCLING"  v-model="transport" required>
-    <label for="Cycling">Bicycle</label>
-    <input type="radio" id="walking" value="WALKING"  v-model="transport" required>
-    <label for="walking">Walking</label>
-<br>
-<br>
-<br>
-    <button @click="checkempty2" name="strongindependentwoman">I want to choose where I can go!</button><br>
+      <div></div>
+      <div class="slidecontainer flex items-center justify-center">
+          <label class="">For how many days?</label>
+      </div>
+      <div class="flex items-center justify-center place-content-around">
+            <input class="w-1/2" type="range" min="1" max="3" step="1" v-model="sliderValue" @input="sliderChange" required />
+            &nbsp;
+            &nbsp;
+            &nbsp;
+            <p>Days: {{ sliderValue }}</p>
+      </div>
+      <div></div>
+          &nbsp;
+          &nbsp;
+          
+      
+  </div>
+  <!-- user input box: end -->
+          
+          <!-- What kind of person are you?<br>
+              <input type="radio" id="Indoor" value="Indoor" v-model="outgoing" required>
+              <label for="Indoor">Indoor</label>
+              <input type="radio" id="Outdoor"  value="Outdoor" v-model="outgoing" required>
+              <label for="Outdoor">Outdoor</label>
+              <input type="radio" id="Both"  value="Both" v-model="outgoing" required >
+              <label for="Both">I'm fine with either!</label>
+                <br>
+                    Are there any places you would prefer to visit?(optional)
+                <br>
+              <input type="checkbox" id="Museums" name="interests" value="Museums">
+              <label for="Museums">Museums</label>
+              <input type="checkbox" id="Shopping Malls" name="interests" value="Shopping Malls">
+              <label for="Shopping Malls">Shopping Malls</label>
+              <input type="checkbox" id="Gardens" name="interests" value="Gardens">
+              <label for="Gardens">Gardens</label>
+                <br>
+          How will you be getting around?<br>
+          <input type="radio" id="car" value="DRIVING" v-model="transport" required>
+          <label for="car">Car</label>
+          <input type="radio" id="Public Transport" value="TRANSIT"  v-model="transport" required>
+          <label for="Public Transport">Public Transport</label>
+          <input type="radio" id="Cycling" value = "BICYCLING"  v-model="transport" required>
+          <label for="Cycling">Bicycle</label>
+          <input type="radio" id="walking" value="WALKING"  v-model="transport" required>
+          <label for="walking">Walking</label>
+                <br>
+                <br>
+                <br>
+              <button @click="checkempty2" name="strongindependentwoman">I want to choose where I can go!</button><br> -->
+          
 </div>
-
 <div id="selectplaces">
   <div v-if="strongIndependentWoman">
     
@@ -236,16 +277,28 @@
           <td>
             <a href="#" @click="displaydirectionsonmap(eatery.origin, eatery.geometry.location)">Show Route</a>
           </td>
-
+          <td>
+            I want to eat here<input name = "eateries{{ index }}" type="radio" :value="eatery" @click="addeaterytotrip(eatery,)" v-model="selectedEateries">
+          </td>
+          
         </tr>
       </tbody>
     </table>
 </div>
 </div>
+<div v-else>
+  <h3>Please input a city and Click on Generate Itinerary to get started!</h3>
+</div>
 <div>
   <button @click="checkempty">Generate Itinerary</button>
 
 </div>
+<div v-if="customactivitiesandtime">
+
+</div>
+
+
+
 </template>
 
 
@@ -293,6 +346,7 @@ export default {
       twelvehrtime: "",
       dates: [],
       citycoords: {},
+      customactivitiesandtime: [],
     };
   },
     methods: {
@@ -484,6 +538,7 @@ async searchBothAttractions(city) {
   for (var i = 0; i < this.days; i++) {
     let timeint = 900;
     let maxtimeint = 2100;
+    var actorder = 0;
     var day = {};
     day.activities = [];
     day.day = i + 1;
@@ -508,7 +563,6 @@ async searchBothAttractions(city) {
         }
         
         var activitytime = 0;
-
         // Adjust activity time calculation as needed
         if (randomactivity.types.includes("park") || randomactivity.types.includes("zoo") || randomactivity.types.includes("amusement_park")) {
           activitytime = 120;
@@ -552,14 +606,18 @@ async searchBothAttractions(city) {
           endtime: await this.formatTime(endtime),
           formatted_address: "Travel",
           transport: this.transport,
+          order : actorder,
           // geometry: randomactivity.geometry,
         };
+        actorder = actorder + 1;
         day.activities.push(travelactivity);
         timeint = endtime;
         }
         // Create the activity object
         var endtime = await this.converttime(timeint, activitytime);
         var activity = {
+          order : actorder,
+          day : i,
           name: randomactivity.name,
           time: await this.formatTime(timeint), // Format time as a string
           endtime: await this.formatTime(endtime), // Format endtime as a string
@@ -569,7 +627,7 @@ async searchBothAttractions(city) {
           url: "'https://www.google.com/search?q=" + randomactivity.name + "&rlz=1C1CHBF_enSG941SG941&oq=google&aqs=chrome..69i57j69i59j69i60l3j69i65l2.1001j0j7&sourceid=chrome&ie=UTF-8'",
         }; 
         //store activities in each day
-
+        actorder = actorder + 1;
         day.activities.push(activity);
         // Update 'timeint' for the next activity
         timeint = endtime;
@@ -791,6 +849,7 @@ async formattimestrfrom24hourto12hour(input) {
         var place = results[i];
         console.log(place);
         place.origin = geometry.location;
+        place.order = activity.order;
         this.eateries.push(place);
       }
     }
@@ -867,12 +926,12 @@ async showLocation(place){
 },
 
 
+async loadingppage(){
 
+},    
 
     
-
-    
-  async checkempty(){
+async checkempty(){
     if (!this.town || !this.sliderValue || !this.outgoing || !this.transport) {
         window.alert
 ("Please fill in all the fields!");
@@ -882,7 +941,20 @@ async showLocation(place){
         await this.getactivitieslist();
     }
     },
+  async addeaterytotrip(){
+    var radio = document.getElementsByName("eateries");
+    for (var i = 0; i < radio.length; i++) {
+        if (radio[i].checked) {
+            let neworder = radio[i].value.order;
+            let neweatery = radio[i].value;
+            neweatery.day = radio[i].value.day;
+            neweatery.time = formatTime(radio[i].value.time);
+            neweatery.endtime = formatTime(radio[i].value.endtime);
+            this.activitiesandtime[neweatery.day].activities.splice(neworder, 0, neweatery);
+        }
 
+    }
+  },
 
  
 async checkempty2(){
