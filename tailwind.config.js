@@ -10,7 +10,12 @@ export default {
     "./src/**/*.{vue,js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily:{
+        'navbar':['Fjalla One', 'sans-serif'],
+        'body':['Rubik', 'sans-serif']
+      }
+    },
   },
   daisyui: {
     themes: [

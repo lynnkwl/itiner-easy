@@ -159,7 +159,7 @@
   </router-link>
   <!-- based on the current trip selected, add an expense -->
   <div class="text-3xl m-7 font-bold">
-    <a>Trip's name expenses</a>
+    <h2>Trip's name expenses</h2>
   </div>
   <div class="text-xl lm-7 drop-shadow-md">
     <div class="relative z-0">
@@ -178,6 +178,8 @@ import {
   getFirestore, collection, getDocs,
   addDoc, deleteDoc, doc, updateDoc, setDoc, query, onSnapshot
 } from "firebase/firestore";
+
+import navbar from "../components/navbar.vue";
 
 // Declaring the database data points we need
 const db = getFirestore();
