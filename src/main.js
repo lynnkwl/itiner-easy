@@ -9,6 +9,12 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getAnalytics } from "firebase/analytics";
 
+// Formkit
+import { plugin as formKitPlugin, defaultConfig } from '@formkit/vue'
+import { createMultiStepPlugin } from '@formkit/addons'
+import '@formkit/themes/genesis'
+import '@formkit/addons/css/multistep'
+
 // TODO: Add SDKs for Firebase products that you want to use
 //popupwindow
 // import Buefy from 'buefy';
@@ -47,7 +53,10 @@ const firebaseApp = initializeApp(firebaseConfig);
 const auth = getAuth(firebaseApp)
 const analytics = getAnalytics(firebaseApp);
 
-const app = createApp(App);
+const app = createApp(App)
+  .use(formKitPlugin, defaultConfig({
+    plugins: [createMultiStepPlugin()]
+}));
 
 app.use(BootstrapIconsPlugin);
 app.use(router);
