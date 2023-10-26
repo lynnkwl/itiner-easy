@@ -68,10 +68,11 @@ const handleSignOut = () => {
 </template> -->
 
 <template>
-  <div class="bg-white h-screen">
-    <Navbar />
+  <div>
+    <Navbar/>
     <router-view/>
   </div>
+  
   <div>
     <Footer></Footer>
   </div>
