@@ -14,27 +14,7 @@ export default {
   },
   daisyui: {
     themes: [
-      {mytheme: {
-          
-        "primary": "#93c5fd",
-                 
-        "secondary": "#a5b4fc",
-                 
-        "accent": "#7dd3fc",
-                 
-        "neutral": "#60a5fa",
-                 
-        "base-100": "#ffffff",
-                 
-        "info": "#3abff8",
-                 
-        "success": "#36d399",
-                 
-        "warning": "#fbbd23",
-                 
-        "error": "#f87272",
-                 },
-              },
+      "aqua"
     ],
   },
   plugins: [
