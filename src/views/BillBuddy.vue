@@ -4,49 +4,51 @@
   <body>
 
     <div class="text-3xl m-7 font-bold">
-    <a>Current trips</a>
-  </div>
-  <!-- need to insert a v-if here if there are current trips -->
-  <div v-if="tripExists">
-    <table>
-      <thead>
-        <tr>
-          <th>Trip Name</th>
-          <th>Go to Trip</th>
-        </tr>
-      </thead>
-
-      <tbody>
-        <tr v-for="trip in trips">
-          <td>{{ trip }}</td>
-          <td><button @click="goToTrip(trip)">Go to Trip</button></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <div v-if="!tripExists" class="text-xl m-7 italic">
-    <a>You currently have no trips.</a>
-  </div>
-  <!-- add trip -->
-  <router-link to="/add-trip">
-    <button class="btn btn-neutral ml-7 p-2 text-white btn-xs sm:btn-sm md:btn-md lg:btn-lg">Add a new trip</button>
-  </router-link>
-  <!-- based on the current trip selected, add an expense -->
-  <div class="text-3xl m-7 font-bold">
-    <h2>{{ trips }} expenses</h2>
-  </div>
-  <div class="text-xl lm-7 drop-shadow-md">
-    <div class="relative z-0">
-      <input type="text" id="floating_standard"
-        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-        placeholder=" " />
-      <label for="floating_standard"
-        class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Floating
-        standard</label>
+      <a>Current trips</a>
     </div>
+    <!-- need to insert a v-if here if there are current trips -->
+    <div v-if="tripExists">
+      <table>
+        <thead>
+          <tr>
+            <th>Trip Name</th>
+            <th>People</th>
+            <th>Go to Trip</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr v-for="trip in trips">
+            <td>{{ trip }}</td>
+            <td>{{ whoOwesWho }}</td>
+            <td><button @click="goToTrip(trip)">Go to Trip</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div v-if="!tripExists" class="text-xl m-7 italic">
+      <a>You currently have no trips.</a>
+    </div>
+    <!-- add trip -->
+    <router-link to="/add-trip">
+      <button class="btn btn-neutral ml-7 p-2 text-white btn-xs sm:btn-sm md:btn-md lg:btn-lg">Add a new trip</button>
+    </router-link>
+    <!-- based on the current trip selected, add an expense -->
+    <div class="text-3xl m-7 font-bold">
+      <h2>{{ selectedTrip }} expenses</h2>
+    </div>
+    <div class="text-xl lm-7 drop-shadow-md">
+      <div class="relative z-0">
+        <input type="text" id="floating_standard"
+          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+          placeholder=" " />
+        <label for="floating_standard"
+          class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Floating
+          standard</label>
+      </div>
 
 
-  </div>
+    </div>
     <div>
       <div class="expense-add">
         <div class="form-group">
@@ -183,7 +185,6 @@
       </div>
     </div>
   </body>
-  
 </template>
 
 
@@ -199,8 +200,6 @@ import navbar from "../components/navbar.vue";
 // Declaring the database data points we need
 const db = getFirestore();
 const tripsRef = collection(db, 'trips');
-const expensesRef = collection(tripsRef, 'europe', 'expenses');
-const whoOwesWhoRef = collection(tripsRef, 'europe', 'whoOwesWho');
 
 // Display trips
 function tripExists() {
@@ -242,15 +241,48 @@ export default {
       splitmethod: null,
       tripExists: tripExists(),
       trips: [],
+      trip: null,
       quicksettleamount: [],
       percentages: [],
       shares: [],
       custom: [],
     }
   },
+  computed: {
+    selectedTrip() {
+      return this.trip;
+    }
+  },
 
   // Methods for adding data to firebase
   methods: {
+    goToTrip(trip) {
+      console.log(trip);
+      this.trip = trip;
+
+      getDocs(collection(tripsRef, this.trip, 'expenses')).then((querySnapshot) => {
+        if (this.expenses.length > 0) {
+          this.expenses = [];
+        }
+        if (this.docId.length > 0) {
+          this.docId = [];
+        }
+        querySnapshot.forEach((doc) => {
+          // doc.data() is never undefined for query doc snapshots
+          console.log(doc.id, " => ", doc.data());
+          this.docId.push(doc.id);
+          this.expenses.push(doc.data());
+        });
+      });
+
+      const querySnapshot1 = getDocs(doc(tripsRef, this.trip));
+      querySnapshot1.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        console.log(doc.id, " => ", doc.data());
+        this.whoOwesWho = doc.data();
+        console.log(this.whoOwesWho)
+      });
+    },
     // This function retrieves user input and adds it to the database. (Both in expenses and whoOwesWho)
     async addExpense() {
       // Assigns the value of list to the peopleOwingNames object
@@ -261,7 +293,7 @@ export default {
       this.expense.peopleOwingAmount = peopleOwingAmount;
 
       // Adds the expense to the database
-      addDoc(expensesRef, this.expense)
+      addDoc(collection(db, 'trips', this.trip, 'expenses'), this.expense)
         .then(function (docRef) {
           console.log("Document written with ID: ", docRef.id);
         })
@@ -294,7 +326,7 @@ export default {
         }
       }
       // Update the whoOwesWho collection in firebase
-      updateDoc(doc(tripsRef, 'europe'), {
+      updateDoc(doc(tripsRef, this.trip), {
         whoOwesWho: this.whoOwesWho
       })
         .then(() => {
@@ -364,7 +396,9 @@ export default {
 
     // Delete expense from database
     async deleteExpense(index, docId) {
-      deleteDoc(doc(expensesRef, docId[index]))
+      console.log(docId)
+      console.log(index)
+      deleteDoc(doc(tripsRef, this.trip, 'expenses', docId[index]))
         .then(() => {
           console.log("Document successfully deleted!");
         }).catch((error) => {
@@ -374,13 +408,13 @@ export default {
 
     // Update expense in database
     async updateExpense(index, docId) {
-      updateDoc(doc(expensesRef, docId[index]), {
+      updateDoc(collection(tripsRef, this.trip, 'expenses'), docId[index]), {
         expenseName: "Updated Expense Name",
         expenseAmount: 100,
         peopleOwingNames: ["Updated Name 1", "Updated Name 2"],
         peopleOwingAmount: 50,
         personOwedName: "Updated Person Owed Name"
-      })
+      }
         .then(() => {
           console.log("Document successfully updated!");
         })
@@ -444,8 +478,15 @@ export default {
     }
   },
   async created() {
-    // const querySnapshot = await getDocs(expensesRef);
-    onSnapshot(expensesRef, (querySnapshot) => {
+    getDocs(tripsRef).then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        console.log(doc.id, " => ", doc.data());
+        this.trips.push(doc.id);
+      });
+    });
+
+    onSnapshot(collection(tripsRef, this.trip, 'expenses'), (querySnapshot) => {
       if (this.expenses.length > 0) {
         this.expenses = [];
       }
@@ -456,21 +497,13 @@ export default {
       });
     });
 
-    const querySnapshot1 = await getDocs(whoOwesWhoRef);
+    const querySnapshot1 = await getDocs(doc(tripsRef, this.trip, 'whoOwesWho'));
     querySnapshot1.forEach((doc) => {
       // doc.data() is never undefined for query doc snapshots
       console.log(doc.id, " => ", doc.data());
       this.whoOwesWho = doc.data();
       console.log(this.whoOwesWho)
     });
-
-    getDocs(tripsRef).then((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        // doc.data() is never undefined for query doc snapshots
-        console.log(doc.id, " => ", doc.data());
-        this.trips.push(doc.id);
-      });
-    })
   },
 
 }
