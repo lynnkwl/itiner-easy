@@ -596,6 +596,9 @@ async searchBothAttractions(city) {
         }
         // Create the activity object
         var endtime = await this.converttime(timeint, activitytime);
+        var photo = "";
+        photo = await this.getphoto(randomactivity.place_id);
+
         var activity = {
           order : actorder,
           day : i,
@@ -605,6 +608,7 @@ async searchBothAttractions(city) {
           formatted_address: randomactivity.formatted_address,
           transport: this.transport,
           geometry: randomactivity.geometry,
+          photo: photo,
           url: "'https://www.google.com/search?q=" + randomactivity.name + "&rlz=1C1CHBF_enSG941SG941&oq=google&aqs=chrome..69i57j69i59j69i60l3j69i65l2.1001j0j7&sourceid=chrome&ie=UTF-8'",
         }; 
         //store activities in each day
@@ -827,14 +831,36 @@ async formattimestrfrom24hourto12hour(input) {
       service.nearbySearch(request, (results, status) => {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
       for (var i = 0; i < results.length; i++) {
+        var photo = this.getphoto(results[i].place_id);
         var place = results[i];
         console.log(place);
         place.origin = geometry.location;
         place.order = activity.order;
+        place.photo = photo;
         this.eateries.push(place);
       }
     }
   })}
+  ,
+  //get link of photo of place with place id
+  async getphoto(placeid){
+    var request = {
+      placeId: placeid,
+      fields: ['photos'],
+    };
+    var service = new google.maps.places.PlacesService(document.createElement('div'));
+    return new Promise((resolve, reject) => {
+    service.getDetails(request, (place, status) => {
+      if (status === google.maps.places.PlacesServiceStatus.OK) {
+        var photo = place.photos[0].getUrl();
+        resolve(photo); // Resolve the promise with the search results
+      } else {
+        console.error(`Error: ${status}`);
+        reject(status); // Reject the promise with the error status
+      }
+    });
+  });
+  }
     ,
 
     async checkOpenStatus(place, checkTime, date) {
@@ -891,7 +917,7 @@ async showLocation(place){
       );
       var infowindow = new google.maps.InfoWindow({
         // content: "Name:" + place.name + "<br>" + "Address:" + place.formatted_address,
-        content: `<div style="color:black">`+
+        content: `<div><img src=`+place.photo+`></div>`+`<div style="color:black">`+
           "Name:" + place.name + "<br>" + "Address:" + place.formatted_address
           + "<br><a href=" + place.url + ">Click here for more information</a>"
           +`</div>`,
