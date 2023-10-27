@@ -13,7 +13,7 @@ export default {
   data() {
     return {
       frames: [],
-      frameUrls: [`../../assets/eye/000.png`],
+      frameUrls: [`../../assets/eye/001.png`],
       scrollPosition: 0,
       index: 0,
       frameBackgroundColor: 'transparent', // Initialize with a transparent background
@@ -34,7 +34,7 @@ export default {
       // Set the background color based on the index
       if (index === this.frames.length - 1) {
         // If it's the last image, blend it into the page's background color (white)
-        this.frameBackgroundColor = '#b2b2b2';
+        this.frameBackgroundColor = 'white';
       } else {
         // Otherwise, keep it transparent
         this.frameBackgroundColor = 'white';
