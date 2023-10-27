@@ -129,7 +129,7 @@ button:focus-visible {
     @apply font-body font-normal text-xl
   }
   .btn{
-    @apply bg-blue-400 text-white rounded
+    @apply bg-blue-400 text-white rounded border-none
   }
   .btn:hover{
     @apply bg-blue-600 text-white shadow-xl

@@ -24,7 +24,7 @@
       <label tabindex="0" class="btn bg-[#345ca8] btn-ghost hover:bg-blue-900 lg:hidden">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" /></svg>
       </label>
-      <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+      <ul tabindex="0" class="menu menu-sm bg-[#345ca8] text-white dropdown-content mt-3 z-[1] p-2 shadow rounded-box w-52">
         <li>
             <router-link to="/"><a>HOME</a></router-link>
         </li>
@@ -53,7 +53,7 @@
         </span>
     </div>
   </div>
-  <div class="navbar-center  hidden lg:flex">
+  <div class="navbar-center hidden lg:flex">
     <ul class="menu text-white hover:text-white text-m menu-horizontal px-1">
       <li>
         <router-link to="/"><a>HOME</a></router-link>
@@ -64,7 +64,7 @@
       <li tabindex="0">
         <details>
           <summary>TOOLS</summary>
-          <ul class="p-2">
+          <ul class="p-2 bg-[#345ca8]">
             <li>
                 <router-link to="/translator"><a>TRANSLATOR</a></router-link>
             </li>
