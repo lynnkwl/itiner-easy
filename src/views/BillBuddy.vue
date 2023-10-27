@@ -3,41 +3,42 @@
 
   <body>
 
-    <div class="text-3xl m-7 font-bold">
-      <a>Current trips</a>
-    </div>
-    <!-- need to insert a v-if here if there are current trips -->
-    <div v-if="tripExists">
-      <table>
-        <thead>
-          <tr>
-            <th>Trip Name</th>
-            <th>People</th>
-            <th>Go to Trip</th>
-          </tr>
-        </thead>
+    <div v-if="!selected">
+      <div class="text-3xl m-7 font-bold">
+        <a>Current trips</a>
+      </div>
 
-        <tbody>
-          <tr v-for="trip in trips">
-            <td>{{ trip }}</td>
-            <td>{{ whoOwesWho }}</td>
-            <td><button @click="goToTrip(trip)">Go to Trip</button></td>
-          </tr>
-        </tbody>
-      </table>
+      <div v-if="tripExists">
+        <table>
+          <thead>
+            <tr>
+              <th>Trip Name</th>
+              <th>People</th>
+              <th>Go to Trip</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr v-for="trip in trips">
+              <td>{{ trip }}</td>
+              <td>{{ whoOwesWho }}</td>
+              <td><button @click="goToTrip(trip)">Go to Trip</button></td>
+            </tr>
+          </tbody>
+
+        </table>
+      </div>
+      <div v-if="!tripExists" class="text-xl m-7 italic">
+        <a>You currently have no trips.</a>
+      </div>
+      <router-link to="/add-trip">
+        <button class="btn btn-neutral ml-7 p-2 text-white btn-xs sm:btn-sm md:btn-md lg:btn-lg">Add a new trip</button>
+      </router-link>
     </div>
-    <div v-if="!tripExists" class="text-xl m-7 italic">
-      <a>You currently have no trips.</a>
-    </div>
-    <!-- add trip -->
-    <router-link to="/add-trip">
-      <button class="btn btn-neutral ml-7 p-2 text-white btn-xs sm:btn-sm md:btn-md lg:btn-lg">Add a new trip</button>
-    </router-link>
+
     <!-- based on the current trip selected, add an expense -->
-    <div class="text-3xl m-7 font-bold">
-      <h2>{{ selectedTrip }} expenses</h2>
-    </div>
-    <div class="text-xl lm-7 drop-shadow-md">
+
+    <!-- <div class="text-xl lm-7 drop-shadow-md">
       <div class="relative z-0">
         <input type="text" id="floating_standard"
           class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
@@ -46,10 +47,16 @@
           class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Floating
           standard</label>
       </div>
+    </div> -->
 
+    <div v-if="selected">
+      <div>
+        <button class="btn btn-primary" @click="selected = false">Back to trips</button>
+      </div>
+      <div class="text-3xl m-7 font-bold">
+        <h2>{{ selectedTrip }} expenses</h2>
+      </div>
 
-    </div>
-    <div>
       <div class="expense-add">
         <div class="form-group">
           <input type="text" placeholder="Expense Name" v-model="expense.expenseName" class="form-control" required>
@@ -209,7 +216,7 @@ function tripExists() {
         console.log('No matching documents.');
         return false;
       } else {
-        console.log('Document data:', querySnapshot.docs);
+        // console.log('Document data:', querySnapshot.docs);
         return true;
       };
     })
@@ -246,6 +253,7 @@ export default {
       percentages: [],
       shares: [],
       custom: [],
+      selected: false,
     }
   },
   computed: {
@@ -259,6 +267,7 @@ export default {
     goToTrip(trip) {
       console.log(trip);
       this.trip = trip;
+      this.selected = true;
 
       getDocs(collection(tripsRef, this.trip, 'expenses')).then((querySnapshot) => {
         if (this.expenses.length > 0) {
@@ -273,6 +282,18 @@ export default {
           this.docId.push(doc.id);
           this.expenses.push(doc.data());
         });
+      });
+
+      getDoc(doc(tripsRef, this.trip)).then(doc => {
+        if (doc.exists()) {
+          console.log("Document data:", doc.data());
+          this.whoOwesWho = doc.data().whoOwesWho;
+        } else {
+          // doc.data() will be undefined in this case
+          console.log("No such document!");
+        }
+      }).catch((error) => {
+        console.log("Error getting document:", error);
       });
 
       const querySnapshot1 = getDocs(doc(tripsRef, this.trip));
@@ -481,7 +502,7 @@ export default {
     getDocs(tripsRef).then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
         // doc.data() is never undefined for query doc snapshots
-        console.log(doc.id, " => ", doc.data());
+        // console.log(doc.id, " => ", doc.data());
         this.trips.push(doc.id);
       });
     });
@@ -505,7 +526,5 @@ export default {
       console.log(this.whoOwesWho)
     });
   },
-
 }
-
 </script>
