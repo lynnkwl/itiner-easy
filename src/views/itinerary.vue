@@ -78,7 +78,8 @@
                       ]"
                   />
                   <FormKit 
-                      type="checkbox" 
+                      v-model= "interestsoptions"
+                      type="checkbox"
                       label="Places of Interest (optional)"
                       help="Any specific places you'd like to visit?" 
                       :options="[
@@ -92,7 +93,7 @@
                       type="radio" 
                       label="Mode of Transportation"
                       help="How will you be getting around?"
-                      :options="['Car', 'Public Transport', 'Bicycle', 'Walking']"
+                      :options="[{label:'Car', value:`DRIVING`}, {label: 'Public Transport', value: `TRANSIT`}, {label:'Bicycle', value:`BICYCLING`}, {value:'WALKING' , label:'Walking'}]"
                   />
                   </FormKit>
               <!-- preferences: end -->
@@ -116,6 +117,7 @@
                     <FormKit type="submit" 
                       @click="checkempty2"
                       label="I'll decide myself!"/>
+
               
                   </FormKit>
               <!-- Generate: end -->
@@ -272,10 +274,10 @@
 <div v-else>
   <!-- <h3>Please input a city and Click on Generate Itinerary to get started!</h3> -->
 </div>
-<div>
+<!-- <div>
   <button @click="checkempty">Generate Itinerary</button>
 
-</div>
+</div> -->
 <div v-if="customactivitiesandtime">
 
 </div>
@@ -286,7 +288,7 @@
 
 <script >
 import axios from 'axios'; // Import Axios
-import { initMap } from '../main.js';
+import { initMap } from "../main.js"
 import {
   getFirestore, collection, getDocs,
   addDoc, deleteDoc, doc, updateDoc, setDoc, query
@@ -300,6 +302,9 @@ export default {
     script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCrtlMuj3mZnI5NGVkgw5ME1hZL-XEtRzI&libraries=places&callback=initMap';
     script.defer = true;
     script.async = true;
+    //add main.js
+    script.onload = () => this.scriptLoaded();
+
     document.head.appendChild(script);
     window.history.scrollRestoration = "manual";
 
@@ -327,6 +332,7 @@ export default {
       twelvehrtime: "",
       dates: [],
       citycoords: {},
+      interestsoptions:[],
       customactivitiesandtime: [],
     };
   },
@@ -475,7 +481,7 @@ async searchBothAttractions(city) {
     console.log(this.final_activities);
     await this.managetime();
     await this.getLatLng();
-    await initMap(this.citycoords);
+    initMap(this.citycoords);
     },
     async converttime(time, act){
   // time = 940; //goal is to convert this to 1110
@@ -488,6 +494,15 @@ async searchBothAttractions(city) {
     }
     return formattime;
     }
+    ,
+    initMap(coords) {
+  const mapDiv = document.getElementById("map");
+  const mapOptions = {
+    center: coords,
+    zoom: 8,
+  };
+  const map = new google.maps.Map(mapDiv, mapOptions);
+}
     ,
 
 
@@ -596,6 +611,9 @@ async searchBothAttractions(city) {
         }
         // Create the activity object
         var endtime = await this.converttime(timeint, activitytime);
+        var photo = "";
+        photo = await this.getphoto(randomactivity.place_id);
+
         var activity = {
           order : actorder,
           day : i,
@@ -605,6 +623,7 @@ async searchBothAttractions(city) {
           formatted_address: randomactivity.formatted_address,
           transport: this.transport,
           geometry: randomactivity.geometry,
+          photo: photo,
           url: "'https://www.google.com/search?q=" + randomactivity.name + "&rlz=1C1CHBF_enSG941SG941&oq=google&aqs=chrome..69i57j69i59j69i60l3j69i65l2.1001j0j7&sourceid=chrome&ie=UTF-8'",
         }; 
         //store activities in each day
@@ -723,9 +742,7 @@ async formattimestrfrom24hourto12hour(input) {
   });
 },
     async getinterests(){
-    var interests = [];
-    this.interestsresults = [];
-    var checkboxes = document.getElementsByName("interests");
+    var checkboxes = this.interestsoptions
     for (var i = 0; i < checkboxes.length; i++) {
         if (checkboxes[i].checked) {
             interests.push(checkboxes[i].value);
@@ -785,6 +802,16 @@ async formattimestrfrom24hourto12hour(input) {
     });
   });
 },
+wait() {
+    if(this.final_activities==[])
+    {
+        setTimeout(wait, 30000);
+    }
+    else {
+        //jQuery is loaded, do what you need to
+        $(document).ready(docLoaded);
+    }
+},
 
 
     async  searchgardens(city) {
@@ -827,14 +854,36 @@ async formattimestrfrom24hourto12hour(input) {
       service.nearbySearch(request, (results, status) => {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
       for (var i = 0; i < results.length; i++) {
+        var photo = this.getphoto(results[i].place_id);
         var place = results[i];
         console.log(place);
         place.origin = geometry.location;
         place.order = activity.order;
+        place.photo = photo;
         this.eateries.push(place);
       }
     }
   })}
+  ,
+  //get link of photo of place with place id
+  async getphoto(placeid){
+    var request = {
+      placeId: placeid,
+      fields: ['photos'],
+    };
+    var service = new google.maps.places.PlacesService(document.createElement('div'));
+    return new Promise((resolve, reject) => {
+    service.getDetails(request, (place, status) => {
+      if (status === google.maps.places.PlacesServiceStatus.OK) {
+        var photo = place.photos[0].getUrl();
+        resolve(photo); // Resolve the promise with the search results
+      } else {
+        console.error(`Error: ${status}`);
+        reject(status); // Reject the promise with the error status
+      }
+    });
+  });
+  }
     ,
 
     async checkOpenStatus(place, checkTime, date) {
@@ -891,7 +940,7 @@ async showLocation(place){
       );
       var infowindow = new google.maps.InfoWindow({
         // content: "Name:" + place.name + "<br>" + "Address:" + place.formatted_address,
-        content: `<div style="color:black">`+
+        content: `<div><img src=`+place.photo+`></div>`+`<div style="color:black">`+
           "Name:" + place.name + "<br>" + "Address:" + place.formatted_address
           + "<br><a href=" + place.url + ">Click here for more information</a>"
           +`</div>`,
@@ -920,6 +969,7 @@ async checkempty(){
     else{
         await this.getweather();
         await this.getactivitieslist();
+        this.wait();
     }
     },
   async addeaterytotrip(){
@@ -947,6 +997,7 @@ async checkempty2(){
       this.strongIndependentWoman = true;
       await this.getweather();
       await this.getlist2();
+      this.wait();
 
     }
     },

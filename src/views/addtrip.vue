@@ -1,5 +1,8 @@
 <template>
     <div>
+        <router-link to="/billbuddy">
+            <button class="btn btn-primary">Back to Trips</button>
+        </router-link>
         <h1>Add Trip</h1>
         <form @submit.prevent="submitForm">
             <label for="destination">Destination:</label>
