@@ -8,7 +8,6 @@
   </div>
   <!-- need to insert a v-if here if there are current trips -->
   <div v-if="tripExists">
-    <p>trip exists</p>
     <table>
       <thead>
         <tr>
@@ -34,7 +33,7 @@
   </router-link>
   <!-- based on the current trip selected, add an expense -->
   <div class="text-3xl m-7 font-bold">
-    <h2>Trip's name expenses</h2>
+    <h2>{{ trips }} expenses</h2>
   </div>
   <div class="text-xl lm-7 drop-shadow-md">
     <div class="relative z-0">
