@@ -92,7 +92,7 @@
                       type="radio" 
                       label="Mode of Transportation"
                       help="How will you be getting around?"
-                      :options="['Car', 'Public Transport', 'Bicycle', 'Walking']"
+                      :options="[{label:'Car', value:`DRIVING`}, {label: 'Public Transport', value: `TRANSIT`}, {label:'Bicycle', value:`BICYCLING`}, {value:'WALKING' , label:'Walking'}]"
                   />
                   </FormKit>
               <!-- preferences: end -->
@@ -272,10 +272,10 @@
 <div v-else>
   <!-- <h3>Please input a city and Click on Generate Itinerary to get started!</h3> -->
 </div>
-<div>
+<!-- <div>
   <button @click="checkempty">Generate Itinerary</button>
 
-</div>
+</div> -->
 <div v-if="customactivitiesandtime">
 
 </div>
