@@ -1,16 +1,53 @@
-<!-- <template>
+<template>
   <title>BillBuddy</title>
 
   <body>
-    <div style="margin-left: 30px;">
-      <h1>Current Trips</h1>
-      <h7>No trips at the moment</h7>
-      <br><br>
-      <router-link to="/add-trip"> Add a Trip Now! </router-link>
+
+    <div class="text-3xl m-7 font-bold">
+    <a>Current trips</a>
+  </div>
+  <!-- need to insert a v-if here if there are current trips -->
+  <div v-if="tripExists">
+    <table>
+      <thead>
+        <tr>
+          <th>Trip Name</th>
+          <th>Go to Trip</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr v-for="trip in trips">
+          <td>{{ trip }}</td>
+          <td><button @click="goToTrip(trip)">Go to Trip</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div v-if="!tripExists" class="text-xl m-7 italic">
+    <a>You currently have no trips.</a>
+  </div>
+  <!-- add trip -->
+  <router-link to="/add-trip">
+    <button class="btn btn-neutral ml-7 p-2 text-white btn-xs sm:btn-sm md:btn-md lg:btn-lg">Add a new trip</button>
+  </router-link>
+  <!-- based on the current trip selected, add an expense -->
+  <div class="text-3xl m-7 font-bold">
+    <h2>{{ trips }} expenses</h2>
+  </div>
+  <div class="text-xl lm-7 drop-shadow-md">
+    <div class="relative z-0">
+      <input type="text" id="floating_standard"
+        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+        placeholder=" " />
+      <label for="floating_standard"
+        class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Floating
+        standard</label>
     </div>
 
-    <div>
 
+  </div>
+    <div>
       <div class="expense-add">
         <div class="form-group">
           <input type="text" placeholder="Expense Name" v-model="expense.expenseName" class="form-control" required>
@@ -25,25 +62,26 @@
           <input type="text" placeholder="Who Owes Money (Type and press Enter)" v-model="inputValue" class="form-control"
             @keyup.enter="addToList">
         </div>
-    
+
         <div class="form-group">
           How are we splitting this?
-            <select id="splitmethod" v-model="splitmethod">
-              <option value="evenly">Split Evenly</option>
-              <option value="percentage">Split by percentage</option>  
-              <option value="shares">Split by Shares</option>   
-              <option value="custom">Custom Split</option>         
-            </select>
+          <select id="splitmethod" v-model="splitmethod">
+            <option value="evenly">Split Evenly</option>
+            <option value="percentage">Split by percentage</option>
+            <option value="shares">Split by Shares</option>
+            <option value="custom">Custom Split</option>
+          </select>
         </div>
         <div v-if="splitmethod == 'percentage'">
           <h3>Split By Percentage</h3>
           <div class="form-group">
-            <h4 v-for="(name,index) in list ">
-              {{ name }} <input type="number" placeholder="Percentage" v-model="percentages[index]" class="form-control" @keyup.enter="computeexpense">
+            <h4 v-for="(name, index) in list ">
+              {{ name }} <input type="number" placeholder="Percentage" v-model="percentages[index]" class="form-control"
+                @keyup.enter="computeexpense">
             </h4>
             <ul>
               <li v-for="(amt, index) in quicksettleamount" :key="index">
-                {{this.list[index]}} pays {{ amt }}
+                {{ this.list[index] }} pays {{ amt }}
               </li>
             </ul>
           </div>
@@ -51,12 +89,13 @@
         <div v-if="splitmethod == 'shares'">
           <h3>Split By Shares</h3>
           <div class="form-group">
-            <h4 v-for="(name,index) in list ">
-              {{ name }} <input type="number" placeholder="Shares" v-model="shares[index]" class="form-control" @keyup.enter="computeexpense">
+            <h4 v-for="(name, index) in list ">
+              {{ name }} <input type="number" placeholder="Shares" v-model="shares[index]" class="form-control"
+                @keyup.enter="computeexpense">
             </h4>
             <ul>
               <li v-for="(amt, index) in quicksettleamount" :key="index">
-                {{this.list[index]}} pays {{ amt }}
+                {{ this.list[index] }} pays {{ amt }}
               </li>
             </ul>
           </div>
@@ -64,12 +103,13 @@
         <div v-if="splitmethod == 'custom'">
           <h3>Have it your way!</h3>
           <div class="form-group">
-            <h4 v-for="(name,index) in list ">
-              {{ name }} <input type="number" placeholder="custom" v-model="custom[index]" class="form-control" @keyup.enter="computeexpense" >
+            <h4 v-for="(name, index) in list ">
+              {{ name }} <input type="number" placeholder="custom" v-model="custom[index]" class="form-control"
+                @keyup.enter="computeexpense">
             </h4>
             <ul>
               <li v-for="(amt, index) in quicksettleamount" :key="index">
-                {{list[index]}} pays {{ amt }}
+                {{ list[index] }} pays {{ amt }}
               </li>
             </ul>
           </div>
@@ -85,7 +125,7 @@
 
         <ul>
           <li v-for="(item, index) in list" :key="index">
-            
+
             <button class="btn btn-primary" @click="removeFromList(index)">Remove</button> {{ item }}
           </li>
         </ul>
@@ -143,32 +183,7 @@
       </div>
     </div>
   </body>
-</template> -->
-
-<template>
-  <div class="text-3xl m-7 font-bold">
-    <a>Current trips</a>
-  </div>
-<!-- need to insert a v-if here if there are current trips -->
-  <div class="text-xl m-7 italic">
-    <a>You currently have no trips.</a>
-  </div>
-  <!-- add trip -->
-  <router-link to="/add-trip">
-    <button class="btn btn-neutral ml-7 p-2 text-white btn-xs sm:btn-sm md:btn-md lg:btn-lg">Add a new trip</button>
-  </router-link>
-  <!-- based on the current trip selected, add an expense -->
-  <div class="text-3xl m-7 font-bold">
-    <h2>Trip's name expenses</h2>
-  </div>
-  <div class="text-xl lm-7 drop-shadow-md">
-    <div class="relative z-0">
-      <input type="text" id="floating_standard" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
-      <label for="floating_standard" class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Floating standard</label>
-    </div>
-
-
-  </div>
+  
 </template>
 
 
@@ -176,17 +191,35 @@
 // Importing the functions we need from firebase
 import {
   getFirestore, collection, getDocs,
-  addDoc, deleteDoc, doc, updateDoc, setDoc, query, onSnapshot
+  addDoc, deleteDoc, doc, updateDoc, setDoc, query, onSnapshot, getDoc
 } from "firebase/firestore";
 
 import navbar from "../components/navbar.vue";
 
 // Declaring the database data points we need
 const db = getFirestore();
-const tripsRef = collection(db, 'trips',);
-const europeRef = collection(tripsRef, 'cj8jL4yrzvKTAMaY4RWp', 'europe');
-const expensesRef = collection(europeRef, 'd52Dh6oAGG6sXBbRV2Dp', 'expenses');
-const whoOwesWhoRef = collection(europeRef, 'd52Dh6oAGG6sXBbRV2Dp', 'whoOwesWho');
+const tripsRef = collection(db, 'trips');
+const expensesRef = collection(tripsRef, 'europe', 'expenses');
+const whoOwesWhoRef = collection(tripsRef, 'europe', 'whoOwesWho');
+
+// Display trips
+function tripExists() {
+  if (
+    getDocs(tripsRef).then((querySnapshot) => {
+      if (querySnapshot.empty) {
+        console.log('No matching documents.');
+        return false;
+      } else {
+        console.log('Document data:', querySnapshot.docs);
+        return true;
+      };
+    })
+  ) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
 // Exporting the data to firebase
 export default {
@@ -207,6 +240,8 @@ export default {
       inputValue: '',
       list: [],
       splitmethod: null,
+      tripExists: tripExists(),
+      trips: [],
       quicksettleamount: [],
       percentages: [],
       shares: [],
@@ -259,9 +294,12 @@ export default {
         }
       }
       // Update the whoOwesWho collection in firebase
-      updateDoc(doc(whoOwesWhoRef, 'BVTPIgEat4pbUPsNPx7i'), this.whoOwesWho)
+      updateDoc(doc(tripsRef, 'europe'), {
+        whoOwesWho: this.whoOwesWho
+      })
         .then(() => {
           console.log("whoOwesWho successfully updated!");
+          console.log(this.whoOwesWho)
         })
         .catch((error) => {
           // The document probably doesn't exist.
@@ -275,7 +313,7 @@ export default {
       this.expense.personOwedName = null;
       this.expense.peopleOwingAmount = null;
       this.list = [];
-    
+
     },
 
     // Supporting function for addExpense()
@@ -310,7 +348,7 @@ export default {
                 document.getElementById("amountToPay").innerHTML += key + " pays " + -this.whoOwesWho[key2] + " to " + key2 + "<br>";
                 this.whoOwesWho[key] += this.whoOwesWho[key2];
                 this.whoOwesWho[key2] = 0;
-              } else if (this.whoOwesWho[key] != 0){
+              } else if (this.whoOwesWho[key] != 0) {
                 console.log(key + " pays " + this.whoOwesWho[key] + " to " + key2);
                 document.getElementById("amountToPay").innerHTML += key + " pays " + this.whoOwesWho[key] + " to " + key2 + "<br>";
                 this.whoOwesWho[key2] += this.whoOwesWho[key];
@@ -351,69 +389,68 @@ export default {
           console.error("Error updating document: ", error);
         });
     },
-    checkempty(){
-    if (this.expense.expenseName == null || this.expense.expenseAmount == null || this.expense.personOwedName == null || this.list.length == 0){
-      alert("Please fill in all fields")
-    } else {
-      this.addExpense();
-    }
-  },
-  
-computeexpense(){
-  this.quicksettleamount = [];
-  let amount = this.expense.expenseAmount;
-  if(this.custom.length > 0){
-    let sum = 0
-    for (let i = 0; i < this.custom.length; i++){
-      sum += this.custom[i];
-    }
-    if (sum != this.expense.expenseAmount){
-      alert("Please make sure the percentages add up to the amount owed!")
-    }
-    else{
-      for (let i = 0; i < this.custom.length; i++){
-        this.quicksettleamount.push(this.custom[i]);
+    checkempty() {
+      if (this.expense.expenseName == null || this.expense.expenseAmount == null || this.expense.personOwedName == null || this.list.length == 0) {
+        alert("Please fill in all fields")
+      } else {
+        this.addExpense();
       }
-    }
-  }
-  if(this.shares.length > 0){
-    let totalshares = 0;
-    for (let i = 0; i < this.shares.length; i++){
-      totalshares += this.shares[i];
-    }
-    for (let i = 0; i < this.shares.length; i++){
-      this.quicksettleamount.push(this.shares[i] * amount / totalshares);
-    }
-  }
-  if(this.percentages.length > 0){
-    let totalpercentage = 0;
-    for (let i = 0; i < this.percentages.length; i++){
-      totalpercentage += this.percentages[i];
-    }
-    if (totalpercentage != 100){
-      alert("Please make sure the percentages add up to 100!")
-    }
-    else{
-      for (let i = 0; i < this.percentages.length; i++){
-        this.quicksettleamount.push(this.percentages[i] * amount / 100);
+    },
+
+    computeexpense() {
+      this.quicksettleamount = [];
+      let amount = this.expense.expenseAmount;
+      if (this.custom.length > 0) {
+        let sum = 0
+        for (let i = 0; i < this.custom.length; i++) {
+          sum += this.custom[i];
+        }
+        if (sum != this.expense.expenseAmount) {
+          alert("Please make sure the percentages add up to the amount owed!")
+        }
+        else {
+          for (let i = 0; i < this.custom.length; i++) {
+            this.quicksettleamount.push(this.custom[i]);
+          }
+        }
+      }
+      if (this.shares.length > 0) {
+        let totalshares = 0;
+        for (let i = 0; i < this.shares.length; i++) {
+          totalshares += this.shares[i];
+        }
+        for (let i = 0; i < this.shares.length; i++) {
+          this.quicksettleamount.push(this.shares[i] * amount / totalshares);
+        }
+      }
+      if (this.percentages.length > 0) {
+        let totalpercentage = 0;
+        for (let i = 0; i < this.percentages.length; i++) {
+          totalpercentage += this.percentages[i];
+        }
+        if (totalpercentage != 100) {
+          alert("Please make sure the percentages add up to 100!")
+        }
+        else {
+          for (let i = 0; i < this.percentages.length; i++) {
+            this.quicksettleamount.push(this.percentages[i] * amount / 100);
+          }
+
+
+        }
+
       }
 
-      
     }
-
-  }
-
-}
   },
   async created() {
     // const querySnapshot = await getDocs(expensesRef);
     onSnapshot(expensesRef, (querySnapshot) => {
-      if (this.expenses.length > 0 ) {
+      if (this.expenses.length > 0) {
         this.expenses = [];
       }
       querySnapshot.forEach((doc) => {
         // doc.data() is never undefined for query doc snapshots
-        console.log(doc.id, " => ", doc.data());
         this.docId.push(doc.id);
         this.expenses.push(doc.data());
       });
@@ -426,22 +463,16 @@ computeexpense(){
       this.whoOwesWho = doc.data();
       console.log(this.whoOwesWho)
     });
-  },
-}
 
-getDocs(whoOwesWhoRef)
-  .then((snapshot) => {
-    let books = [];
-    snapshot.docs.forEach((doc) => {
-      books.push({ ...doc.data(), id: doc.id })
+    getDocs(tripsRef).then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        console.log(doc.id, " => ", doc.data());
+        this.trips.push(doc.id);
+      });
     })
-    console.log(books);
-  })
-  .catch((err) => {
-    console.log(err.message)
-  })
+  },
 
-
-
+}
 
 </script>

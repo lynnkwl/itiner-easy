@@ -4,14 +4,14 @@
         <form @submit.prevent="submitForm">
             <label for="destination">Destination:</label>
             <input type="text" id="destination" v-model="destination" required>
-            <br><br>
-            <label for="start-date">Start Date:</label>
+            <!-- <br><br> -->
+            <!-- <label for="start-date">Start Date:</label>
             <input type="date" id="start-date" v-model="startDate" required>
             <br><br>
             <label for="end-date">End Date:</label>
             <input type="date" id="end-date" v-model="endDate" required>
-            <br><br>
-            <h2>Expenses:</h2>
+            <br><br> -->
+            <!-- <h2>Expenses:</h2>
             <div v-for="(expense, index) in expenses" :key="index">
                 <label>Expense {{ index + 1 }}:</label>
                 &nbsp;
@@ -21,7 +21,7 @@
                 &nbsp;                
                 <button type="button" @click="removeExpense(index)">Remove</button>
             </div>
-            <button type="button" @click="addExpense">Add Expense</button>
+            <button type="button" @click="addExpense">Add Expense</button> -->
             <br><br>
             <button type="submit">Submit</button>
         </form>
@@ -29,13 +29,23 @@
 </template>
 
 <script>
+import {
+    getFirestore, collection, getDocs,
+    addDoc, deleteDoc, doc, updateDoc, setDoc, query, onSnapshot
+} from "firebase/firestore";
+
+const db = getFirestore();
+const tripsRef = collection(db, 'trips');
+const expensesRef = collection(tripsRef, 'europe', 'expenses');
+const whoOwesWhoRef = collection(tripsRef, 'europe', 'whoOwesWho');
+
 export default {
     data() {
         return {
             destination: '',
-            startDate: '',
-            endDate: '',
-            expenses: [{ name: '', amount: '' }]
+            // startDate: '',
+            // endDate: '',
+            // expenses: [{ name: '', amount: '' }]
         }
     },
     methods: {
@@ -46,19 +56,16 @@ export default {
             this.expenses.splice(index, 1)
         },
         submitForm() {
-            const trip = {
-                destination: this.destination,
-                startDate: this.startDate,
-                endDate: this.endDate,
-                expenses: this.expenses
-            }
-            console.log(trip) // replace with your own logic to submit the form data
+            console.log(this.destination)
+            setDoc(doc(tripsRef, this.destination), {
+                whoOwesWho: {}
+            })
         }
     }
 }
 </script>
 <style>
 body {
-  background-color: #05c8f7;
+    background-color: #05c8f7;
 }
 </style>

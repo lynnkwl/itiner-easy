@@ -1,144 +1,128 @@
 <style>
-    .slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 23px;
-  height: 24px;
-  border: 0;
-  background: url('contrasticon.png');
-  cursor: pointer;
-}
-
-.slider::-moz-range-thumb {
-  width: 23px;
-  height: 25px;
-  border: 0;
-  background: url('contrasticon.png');
-  cursor: pointer;
-}
-.Mainbody{
-    text-align: center;
-    margin-left: 30px;
-    margin-top: 30px;
-    background-color: #d9d9d9 ;
-}
-#sliderVal{
-    margin-left: 10px;
-    margin-right: 10px;
-}
-#selectplaces{
-    margin-top: 30px;
-    margin-left: 30px;
-    margin-right: 30px;
-    background-color: #d9d9d9 ;
-}
-#map-container{
-    margin-top: 30px;
-    margin-left: 30px;
-    margin-right: 30px;
-    background-color: #d9d9d9 ;
-}
-#map{
-    height: 400px;
-    width: 100%;
-}
+  
 
 </style>
-
-
-<template>
-    <!-- <nav class="navbar navbar-expand-sm navbar-dark" style="background-color: #05c8f7;"
-    aria-label="Second navbar example">
-    <div class="container-fluid">
-
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample02"
-        aria-controls="navbarsExample02" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <div class="collapse navbar-collapse" id="navbarsExample02">
-        <ul class="navbar-nav me-auto">
-          <li class="nav-item">
-            <a class="nav-link text-white" href="#">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-black" href="Tools/Toolpage.html">Tools</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link active text-white" aria-current="page" href="billbuddy.html">BillBuddy</a>
-          </li>
-        </ul>
-        <div class="position-absolute top-0 start-50 translate-middle-x">
-          <a href="#"><img src="../components/logo/itiner-easy.svg"  style="width: 100px; height: 100px; margin-top: -15px;"
-            alt="itiner-easy logo"></a>
-        </div>
-        <ul class="navbar-nav pull-right">
-          <li class="nav-item">
-            <a class="nav-link rounded"
-              style="background-color: white; color: #05c8f7; padding-left: 20px; padding-right: 20px;"
-              href="#">Profile</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav> -->
-<br>
-<br>
-<br>
-<div class="text-3xl text-center text-blue-400">Let's plan your next trip!</div>
-<br>
-<div class="rounded-lg border-blue bg-blue-100 mx-5">
-  <!-- user input box: start -->
-  <!-- <div class="flex flex-col content-start">
-      <div class="flex justify-center items-center "> 
-          <label class="" for="country">Where are you headed to?</label>
-          &nbsp;
-          &nbsp;
-          <div class="pb-4">
-            <input type="text" id="country" name="City"  v-model="town" class="placeholder-white mt-4 w-80 form-control input-sm rounded bg-blue-400 text-white " placeholder="Enter destination" required>
-          </div> 
-      </div>
-      
-      <div class="slidecontainer flex justify-center items-center">
-          <label class="object-left">For how many days?</label>
-          &nbsp;
-          &nbsp;
-          <div>
-            <input class="w-full" type="range" min="1" max="3" step="1" v-model="sliderValue" @input="sliderChange" required />
-          </div>
-          &nbsp;
-          &nbsp;
-          <p>Days: {{ sliderValue }}</p>
-      </div>
-  </div> -->
-
-  <div class="grid grid-cols-4">
-    <div></div>
-      <div class="flex items-center justify-center">  
-          <label class="" for="country">Where are you headed to?</label>
-      </div>
-      <div class="pb-4 flex items-center justify-center">
-          <input type="text" id="country" name="City"  v-model="town" class="placeholder-white mt-4 form-control input-sm rounded bg-blue-400 text-white " placeholder="Enter destination" required>
-      </div> 
-      <div></div>
-
-      <div></div>
-      <div class="slidecontainer flex items-center justify-center">
-          <label class="">For how many days?</label>
-      </div>
-      <div class="flex items-center justify-center place-content-around">
-            <input class="w-1/2" type="range" min="1" max="3" step="1" v-model="sliderValue" @input="sliderChange" required />
+<!-- OLD FORM -->
+<!-- <div class="rounded-lg border-blue bg-blue-100 mx-5"> -->
+    <!-- user input box: start -->
+    <!-- <div class="flex flex-col content-start">
+        <div class="flex justify-center items-center "> 
+            <label class="" for="country">Where are you headed to?</label>
             &nbsp;
+            &nbsp;
+            <div class="pb-4">
+              <input type="text" id="country" name="City"  v-model="town" class="placeholder-white mt-4 w-80 form-control input-sm rounded bg-blue-400 text-white " placeholder="Enter destination" required>
+            </div> 
+        </div>
+        
+        <div class="slidecontainer flex justify-center items-center">
+            <label class="object-left">For how many days?</label>
+            &nbsp;
+            &nbsp;
+            <div>
+              <input class="w-full" type="range" min="1" max="3" step="1" v-model="sliderValue" @input="sliderChange" required />
+            </div>
             &nbsp;
             &nbsp;
             <p>Days: {{ sliderValue }}</p>
-      </div>
-      <div></div>
-          &nbsp;
-          &nbsp;
-          
-      
-  </div>
+        </div>
+    </div> -->
+
+<template>
+  <h1 class="text-3xl text-center text-blue-400 mt-5">Let's plan your next trip!</h1>
+  <div class="flex justify-center"> 
+    <FormKit type="form"
+          :actions="false"
+          >
+              <FormKit type="multi-step"
+              tab-style="progress"
+              :allow-incomplete="false"   
+              >
+              <!-- Destination: start -->
+                  <FormKit type="step" name="Destination">
+                  <!-- collect name, email, and company info -->
+                      <FormKit 
+                          v-model="town"
+                          type="text" 
+                          label="Destination" 
+                          validation=""
+                      />
+                      <FormKit 
+                          v-model="sliderValue"
+                          type="range" 
+                          label="Duration" 
+                          validation=""
+                          value=""
+                          min="1"
+                          max="3" 
+                      />
+                    <!-- reformat to change day/days based on value -->
+                      <p>Days: {{ sliderValue }}</p>
+                      
+                  </FormKit>
+              <!-- Destination: end -->
+
+              <!-- preferences: start -->
+                  <FormKit type="step" name="Preferences">
+                  <!-- Get talk title, brief, and track -->
+                  <FormKit 
+                      type="radio" 
+                      label="Outdoors or Indoors?" 
+                      help="Which type of setting do you prefer?" 
+                      validation="required"
+                      v-model="outgoing"
+                      :options="[
+                          'Outdoors',
+                          'Indoors',
+                          'I\'m fine with either',
+                      ]"
+                  />
+                  <FormKit 
+                      type="checkbox" 
+                      label="Places of Interest (optional)"
+                      help="Any specific places you'd like to visit?" 
+                      :options="[
+                          'Museums',
+                          'Shopping Malls',
+                          'Gardens',
+                      ]"
+                  />
+                  <FormKit 
+                      v-model="transport"
+                      type="radio" 
+                      label="Mode of Transportation"
+                      help="How will you be getting around?"
+                      :options="['Car', 'Public Transport', 'Bicycle', 'Walking']"
+                  />
+                  </FormKit>
+              <!-- preferences: end -->
+
+              <!-- Generate: start -->
+                  <FormKit type="step" name="Let's go!">
+                  <!-- Ask the user to share how they heard about us -->
+                  <div class="text-center">
+                    <h1>Great! Now that we've gathered all the information we need...</h1>
+                  </div>
+                  <br>
+                  <br>
+                  <h2 class="text-center">Are you ready?</h2>
+                  <br>
+                  <br>
+                  <template #stepNext>
+                      <FormKit type="submit" 
+                      @click="checkempty"
+                      label="Generate an itinerary for me!"/>
+                  </template>
+                    <FormKit type="submit" 
+                      @click="checkempty2"
+                      label="I'll decide myself!"/>
+              
+                  </FormKit>
+              <!-- Generate: end -->
+              </FormKit> 
+          </FormKit>
+    </div>
+<!-- </div>  -->
   <!-- user input box: end -->
           
           <!-- What kind of person are you?<br>
@@ -171,8 +155,7 @@
                 <br>
                 <br>
               <button @click="checkempty2" name="strongindependentwoman">I want to choose where I can go!</button><br> -->
-          
-</div>
+
 <div id="selectplaces">
   <div v-if="strongIndependentWoman">
     
@@ -287,7 +270,7 @@
 </div>
 </div>
 <div v-else>
-  <h3>Please input a city and Click on Generate Itinerary to get started!</h3>
+  <!-- <h3>Please input a city and Click on Generate Itinerary to get started!</h3> -->
 </div>
 <div>
   <button @click="checkempty">Generate Itinerary</button>
@@ -296,8 +279,6 @@
 <div v-if="customactivitiesandtime">
 
 </div>
-
-
 
 </template>
 
