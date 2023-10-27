@@ -15,6 +15,12 @@ import { createMultiStepPlugin } from '@formkit/addons'
 import '@formkit/themes/genesis'
 import '@formkit/addons/css/multistep'
 
+//Formkit Pro
+
+import '@formkit/pro/genesis'
+import { createProPlugin, inputs } from '@formkit/pro'
+const proplugin = createProPlugin('fk-344144602', inputs)
+
 // TODO: Add SDKs for Firebase products that you want to use
 //popupwindow
 // import Buefy from 'buefy';
@@ -55,8 +61,10 @@ const analytics = getAnalytics(firebaseApp);
 
 const app = createApp(App)
   .use(formKitPlugin, defaultConfig({
-    plugins: [createMultiStepPlugin()]
+    plugins: 
+    [createMultiStepPlugin(),proplugin]
 }));
+
 
 app.use(BootstrapIconsPlugin);
 app.use(router);

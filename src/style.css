@@ -109,18 +109,18 @@ button:focus-visible {
   }
 /* for subheadings */
   h3{
-    @apply font-body font-semibold text-2xl italic
+    @apply font-body font-semibold text-xl italic
   }
 /* for body text*/
   h4 {
-    @apply font-body font-normal text-xl 
+    @apply font-body font-normal text-base
   }
 
 }
 
 @layer components{
   .card{
-    @apply bg-white text-center text-white text-2xl font-bold py-2 px-4 border border-blue-700 rounded-lg
+    @apply bg-white text-center text-white text-2xl font-bold py-2 px-4 rounded-lg
   }
   .card-title{
     @apply font-body font-bold text-2xl
@@ -129,7 +129,7 @@ button:focus-visible {
     @apply font-body font-normal text-xl
   }
   .btn{
-    @apply bg-blue-400 text-white rounded border-none
+    @apply bg-blue-400 text-white rounded border-none 
   }
   .btn:hover{
     @apply bg-blue-600 text-white shadow-xl
