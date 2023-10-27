@@ -22,7 +22,7 @@
             <tr v-for="trip in trips">
               <td>{{ trip }}</td>
               <td>{{ whoOwesWho }}</td>
-              <td><button @click="goToTrip(trip)">Go to Trip</button></td>
+              <td><button class="btn btn-neutral ml-7 p-2 text-white btn-xs sm:btn-sm md:btn-md lg:btn-lg" @click="goToTrip(trip)">Go to Trip</button></td>
             </tr>
           </tbody>
 
