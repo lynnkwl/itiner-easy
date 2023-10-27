@@ -78,7 +78,8 @@
                       ]"
                   />
                   <FormKit 
-                      type="checkbox" 
+                      v-model= "interestsoptions"
+                      type="checkbox"
                       label="Places of Interest (optional)"
                       help="Any specific places you'd like to visit?" 
                       :options="[
@@ -116,6 +117,7 @@
                     <FormKit type="submit" 
                       @click="checkempty2"
                       label="I'll decide myself!"/>
+
               
                   </FormKit>
               <!-- Generate: end -->
@@ -286,7 +288,7 @@
 
 <script >
 import axios from 'axios'; // Import Axios
-import { initMap } from '../main.js';
+import { initMap } from "../main.js"
 import {
   getFirestore, collection, getDocs,
   addDoc, deleteDoc, doc, updateDoc, setDoc, query
@@ -300,6 +302,9 @@ export default {
     script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCrtlMuj3mZnI5NGVkgw5ME1hZL-XEtRzI&libraries=places&callback=initMap';
     script.defer = true;
     script.async = true;
+    //add main.js
+    script.onload = () => this.scriptLoaded();
+
     document.head.appendChild(script);
     window.history.scrollRestoration = "manual";
 
@@ -327,6 +332,7 @@ export default {
       twelvehrtime: "",
       dates: [],
       citycoords: {},
+      interestsoptions:[],
       customactivitiesandtime: [],
     };
   },
@@ -475,7 +481,7 @@ async searchBothAttractions(city) {
     console.log(this.final_activities);
     await this.managetime();
     await this.getLatLng();
-    await initMap(this.citycoords);
+    initMap(this.citycoords);
     },
     async converttime(time, act){
   // time = 940; //goal is to convert this to 1110
@@ -488,6 +494,15 @@ async searchBothAttractions(city) {
     }
     return formattime;
     }
+    ,
+    initMap(coords) {
+  const mapDiv = document.getElementById("map");
+  const mapOptions = {
+    center: coords,
+    zoom: 8,
+  };
+  const map = new google.maps.Map(mapDiv, mapOptions);
+}
     ,
 
 
@@ -727,9 +742,7 @@ async formattimestrfrom24hourto12hour(input) {
   });
 },
     async getinterests(){
-    var interests = [];
-    this.interestsresults = [];
-    var checkboxes = document.getElementsByName("interests");
+    var checkboxes = this.interestsoptions
     for (var i = 0; i < checkboxes.length; i++) {
         if (checkboxes[i].checked) {
             interests.push(checkboxes[i].value);
@@ -788,6 +801,16 @@ async formattimestrfrom24hourto12hour(input) {
       }
     });
   });
+},
+wait() {
+    if(this.final_activities==[])
+    {
+        setTimeout(wait, 30000);
+    }
+    else {
+        //jQuery is loaded, do what you need to
+        $(document).ready(docLoaded);
+    }
 },
 
 
@@ -946,6 +969,7 @@ async checkempty(){
     else{
         await this.getweather();
         await this.getactivitieslist();
+        this.wait();
     }
     },
   async addeaterytotrip(){
@@ -973,6 +997,7 @@ async checkempty2(){
       this.strongIndependentWoman = true;
       await this.getweather();
       await this.getlist2();
+      this.wait();
 
     }
     },
