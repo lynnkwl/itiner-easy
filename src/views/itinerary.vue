@@ -133,9 +133,12 @@
                     <FormKit type="button" 
                       @click="checkempty2"
                       label="I'll decide myself!"/>
-
-              
+                  
+                      <FormKit type="button" 
+                      @click="saveItinerary"
+                      label="Save Itinerary"/>
                   </FormKit>
+                  
               <!-- Generate: end -->
               </FormKit> 
           </FormKit>
@@ -308,10 +311,10 @@ import axios from 'axios'; // Import Axios
 import { initMap } from "../main.js"
 import {
   getFirestore, collection, getDocs,
-  addDoc, deleteDoc, doc, updateDoc, setDoc, query
+  addDoc, deleteDoc, doc, updateDoc, setDoc, query, getDoc
 } from "firebase/firestore";
 const db = getFirestore();
-
+const tripsRef = collection(db, 'trips');
 
 export default {
   mounted(){
@@ -545,7 +548,6 @@ async searchBothAttractions(city) {
   async managetime() {
   this.days = this.sliderValue;
   this.activitiesandtime = [];
-
   for (var i = 0; i < this.days; i++) {
     let timeint = 900;
     let maxtimeint = 2100;
@@ -1012,7 +1014,40 @@ async checkempty2(){
     },
 
 
+async saveItinerary() {
+  console.log(this.town);
+  console.log(this.activitiesandtime);
+  // console.log(this.activitiesandtime[0]);
+  // console.log(this.activitiesandtime[0].activities);
+  // console.log(this.activitiesandtime[0].activities[0]);
+  // console.log(this.activitiesandtime[0].activities[0].name);
+  var activitiesandtime = this.activitiesandtime;
+  var json = JSON.stringify(activitiesandtime);
+  console.log(json);
+  
+  const docSnap = await getDoc(doc(tripsRef, this.town));
+  if (docSnap.exists()) {
+    console.log("Document data:", docSnap.data());
+    updateDoc(doc(tripsRef, this.town), {activitiesandtime: json});
+  } else {
+    // doc.data() will be undefined in this case
+    console.log("No such document!");
+    setDoc(doc(tripsRef, this.town), {activitiesandtime: json});
+  }
 
+  // getDocs(tripsRef, this.town).then((doc) => {
+  //   if (doc.exists()) {
+  //     console.log("Document data:", doc.data());
+  //     updateDoc(doc(tripsRef, this.town), {activitiesandtime: json});
+  //   } else {
+  //     // doc.data() will be undefined in this case
+  //     console.log("No such document!");
+  //     setDoc(doc(tripsRef, this.town), {activitiesandtime: json});
+  //   }
+  // }).catch((error) => {
+  //   console.log("Error getting document:", error);
+  // });
+}
     
 },
   };
