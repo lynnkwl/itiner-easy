@@ -611,6 +611,9 @@ async searchBothAttractions(city) {
         //if result resolved
         if(traveltime !=0){
         var endtime = await this.converttime(timeint, traveltime);
+        if(endtime > 2100){
+          endtime = 2200;
+        }
         var travelactivity = {
           name: "Travel from " + lastactivity.name + " to " + randomactivity.name,
           time: await this.formatTime(timeint),
