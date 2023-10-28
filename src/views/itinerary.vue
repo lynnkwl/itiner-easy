@@ -3,6 +3,18 @@
     height: 400px;
   width: 100%;  
   }
+  a{
+    color: blue;
+  }
+  a:visited{
+    color: red;
+  }
+  a:focus{
+    color: green;
+  }
+  a:hover{
+    color: yellow;
+  }
 
 </style>
 <!-- OLD FORM -->
@@ -119,7 +131,7 @@
                       label="Generate an itinerary for me!"/>
                   </template>
                     <FormKit type="button" 
-                      @c="this.checkempty2()"
+                      @click="checkempty2"
                       label="I'll decide myself!"/>
 
               
@@ -227,11 +239,12 @@
             {{ activity.formatted_address}}
           </td>
           <td>
-            <a href="#" @click="showLocation(activity)">Show on Map</a>
+            <a href="#" v-if="activity.formatted_address !== 'Travel'"  @click="showLocation(activity)">Show on Map</a>
+            <a href="#" v-else></a>
           </td> 
           <td>
             <!-- if its a travel display route -->
-            <a v-if="activity.name.includes('Travel')" href="#" @click="displaydirectionsonmap(day.activities[day.activities.indexOf(activity) - 1].geometry.location, day.activities[day.activities.indexOf(activity) + 1].geometry.location)">How to get there!</a>
+            <a v-if="activity.name.includes('Travel')" href="#" @click="displaydirectionsonmap(day.activities[day.activities.indexOf(activity) - 1].geometry.location, day.activities[day.activities.indexOf(activity) + 1].geometry.location)">The way there!</a>
             <!-- if its not a travel display eateries -->
             <a v-else href="#" @click="geteateriesnearby(activity)">Where to eat!</a>
           </td>
@@ -266,9 +279,9 @@
           <td>
             <a href="#" @click="displaydirectionsonmap(eatery.origin, eatery.geometry.location)">Show Route</a>
           </td>
-          <td>
+          <!-- <td>
             I want to eat here<input name = "eateries{{ index }}" type="radio" :value="eatery" @click="addeaterytotrip(eatery,)" v-model="selectedEateries">
-          </td>
+          </td> -->
           
         </tr>
       </tbody>
@@ -278,10 +291,10 @@
 <div v-else>
   <!-- <h3>Please input a city and Click on Generate Itinerary to get started!</h3> -->
 </div>
-<div>
+<!-- <div>
   <button @click="checkempty">Generate Itinerary</button>
 
-</div>
+</div> -->
 <div v-if="customactivitiesandtime">
 
 </div>
@@ -934,9 +947,9 @@ async showLocation(place){
       );
       var infowindow = new google.maps.InfoWindow({
         // content: "Name:" + place.name + "<br>" + "Address:" + place.formatted_address,
-        content: `<div><img style="width: 200px; height: 200px;" src=`+place.photo+`></div>`+`<div style="color:black">`+
+        content: `<div><img style="width: auto; height: 150px;" src=`+place.photo+`></div>`+`<div style="color:black"><strong>`+
           "Name:" + place.name + "<br>" + "Address:" + place.formatted_address
-          + "<br><a href=" + place.url + ">Click here for more information</a>"
+          + "<br><a href=" + place.url + "></strong>Click here for more information</a>"
           +`</div>`,
       });
       // infowindow is blank
