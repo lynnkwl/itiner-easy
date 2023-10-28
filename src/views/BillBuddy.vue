@@ -15,6 +15,7 @@
               <th>Trip Name</th>
               <th>People</th>
               <th>Go to Trip</th>
+              <th>Delete Trip</th>
             </tr>
           </thead>
 
@@ -23,6 +24,7 @@
               <td>{{ trip }}</td>
               <td>{{ whoOwesWho }}</td>
               <td><button class="btn btn-neutral ml-7 p-2 text-white btn-xs sm:btn-sm md:btn-md lg:btn-lg" @click="goToTrip(trip)">Go to Trip</button></td>
+              <td><button class="btn btn-neutral ml-7 p-2 text-white btn-xs sm:btn-sm md:btn-md lg:btn-lg" @click="deleteTrip(trip)">Delete Trip</button></td>
             </tr>
           </tbody>
 
@@ -51,7 +53,7 @@
 
     <div v-if="selected">
       <div>
-        <button class="btn btn-primary" @click="selected = false">Back to trips</button>
+        <button class="btn btn-primary" @click="backToTrips">Back to trips</button>
       </div>
       <div class="text-3xl m-7 font-bold">
         <h2>{{ selectedTrip }} expenses</h2>
@@ -62,7 +64,7 @@
           <input type="text" placeholder="Expense Name" v-model="expense.expenseName" class="form-control" required>
         </div>
         <div class="form-group">
-          <input type="text" placeholder="Expense Amount" v-model="expense.expenseAmount" class="form-control" required>
+          <input type="number" placeholder="Expense Amount" v-model="expense.expenseAmount" class="form-control" required>
         </div>
         <div class="form-group">
           <input type="text" placeholder="Person Owed" v-model="expense.personOwedName" class="form-control" required>
@@ -264,6 +266,11 @@ export default {
 
   // Methods for adding data to firebase
   methods: {
+    backToTrips() {
+      // this.selected = false;
+      window.location.reload();
+    },
+
     goToTrip(trip) {
       console.log(trip);
       this.trip = trip;
@@ -427,6 +434,16 @@ export default {
         });
     },
 
+    async deleteTrip(trip) {
+      deleteDoc(doc(tripsRef, trip))
+        .then(() => {
+          console.log("Document successfully deleted!");
+          window.location.reload();
+        }).catch((error) => {
+          console.error("Error removing document: ", error);
+        });
+    },
+
     // Update expense in database
     async updateExpense(index, docId) {
       updateDoc(collection(tripsRef, this.trip, 'expenses'), docId[index]), {
@@ -498,23 +515,25 @@ export default {
 
     }
   },
+  async updated() {
+    onSnapshot(collection(tripsRef, this.trip, 'expenses'), (querySnapshot) => {
+      if (this.expenses.length > 0) {
+        this.expenses = [];
+      }
+      querySnapshot.docs.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        this.docId.push(doc.id);
+        this.expenses.push(doc.data());
+      });
+    });
+  },
+
   async created() {
     getDocs(tripsRef).then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
         // doc.data() is never undefined for query doc snapshots
         // console.log(doc.id, " => ", doc.data());
         this.trips.push(doc.id);
-      });
-    });
-
-    onSnapshot(collection(tripsRef, this.trip, 'expenses'), (querySnapshot) => {
-      if (this.expenses.length > 0) {
-        this.expenses = [];
-      }
-      querySnapshot.forEach((doc) => {
-        // doc.data() is never undefined for query doc snapshots
-        this.docId.push(doc.id);
-        this.expenses.push(doc.data());
       });
     });
 

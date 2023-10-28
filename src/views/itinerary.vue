@@ -1,5 +1,20 @@
 <style>
-  
+  #map{
+    height: 400px;
+  width: 100%;  
+  }
+  a{
+    color: blue;
+  }
+  a:visited{
+    color: red;
+  }
+  a:focus{
+    color: green;
+  }
+  a:hover{
+    color: yellow;
+  }
 
 </style>
 <!-- OLD FORM -->
@@ -110,16 +125,20 @@
                   <br>
                   <br>
                   <template #stepNext>
-                      <FormKit type="submit" 
+                      <FormKit
+                       type="button" 
                       @click="checkempty"
                       label="Generate an itinerary for me!"/>
                   </template>
-                    <FormKit type="submit" 
+                    <FormKit type="button" 
                       @click="checkempty2"
                       label="I'll decide myself!"/>
-
-              
+                  
+                      <FormKit type="button" 
+                      @click="saveItinerary"
+                      label="Save Itinerary"/>
                   </FormKit>
+                  
               <!-- Generate: end -->
               </FormKit> 
           </FormKit>
@@ -176,6 +195,10 @@
                 </label>
               </td>
               <td>
+                <!-- add photo -->
+                <img :src="act.photo" alt="Activity photo" style="width: 100px; height: 100px;">
+              </td>
+              <td>
                 {{ act.formatted_address }}
               </td>
               <td>
@@ -189,9 +212,6 @@
 
 <div v-if="final_activities.length>0">
   <!-- getmap -->
-    <div id="map-container">
-      <div id="map"></div>
-  </div>
   <!-- create table each day -->
   <div v-for="(day, index) in activitiesandtime" :key="index">
     <table>
@@ -207,9 +227,11 @@
       <tr>
         <th>Activity</th>
         <th>Time</th>
+        <th>Photo</th>
         <th>Address</th>
         <th>Details</th>
         <th>Show me!</th>
+        <th>Remarks</th>
       </tr>
       <tbody>
         <tr v-for="activity in day.activities" :key="activity.name">
@@ -221,25 +243,38 @@
           <td>
             {{ activity.time }} - {{ activity.endtime }}
           </td>
-
+          <td>
+            <img :src="activity.photo" v-if="activity.formatted_address !== 'Travel'" style="width: 100px; height: 100px;">
+            <img v-else src ="https://i.pinimg.com/originals/c0/c2/5a/c0c25a5a71939b968e67deb530854641.png" style="width: 100px; height: 100px;">
+          </td>
           <td>
             {{ activity.formatted_address}}
           </td>
           <td>
-            <a href="#" @click="showLocation(activity)">Show on Map</a>
+            <a href="#" v-if="activity.formatted_address !== 'Travel'"  @click="showLocation(activity)">Show on Map</a>
+            <a href="#" v-else></a>
           </td> 
           <td>
             <!-- if its a travel display route -->
-            <a v-if="activity.name.includes('Travel')" href="#" @click="displaydirectionsonmap(day.activities[day.activities.indexOf(activity) - 1].geometry.location, day.activities[day.activities.indexOf(activity) + 1].geometry.location)">How to get there!</a>
+            <a v-if="activity.name.includes('Travel')" href="#" @click="displaydirectionsonmap(day.activities[day.activities.indexOf(activity) - 1].geometry.location, day.activities[day.activities.indexOf(activity) + 1].geometry.location)">The way there!</a>
             <!-- if its not a travel display eateries -->
             <a v-else href="#" @click="geteateriesnearby(activity)">Where to eat!</a>
+          </td>
+          <td v-if="activity.name.includes('Travel')"></td>
+          <td v-else>
+            Remarks: <input type="text" v-model="activity.remarks"><br>
+            Expenses: <input type="number" v-model="activity.expense"><br>
+            My Rating: 1<input type="range" min="1" max="5" v-model="activity.rating">5
           </td>
         </tr>
       </tbody>
     </table>
+    
+      <div id="map"></div>
+      <br>
     <table v-if="eateries.length>0">
       <tr colspan = "3"><th>Eateries</th></tr>
-      <tr><th>Name</th><th>Address</th><th>Price Level</th><th>Rating</th><th>Map Details</th><th>How to get there!</th></tr>
+      <tr><th>Name</th><th>Address</th><th>Photo</th><th>Price Level</th><th>Rating</th><th>Map Details</th><th>How to get there!</th><th>Remarks</th></tr>
       <tbody>
         <tr v-for="eatery in eateries" :key="eatery.name">
           <td>
@@ -249,6 +284,9 @@
           </td>
           <td>
             {{ eatery.vicinity}}
+          </td>
+          <td>
+            <img :src="eatery.photo" style="width: 100px; height: 100px;">
           </td>
           <td>
             {{ eatery.price_level }}
@@ -262,9 +300,14 @@
           <td>
             <a href="#" @click="displaydirectionsonmap(eatery.origin, eatery.geometry.location)">Show Route</a>
           </td>
-          <td>
-            I want to eat here<input name = "eateries{{ index }}" type="radio" :value="eatery" @click="addeaterytotrip(eatery,)" v-model="selectedEateries">
+          <td v-if="eatery.formatted_address !== 'Travel'">
+            Remarks: <input type="text" v-model="eatery.remarks"><br>
+            Expenses: <input type="number" v-model="eatery.expense"><br>
+            My Rating: 1<input type="slider" min="1" max="5" v-model="eatery.rating">5
           </td>
+          <!-- <td>
+            I want to eat here<input name = "eateries{{ index }}" type="radio" :value="eatery" @click="addeaterytotrip(eatery,)" v-model="selectedEateries">
+          </td> -->
           
         </tr>
       </tbody>
@@ -291,10 +334,10 @@ import axios from 'axios'; // Import Axios
 import { initMap } from "../main.js"
 import {
   getFirestore, collection, getDocs,
-  addDoc, deleteDoc, doc, updateDoc, setDoc, query
+  addDoc, deleteDoc, doc, updateDoc, setDoc, query, getDoc
 } from "firebase/firestore";
 const db = getFirestore();
-
+const tripsRef = collection(db, 'trips');
 
 export default {
   mounted(){
@@ -303,8 +346,6 @@ export default {
     script.defer = true;
     script.async = true;
     //add main.js
-    script.onload = () => this.scriptLoaded();
-
     document.head.appendChild(script);
     window.history.scrollRestoration = "manual";
 
@@ -406,9 +447,9 @@ async searchBothAttractions(city) {
     this.suggested_activities = [];
     var request = {
         query: `Tourist Attractions in ${city}`,
-        fields: ['name', 'formatted_address','types', 'business_status', 'geometry', 'opening_hours', 'website', 'place_id'],
+        fields: ['name', 'formatted_address','types', 'business_status', 'geometry', 'opening_hours', 'website', 'place_id', 'photo'],
     };
-
+    
     this.getinterests(city);
 
     var service = new google.maps.places.PlacesService(document.createElement('div'));
@@ -530,7 +571,6 @@ async searchBothAttractions(city) {
   async managetime() {
   this.days = this.sliderValue;
   this.activitiesandtime = [];
-
   for (var i = 0; i < this.days; i++) {
     let timeint = 900;
     let maxtimeint = 2100;
@@ -596,6 +636,9 @@ async searchBothAttractions(city) {
         //if result resolved
         if(traveltime !=0){
         var endtime = await this.converttime(timeint, traveltime);
+        if(endtime > 2100){
+          endtime = 2200;
+        }
         var travelactivity = {
           name: "Travel from " + lastactivity.name + " to " + randomactivity.name,
           time: await this.formatTime(timeint),
@@ -624,6 +667,9 @@ async searchBothAttractions(city) {
           transport: this.transport,
           geometry: randomactivity.geometry,
           photo: photo,
+          remarks: "",
+          expense: 0,
+          rating: 3,
           url: "'https://www.google.com/search?q=" + randomactivity.name + "&rlz=1C1CHBF_enSG941SG941&oq=google&aqs=chrome..69i57j69i59j69i60l3j69i65l2.1001j0j7&sourceid=chrome&ie=UTF-8'",
         }; 
         //store activities in each day
@@ -708,6 +754,9 @@ async formattimestrfrom24hourto12hour(input) {
     return new Promise((resolve, reject) => {
     service.textSearch(request, (results, status) => {
       if (status === google.maps.places.PlacesServiceStatus.OK) {
+        for (var i = 0; i < results.length; i++) {
+          results[i].photo = this.getphoto(results[i].place_id);
+        }
         this.places = this.places.concat(results);
         console.log(this.places);
         resolve(results); // Resolve the promise with the search results
@@ -731,6 +780,9 @@ async formattimestrfrom24hourto12hour(input) {
     return new Promise((resolve, reject) => {
     service.textSearch(request, (results, status) => {
       if (status === google.maps.places.PlacesServiceStatus.OK) {
+        for (var i = 0; i < results.length; i++) {
+          results[i].photo = this.getphoto(results[i].place_id);
+        }
         this.places = this.places.concat(results);
         console.log(this.places);
         resolve(results); // Resolve the promise with the search results
@@ -742,6 +794,7 @@ async formattimestrfrom24hourto12hour(input) {
   });
 },
     async getinterests(){
+    var interests = [];
     var checkboxes = this.interestsoptions
     for (var i = 0; i < checkboxes.length; i++) {
         if (checkboxes[i].checked) {
@@ -768,6 +821,10 @@ async formattimestrfrom24hourto12hour(input) {
     return new Promise((resolve, reject) => {
     service.textSearch(request, (results, status) => {
       if (status === google.maps.places.PlacesServiceStatus.OK) {
+        // getphoto using place id
+        for (var i = 0; i < results.length; i++) {
+          results[i].photo = this.getphoto(results[i].place_id);
+        }
         this.interestsresults = this.interestsresults.concat(results);
         console.log(this.interestsresults);
         resolve(results); // Resolve the promise with the search results
@@ -791,6 +848,9 @@ async formattimestrfrom24hourto12hour(input) {
     return new Promise((resolve, reject) => {
     service.textSearch(request, (results, status) => {
       if (status === google.maps.places.PlacesServiceStatus.OK) {
+        for (var i = 0; i < results.length; i++) {
+          results[i].photo = this.getphoto(results[i].place_id);
+        }
         this.interestsresults = this.interestsresults.concat(results);
         console.log(this.interestsresults);
         console.log(this.suggested_activities);
@@ -802,16 +862,7 @@ async formattimestrfrom24hourto12hour(input) {
     });
   });
 },
-wait() {
-    if(this.final_activities==[])
-    {
-        setTimeout(wait, 30000);
-    }
-    else {
-        //jQuery is loaded, do what you need to
-        $(document).ready(docLoaded);
-    }
-},
+
 
 
     async  searchgardens(city) {
@@ -826,6 +877,9 @@ wait() {
     return new Promise((resolve, reject) => {
     service.textSearch(request, (results, status) => {
       if (status === google.maps.places.PlacesServiceStatus.OK) {
+        for (var i = 0; i < results.length; i++) {
+          results[i].photo = this.getphoto(results[i].place_id);
+        }
         this.interestsresults = this.interestsresults.concat(results);
         console.log(this.interestsresults);
         resolve(results); // Resolve the promise with the search results
@@ -854,7 +908,6 @@ wait() {
       service.nearbySearch(request, (results, status) => {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
       for (var i = 0; i < results.length; i++) {
-        var photo = this.getphoto(results[i].place_id);
         var place = results[i];
         console.log(place);
         place.origin = geometry.location;
@@ -863,7 +916,16 @@ wait() {
         this.eateries.push(place);
       }
     }
-  })}
+  })},
+  async geteateryphotos(){
+    this.eateries.forEach(eatery => {
+      eatery.photo = this.getphoto(eatery.place_id);
+      eatery.remarks = "";
+      eatery.expense= 0;
+      eatery.rating= 3;
+    });
+  }
+
   ,
   //get link of photo of place with place id
   async getphoto(placeid){
@@ -940,9 +1002,9 @@ async showLocation(place){
       );
       var infowindow = new google.maps.InfoWindow({
         // content: "Name:" + place.name + "<br>" + "Address:" + place.formatted_address,
-        content: `<div><img src=`+place.photo+`></div>`+`<div style="color:black">`+
+        content: `<div><img style="width: auto; height: 150px;" src=`+place.photo+`></div>`+`<div style="color:black"><strong>`+
           "Name:" + place.name + "<br>" + "Address:" + place.formatted_address
-          + "<br><a href=" + place.url + ">Click here for more information</a>"
+          + "<br><a target=`_blank` href=" + place.url + "></strong>Click here for more information</a>"
           +`</div>`,
       });
       // infowindow is blank
@@ -962,6 +1024,7 @@ async loadingppage(){
 
     
 async checkempty(){
+  console.log(this.town);
     if (!this.town || !this.sliderValue || !this.outgoing || !this.transport) {
         window.alert
 ("Please fill in all the fields!");
@@ -969,7 +1032,6 @@ async checkempty(){
     else{
         await this.getweather();
         await this.getactivitieslist();
-        this.wait();
     }
     },
   async addeaterytotrip(){
@@ -997,13 +1059,32 @@ async checkempty2(){
       this.strongIndependentWoman = true;
       await this.getweather();
       await this.getlist2();
-      this.wait();
 
     }
     },
 
 
-
+async saveItinerary() {
+  console.log(this.town);
+  console.log(this.activitiesandtime);
+  // console.log(this.activitiesandtime[0]);
+  // console.log(this.activitiesandtime[0].activities);
+  // console.log(this.activitiesandtime[0].activities[0]);
+  // console.log(this.activitiesandtime[0].activities[0].name);
+  var activitiesandtime = this.activitiesandtime;
+  var json = JSON.stringify(activitiesandtime);
+  console.log(json);
+  
+  const docSnap = await getDoc(doc(tripsRef, this.town));
+  if (docSnap.exists()) {
+    console.log("Document data:", docSnap.data());
+    updateDoc(doc(tripsRef, this.town), {activitiesandtime: json});
+  } else {
+    // doc.data() will be undefined in this case
+    console.log("No such document!");
+    setDoc(doc(tripsRef, this.town), {activitiesandtime: json, whoOwesWho: {}});
+  }
+}
     
 },
   };
