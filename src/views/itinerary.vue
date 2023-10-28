@@ -76,6 +76,25 @@
                       
                   </FormKit>
               <!-- Destination: end -->
+            
+              <!-- preferences: start -->
+              <FormKit type="step" name="makeephoto">
+                  <!-- Get talk title, brief, and track -->
+                  <FormKit 
+                      type="button" 
+                      label="lets get you some photos!"
+                      @click="titlephotogenerator"        
+                  />
+                  </FormKit>
+              <!-- preferences: end -->
+              <FormKit type="step" name="choosephoto">
+                  <!-- Get talk title, brief, and track -->
+                  <div v-for="(photo, index) in possiblephotos" :key="index">
+                    <input type="radio" :id="'photo-' + index" :value="photo" v-model="selectedPhotos">
+                    <label :for="'photo-' + index"><img :src="photo" alt="Photo" style="width: 400px; height: 300px;"></label>
+                  </div>
+
+              </FormKit>
 
               <!-- preferences: start -->
                   <FormKit type="step" name="Preferences">
@@ -375,6 +394,7 @@ export default {
       citycoords: {},
       interestsoptions:[],
       customactivitiesandtime: [],
+      possiblephotos: [],
     };
   },
     methods: {
@@ -768,30 +788,27 @@ async formattimestrfrom24hourto12hour(input) {
   });
 },
 
-titlephotogenerator(){
-  //getphotos of town using google place photos api
+async titlephotogenerator() {
+  // get photos of town using Google Place Photos API
   let townsearched = this.town;
-  var request = {
-    query: `${townsearched}`,
-    fields: ['name', 'photos'],
+  let request = {
+    query: townsearched,
+    fields: ['photos'],
   };
-  var service = new google.maps.places.PlacesService(document.createElement('div'));
-  return new Promise((resolve, reject) => {
+  let service = new google.maps.places.PlacesService(document.createElement('div'));
+
   service.findPlaceFromQuery(request, (results, status) => {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
-      var photos = results[0].photos;
-      var randomIndex = Math.floor(Math.random() * photos.length);
-      var randomphoto = photos[randomIndex];
-      var photo = randomphoto.getUrl();
-      console.log(photo);
-      resolve(photo); // Resolve the promise with the search results
-    } else {
-      console.error(`Error: ${status}`);
-      reject(status); // Reject the promise with the error status
+      let place = results[0];
+      let photos = place.photos;
+      if (!photos) {
+        return;
+      }
+      let photoUrls = photos.map(photo => photo.getUrl({ maxWidth: 1280, maxHeight: 853 }));
+      this.possiblephotos = photoUrls;
     }
-  })});
+  });
 },
-
 
 
     async searchOutdoorAttractions(city) {
