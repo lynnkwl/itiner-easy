@@ -195,6 +195,10 @@
                 </label>
               </td>
               <td>
+                <!-- add photo -->
+                <img :src="act.photo" alt="Activity photo" style="width: 100px; height: 100px;">
+              </td>
+              <td>
                 {{ act.formatted_address }}
               </td>
               <td>
@@ -223,6 +227,7 @@
       <tr>
         <th>Activity</th>
         <th>Time</th>
+        <th>Photo</th>
         <th>Address</th>
         <th>Details</th>
         <th>Show me!</th>
@@ -237,7 +242,10 @@
           <td>
             {{ activity.time }} - {{ activity.endtime }}
           </td>
-
+          <td>
+            <img :src="activity.photo" v-if="activity.formatted_address !== 'Travel'" style="width: 100px; height: 100px;">
+            <img v-else src ="https://i.pinimg.com/originals/c0/c2/5a/c0c25a5a71939b968e67deb530854641.png" style="width: 100px; height: 100px;">
+          </td>
           <td>
             {{ activity.formatted_address}}
           </td>
@@ -259,7 +267,7 @@
       <br>
     <table v-if="eateries.length>0">
       <tr colspan = "3"><th>Eateries</th></tr>
-      <tr><th>Name</th><th>Address</th><th>Price Level</th><th>Rating</th><th>Map Details</th><th>How to get there!</th></tr>
+      <tr><th>Name</th><th>Address</th><th>Photo</th><th>Price Level</th><th>Rating</th><th>Map Details</th><th>How to get there!</th></tr>
       <tbody>
         <tr v-for="eatery in eateries" :key="eatery.name">
           <td>
@@ -269,6 +277,9 @@
           </td>
           <td>
             {{ eatery.vicinity}}
+          </td>
+          <td>
+            <img :src="eatery.photo" style="width: 100px; height: 100px;">
           </td>
           <td>
             {{ eatery.price_level }}
@@ -424,9 +435,9 @@ async searchBothAttractions(city) {
     this.suggested_activities = [];
     var request = {
         query: `Tourist Attractions in ${city}`,
-        fields: ['name', 'formatted_address','types', 'business_status', 'geometry', 'opening_hours', 'website', 'place_id'],
+        fields: ['name', 'formatted_address','types', 'business_status', 'geometry', 'opening_hours', 'website', 'place_id', 'photo'],
     };
-
+    
     this.getinterests(city);
 
     var service = new google.maps.places.PlacesService(document.createElement('div'));
@@ -728,6 +739,9 @@ async formattimestrfrom24hourto12hour(input) {
     return new Promise((resolve, reject) => {
     service.textSearch(request, (results, status) => {
       if (status === google.maps.places.PlacesServiceStatus.OK) {
+        for (var i = 0; i < results.length; i++) {
+          results[i].photo = this.getphoto(results[i].place_id);
+        }
         this.places = this.places.concat(results);
         console.log(this.places);
         resolve(results); // Resolve the promise with the search results
@@ -751,6 +765,9 @@ async formattimestrfrom24hourto12hour(input) {
     return new Promise((resolve, reject) => {
     service.textSearch(request, (results, status) => {
       if (status === google.maps.places.PlacesServiceStatus.OK) {
+        for (var i = 0; i < results.length; i++) {
+          results[i].photo = this.getphoto(results[i].place_id);
+        }
         this.places = this.places.concat(results);
         console.log(this.places);
         resolve(results); // Resolve the promise with the search results
@@ -789,6 +806,10 @@ async formattimestrfrom24hourto12hour(input) {
     return new Promise((resolve, reject) => {
     service.textSearch(request, (results, status) => {
       if (status === google.maps.places.PlacesServiceStatus.OK) {
+        // getphoto using place id
+        for (var i = 0; i < results.length; i++) {
+          results[i].photo = this.getphoto(results[i].place_id);
+        }
         this.interestsresults = this.interestsresults.concat(results);
         console.log(this.interestsresults);
         resolve(results); // Resolve the promise with the search results
@@ -812,6 +833,9 @@ async formattimestrfrom24hourto12hour(input) {
     return new Promise((resolve, reject) => {
     service.textSearch(request, (results, status) => {
       if (status === google.maps.places.PlacesServiceStatus.OK) {
+        for (var i = 0; i < results.length; i++) {
+          results[i].photo = this.getphoto(results[i].place_id);
+        }
         this.interestsresults = this.interestsresults.concat(results);
         console.log(this.interestsresults);
         console.log(this.suggested_activities);
@@ -838,6 +862,9 @@ async formattimestrfrom24hourto12hour(input) {
     return new Promise((resolve, reject) => {
     service.textSearch(request, (results, status) => {
       if (status === google.maps.places.PlacesServiceStatus.OK) {
+        for (var i = 0; i < results.length; i++) {
+          results[i].photo = this.getphoto(results[i].place_id);
+        }
         this.interestsresults = this.interestsresults.concat(results);
         console.log(this.interestsresults);
         resolve(results); // Resolve the promise with the search results
@@ -866,7 +893,6 @@ async formattimestrfrom24hourto12hour(input) {
       service.nearbySearch(request, (results, status) => {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
       for (var i = 0; i < results.length; i++) {
-        var photo = this.getphoto(results[i].place_id);
         var place = results[i];
         console.log(place);
         place.origin = geometry.location;
@@ -875,7 +901,12 @@ async formattimestrfrom24hourto12hour(input) {
         this.eateries.push(place);
       }
     }
-  })}
+  })},
+  async geteateryphoto(placeid){
+    
+
+  }
+
   ,
   //get link of photo of place with place id
   async getphoto(placeid){
