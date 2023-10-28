@@ -274,10 +274,10 @@
 <div v-else>
   <!-- <h3>Please input a city and Click on Generate Itinerary to get started!</h3> -->
 </div>
-<!-- <div>
+<div>
   <button @click="checkempty">Generate Itinerary</button>
 
-</div> -->
+</div>
 <div v-if="customactivitiesandtime">
 
 </div>
@@ -742,6 +742,7 @@ async formattimestrfrom24hourto12hour(input) {
   });
 },
     async getinterests(){
+    var interests = [];
     var checkboxes = this.interestsoptions
     for (var i = 0; i < checkboxes.length; i++) {
         if (checkboxes[i].checked) {
