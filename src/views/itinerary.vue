@@ -231,6 +231,7 @@
         <th>Address</th>
         <th>Details</th>
         <th>Show me!</th>
+        <th>Remarks</th>
       </tr>
       <tbody>
         <tr v-for="activity in day.activities" :key="activity.name">
@@ -259,6 +260,12 @@
             <!-- if its not a travel display eateries -->
             <a v-else href="#" @click="geteateriesnearby(activity)">Where to eat!</a>
           </td>
+          <td v-if="activity.name.includes('Travel')"></td>
+          <td v-else>
+            Remarks: <input type="text" ><br>
+            Expenses: <input type="number" ><br>
+            My Rating: 1<input type="range" min="1" max="5">5
+          </td>
         </tr>
       </tbody>
     </table>
@@ -267,7 +274,7 @@
       <br>
     <table v-if="eateries.length>0">
       <tr colspan = "3"><th>Eateries</th></tr>
-      <tr><th>Name</th><th>Address</th><th>Photo</th><th>Price Level</th><th>Rating</th><th>Map Details</th><th>How to get there!</th></tr>
+      <tr><th>Name</th><th>Address</th><th>Photo</th><th>Price Level</th><th>Rating</th><th>Map Details</th><th>How to get there!</th><th>Remarks</th></tr>
       <tbody>
         <tr v-for="eatery in eateries" :key="eatery.name">
           <td>
@@ -292,6 +299,11 @@
           </td>
           <td>
             <a href="#" @click="displaydirectionsonmap(eatery.origin, eatery.geometry.location)">Show Route</a>
+          </td>
+          <td v-if="eatery.formatted_address !== 'Travel'">
+            Remarks: <input type="text" v-model="eatery.remarks"><br>
+            Expenses: <input type="number" v-model="eatery.expense"><br>
+            My Rating: 1<input type="slider" min="1" max="5" v-model="eatery.rating">5
           </td>
           <!-- <td>
             I want to eat here<input name = "eateries{{ index }}" type="radio" :value="eatery" @click="addeaterytotrip(eatery,)" v-model="selectedEateries">
@@ -986,7 +998,7 @@ async showLocation(place){
         // content: "Name:" + place.name + "<br>" + "Address:" + place.formatted_address,
         content: `<div><img style="width: auto; height: 150px;" src=`+place.photo+`></div>`+`<div style="color:black"><strong>`+
           "Name:" + place.name + "<br>" + "Address:" + place.formatted_address
-          + "<br><a href=" + place.url + "></strong>Click here for more information</a>"
+          + "<br><a target=`_blank` href=" + place.url + "></strong>Click here for more information</a>"
           +`</div>`,
       });
       // infowindow is blank
