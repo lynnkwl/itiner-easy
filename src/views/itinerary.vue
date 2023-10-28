@@ -902,9 +902,10 @@ async formattimestrfrom24hourto12hour(input) {
       }
     }
   })},
-  async geteateryphoto(placeid){
-    
-
+  async geteateryphotos(){
+    this.eateries.forEach(eatery => {
+      eatery.photo = this.getphoto(eatery.place_id);
+    });
   }
 
   ,
