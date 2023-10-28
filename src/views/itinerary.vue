@@ -91,7 +91,7 @@
                   <!-- Get talk title, brief, and track -->
                   <div v-for="(photo, index) in possiblephotos" :key="index">
                     <input type="radio" :id="'photo-' + index" :value="photo" v-model="selectedPhotos">
-                    <label :for="'photo-' + index"><img :src="photo" alt="Photo" style="width: 100px; height: 100px;"></label>
+                    <label :for="'photo-' + index"><img :src="photo" alt="Photo" style="width: 400px; height: 300px;"></label>
                   </div>
 
               </FormKit>
@@ -788,10 +788,9 @@ async formattimestrfrom24hourto12hour(input) {
   });
 },
 
-async titlephotogenerator(){
+async titlephotogenerator() {
   // get photos of town using Google Place Photos API
   let townsearched = this.town;
-  console.log(townsearched);
   let request = {
     query: townsearched,
     fields: ['photos'],
@@ -802,15 +801,10 @@ async titlephotogenerator(){
     if (status === google.maps.places.PlacesServiceStatus.OK) {
       let place = results[0];
       let photos = place.photos;
-      console.log(photos);
       if (!photos) {
         return;
       }
-      let photoUrls = [];
-      for (let i = 0; i < photos.length; i++) {
-        let photoUrl = photos[i].getUrl({ maxWidth: 35, maxHeight: 35 });
-        photoUrls.push(photoUrl);
-      }
+      let photoUrls = photos.map(photo => photo.getUrl({ maxWidth: 1280, maxHeight: 853 }));
       this.possiblephotos = photoUrls;
     }
   });
