@@ -48,7 +48,7 @@
       </ul>
     </div>
     <div class="flex items-center cursor-pointer">
-        <span class="text-blue-600 mr-1">
+        <span class=" mr-1">
             <router-link to="/"><img class="h-20 w-20" src="./logo/itiner-easy.svg"></router-link>
         </span>
     </div>
@@ -63,7 +63,7 @@
       </li>
       <li style="z-index:2" tabindex="0">
         <details>
-          <summary>TOOLS</summary>
+          <summary><a>TOOLS</a></summary>
           <ul class="p-2 bg-[#5072A7]">
             <li>
                 <router-link to="/translator"><a>TRANSLATOR</a></router-link>
@@ -128,5 +128,7 @@ export default {
 </script>
 
 <style>
-
+  a{
+    color:white;
+  }
 </style>
