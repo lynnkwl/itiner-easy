@@ -768,6 +768,32 @@ async formattimestrfrom24hourto12hour(input) {
   });
 },
 
+titlephotogenerator(){
+  //getphotos of town using google place photos api
+  let townsearched = this.town;
+  var request = {
+    query: `${townsearched}`,
+    fields: ['name', 'photos'],
+  };
+  var service = new google.maps.places.PlacesService(document.createElement('div'));
+  return new Promise((resolve, reject) => {
+  service.findPlaceFromQuery(request, (results, status) => {
+    if (status === google.maps.places.PlacesServiceStatus.OK) {
+      var photos = results[0].photos;
+      var randomIndex = Math.floor(Math.random() * photos.length);
+      var randomphoto = photos[randomIndex];
+      var photo = randomphoto.getUrl();
+      console.log(photo);
+      resolve(photo); // Resolve the promise with the search results
+    } else {
+      console.error(`Error: ${status}`);
+      reject(status); // Reject the promise with the error status
+    }
+  })});
+},
+
+
+
     async searchOutdoorAttractions(city) {
     var city = document.getElementById("country").value;
     var request = {
