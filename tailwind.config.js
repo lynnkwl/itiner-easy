@@ -21,7 +21,7 @@ export default {
     themes: [
       {
         aqua: {
-          "base-100": "#bfdbfe"
+          "base-100": "#F0F8FF"
         }
       }
     ],

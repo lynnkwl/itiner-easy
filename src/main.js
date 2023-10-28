@@ -21,6 +21,10 @@ import '@formkit/pro/genesis'
 import { createProPlugin, inputs } from '@formkit/pro'
 const proplugin = createProPlugin('fk-344144602', inputs)
 
+//import lottie
+import Vue3Lottie from 'vue3-lottie'
+
+
 // TODO: Add SDKs for Firebase products that you want to use
 //popupwindow
 // import Buefy from 'buefy';
@@ -61,6 +65,7 @@ const app = createApp(App)
 
 app.use(BootstrapIconsPlugin);
 app.use(router);
+app.use(Vue3Lottie);
 
 app.mount('#app');
 
