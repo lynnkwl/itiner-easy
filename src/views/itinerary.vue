@@ -1032,21 +1032,8 @@ async saveItinerary() {
   } else {
     // doc.data() will be undefined in this case
     console.log("No such document!");
-    setDoc(doc(tripsRef, this.town), {activitiesandtime: json});
+    setDoc(doc(tripsRef, this.town), {activitiesandtime: json, whoOwesWho: {}});
   }
-
-  // getDocs(tripsRef, this.town).then((doc) => {
-  //   if (doc.exists()) {
-  //     console.log("Document data:", doc.data());
-  //     updateDoc(doc(tripsRef, this.town), {activitiesandtime: json});
-  //   } else {
-  //     // doc.data() will be undefined in this case
-  //     console.log("No such document!");
-  //     setDoc(doc(tripsRef, this.town), {activitiesandtime: json});
-  //   }
-  // }).catch((error) => {
-  //   console.log("Error getting document:", error);
-  // });
 }
     
 },
