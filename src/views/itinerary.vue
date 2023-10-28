@@ -262,9 +262,9 @@
           </td>
           <td v-if="activity.name.includes('Travel')"></td>
           <td v-else>
-            Remarks: <input type="text" ><br>
-            Expenses: <input type="number" ><br>
-            My Rating: 1<input type="range" min="1" max="5">5
+            Remarks: <input type="text" v-model="activity.remarks"><br>
+            Expenses: <input type="number" v-model="activity.expense"><br>
+            My Rating: 1<input type="range" min="1" max="5" v-model="activity.rating">5
           </td>
         </tr>
       </tbody>
@@ -667,6 +667,9 @@ async searchBothAttractions(city) {
           transport: this.transport,
           geometry: randomactivity.geometry,
           photo: photo,
+          remarks: "",
+          expense: 0,
+          rating: 3,
           url: "'https://www.google.com/search?q=" + randomactivity.name + "&rlz=1C1CHBF_enSG941SG941&oq=google&aqs=chrome..69i57j69i59j69i60l3j69i65l2.1001j0j7&sourceid=chrome&ie=UTF-8'",
         }; 
         //store activities in each day
@@ -917,6 +920,9 @@ async formattimestrfrom24hourto12hour(input) {
   async geteateryphotos(){
     this.eateries.forEach(eatery => {
       eatery.photo = this.getphoto(eatery.place_id);
+      eatery.remarks = "";
+      eatery.expense= 0;
+      eatery.rating= 3;
     });
   }
 
