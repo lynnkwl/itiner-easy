@@ -1,5 +1,8 @@
 <style>
-  
+  #map{
+    height: 400px;
+  width: 100%;  
+  }
 
 </style>
 <!-- OLD FORM -->
@@ -110,12 +113,13 @@
                   <br>
                   <br>
                   <template #stepNext>
-                      <FormKit type="submit" 
+                      <FormKit
+                       type="button" 
                       @click="checkempty"
                       label="Generate an itinerary for me!"/>
                   </template>
-                    <FormKit type="submit" 
-                      @click="checkempty2"
+                    <FormKit type="button" 
+                      @c="this.checkempty2()"
                       label="I'll decide myself!"/>
 
               
@@ -189,9 +193,6 @@
 
 <div v-if="final_activities.length>0">
   <!-- getmap -->
-    <div id="map-container">
-      <div id="map"></div>
-  </div>
   <!-- create table each day -->
   <div v-for="(day, index) in activitiesandtime" :key="index">
     <table>
@@ -237,6 +238,9 @@
         </tr>
       </tbody>
     </table>
+    
+      <div id="map"></div>
+      <br>
     <table v-if="eateries.length>0">
       <tr colspan = "3"><th>Eateries</th></tr>
       <tr><th>Name</th><th>Address</th><th>Price Level</th><th>Rating</th><th>Map Details</th><th>How to get there!</th></tr>
@@ -303,8 +307,6 @@ export default {
     script.defer = true;
     script.async = true;
     //add main.js
-    script.onload = () => this.scriptLoaded();
-
     document.head.appendChild(script);
     window.history.scrollRestoration = "manual";
 
@@ -803,16 +805,7 @@ async formattimestrfrom24hourto12hour(input) {
     });
   });
 },
-wait() {
-    if(this.final_activities==[])
-    {
-        setTimeout(wait, 30000);
-    }
-    else {
-        //jQuery is loaded, do what you need to
-        $(document).ready(docLoaded);
-    }
-},
+
 
 
     async  searchgardens(city) {
@@ -941,7 +934,7 @@ async showLocation(place){
       );
       var infowindow = new google.maps.InfoWindow({
         // content: "Name:" + place.name + "<br>" + "Address:" + place.formatted_address,
-        content: `<div><img src=`+place.photo+`></div>`+`<div style="color:black">`+
+        content: `<div><img style="width: 200px; height: 200px;" src=`+place.photo+`></div>`+`<div style="color:black">`+
           "Name:" + place.name + "<br>" + "Address:" + place.formatted_address
           + "<br><a href=" + place.url + ">Click here for more information</a>"
           +`</div>`,
@@ -963,6 +956,7 @@ async loadingppage(){
 
     
 async checkempty(){
+  console.log(this.town);
     if (!this.town || !this.sliderValue || !this.outgoing || !this.transport) {
         window.alert
 ("Please fill in all the fields!");
@@ -970,7 +964,6 @@ async checkempty(){
     else{
         await this.getweather();
         await this.getactivitieslist();
-        this.wait();
     }
     },
   async addeaterytotrip(){
@@ -998,7 +991,6 @@ async checkempty2(){
       this.strongIndependentWoman = true;
       await this.getweather();
       await this.getlist2();
-      this.wait();
 
     }
     },
