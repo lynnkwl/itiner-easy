@@ -5,9 +5,9 @@ import { createRouter, createWebHistory } from "vue-router";
 const router = createRouter({
     history : createWebHistory(),
     routes: [
-        { path: "/", component: () => import("../views/home/Home.vue")},
-        { path: "/sign-up", component: () => import("../views/register/SignUp.vue")},
-        { path: "/sign-in", component: () => import("../views/login/SignIn.vue")},
+        { path: "/", component: () => import("../views/home/Home.vue"),meta: {requiresAuth: false}},
+        { path: "/sign-up", component: () => import("../views/register/SignUp.vue"),meta: {requiresAuth: false}},
+        { path: "/sign-in", component: () => import("../views/login/SignIn.vue"),meta: {requiresAuth: false}},
         { path: "/test", component: () => import("../views/testform.vue")},
         { path: "/feed", component: () => import("../views/Feed.vue"),
         
@@ -21,7 +21,7 @@ const router = createRouter({
 
         //gotobillbuddy.vue
         {path: "/billbuddy", component: () => import("../views/BillBuddy.vue")},
-        {path: "/itinerary", component: () => import("../views/itinerary.vue")},
+        {path: "/itinerary", component: () => import("../views/itinerary.vue"),meta: {requiresAuth: true}},
         {path: "/profile", component: () => import("../views/Profile.vue")},
         {path: "/add-trip", component: () => import("../views/addtrip.vue")},
         {path: "/tools", component: () => import ("../views/Toolpage.vue")},
@@ -56,7 +56,7 @@ router.beforeEach(async(to, from, next) =>{
     }
     else{
         next();
-    }
-})
+    }});
+
 
 export default router;
