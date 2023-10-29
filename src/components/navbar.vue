@@ -94,37 +94,8 @@
 
 
 <script>
-import { onMounted, ref } from 'vue';
-import Button from './button.vue'
-import router from '../router/index.js';
 
 
-export default {
-    components:{
-        Button
-    },
-    setup(){
-        var opened = ref(false);
-        let Links = [
-            {name: "Home", linkz: "/"},
-            {name: "Itinerary", linkz: "/itinerary"},
-            {name: "Translator", linkz:"/translator"},
-            {name: "Converter", linkz:"/converter"},
-            {name:"Feed", linkz:"/feed"},
-            {name:"Billbuddy", linkz:"/billbuddy"},
-            {name:"Sign up", linkz:"/sign-up"},
-            {name:"Sign in", linkz:"/sign-in"},
-            {name:"Profile", linkz:"/profile"},
-            {name:"Add Trip", linkz:"/add-trip"},
-            {name:"Tools", linkz:"/tools"}
-    ]
-        function MenuOpen(){
-            opened.value = !opened.value;
-        }
-        return {Links,opened, MenuOpen}
-    }
-    
-}
 </script>
 
 <style>
