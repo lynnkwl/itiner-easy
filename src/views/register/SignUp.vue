@@ -105,6 +105,8 @@
 import { ref, reactive } from "vue";
 import {getAuth, createUserWithEmailAndPassword,  GoogleAuthProvider, signInWithPopup} from "firebase/auth";
 import { useRouter } from 'vue-router'; //import router
+import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, updateDoc, setDoc, query, onSnapshot } from "firebase/firestore";
+const db = getFirestore();
 const email = ref("");
 const password = ref("");
 const confirm = ref("");
@@ -118,6 +120,11 @@ const register = () => {
     createUserWithEmailAndPassword(getAuth(), email.value, password.value)
     .then((data) => {
         console.log("Successfully registered!");
+        setDoc(doc(db, "users", data.user.uid), {
+            email: email.value,
+            password: password.value,
+            uid: data.user.uid,
+        });
         router.push('/feed') // redirect to feed
     })
     .catch((error) => {
