@@ -33,7 +33,7 @@ export default {
     addScrollListener() {
       this.scrollListener = () => {
         // Check if the user has scrolled a certain distance (e.g., 100 pixels)
-        if (window.scrollY >= 300) {
+        if (window.scrollY >= 400) {
           // User has scrolled enough, remove the scroll listener
           this.hasScrolledEnough = true;
           window.removeEventListener('scroll', this.scrollListener);
