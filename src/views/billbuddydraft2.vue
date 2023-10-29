@@ -1,228 +1,22 @@
+
 <template>
-  <title>BillBuddy</title>
-
-  <body>
-
-    <div v-if="!selected">
-      <div class="text-3xl m-7 font-bold">
-        <a>Current trips</a>
-      </div>
-
-      <div v-if="tripExists">
-        <table>
-          <thead>
-            <tr>
-              <th>Trip Name</th>
-              <th>People</th>
-              <th>Go to Trip</th>
-              <th>Delete Trip</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr v-for="trip in trips">
-              <td>{{ trip }}</td>
-              <td>{{ whoOwesWho }}</td>
-              <td><button class="btn btn-neutral ml-7 p-2 text-white btn-xs sm:btn-sm md:btn-md lg:btn-lg" @click="goToTrip(trip)">Go to Trip</button></td>
-              <td><button class="btn btn-neutral ml-7 p-2 text-white btn-xs sm:btn-sm md:btn-md lg:btn-lg" @click="deleteTrip(trip)">Delete Trip</button></td>
-            </tr>
-          </tbody>
-
-        </table>
-      </div>
-      <div v-if="!tripExists" class="text-xl m-7 italic">
-        <a>You currently have no trips.</a>
-      </div>
-      <router-link to="/add-trip">
-        <button class="btn btn-neutral ml-7 p-2 text-white btn-xs sm:btn-sm md:btn-md lg:btn-lg">Add a new trip</button>
-      </router-link>
-    </div>
-
-    <!-- based on the current trip selected, add an expense -->
-
-    <!-- <div class="text-xl lm-7 drop-shadow-md">
-      <div class="relative z-0">
-        <input type="text" id="floating_standard"
-          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-          placeholder=" " />
-        <label for="floating_standard"
-          class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Floating
-          standard</label>
-      </div>
-    </div> -->
-
-    <div v-if="selected">
-      <div>
-        <button class="btn btn-primary" @click="backToTrips">Back to trips</button>
-      </div>
-      <div class="text-3xl m-7 font-bold">
-        <h2>{{ selectedTrip }} expenses</h2>
-      </div>
-
-      <div class="expense-add">
-        <div class="form-group">
-          <input type="text" placeholder="Expense Name" v-model="expense.expenseName" class="form-control" required>
-        </div>
-        <div class="form-group">
-          <input type="number" placeholder="Expense Amount" v-model="expense.expenseAmount" class="form-control" required>
-        </div>
-        <div class="form-group">
-          <input type="text" placeholder="Person Owed" v-model="expense.personOwedName" class="form-control" required>
-        </div>
-        <div class="form-group">
-          <input type="text" placeholder="Who Owes Money (Type and press Enter)" v-model="inputValue" class="form-control"
-            @keyup.enter="addToList">
-        </div>
-
-        <div class="form-group">
-          How are we splitting this?
-          <select id="splitmethod" v-model="splitmethod">
-            <option value="evenly">Split Evenly</option>
-            <option value="percentage">Split by percentage</option>
-            <option value="shares">Split by Shares</option>
-            <option value="custom">Custom Split</option>
-          </select>
-        </div>
-        <div v-if="splitmethod == 'percentage'">
-          <h3>Split By Percentage</h3>
-          <div class="form-group">
-            <h4 v-for="(name, index) in list ">
-              {{ name }} <input type="number" placeholder="Percentage" v-model="percentages[index]" class="form-control"
-                @keyup.enter="computeexpense">
-            </h4>
-            <ul>
-              <li v-for="(amt, index) in quicksettleamount" :key="index">
-                {{ this.list[index] }} pays {{ amt }}
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div v-if="splitmethod == 'shares'">
-          <h3>Split By Shares</h3>
-          <div class="form-group">
-            <h4 v-for="(name, index) in list ">
-              {{ name }} <input type="number" placeholder="Shares" v-model="shares[index]" class="form-control"
-                @keyup.enter="computeexpense">
-            </h4>
-            <ul>
-              <li v-for="(amt, index) in quicksettleamount" :key="index">
-                {{ this.list[index] }} pays {{ amt }}
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div v-if="splitmethod == 'custom'">
-          <h3>Have it your way!</h3>
-          <div class="form-group">
-            <h4 v-for="(name, index) in list ">
-              {{ name }} <input type="number" placeholder="custom" v-model="custom[index]" class="form-control"
-                @keyup.enter="computeexpense">
-            </h4>
-            <ul>
-              <li v-for="(amt, index) in quicksettleamount" :key="index">
-                {{ list[index] }} pays {{ amt }}
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div v-if="splitmethod == 'evenly'">
-          <h3>Split Evenly</h3>
-          <div class="form-group">
-            <h4 v-for="name in list ">
-              {{ name }} pays {{ expense.expenseAmount / list.length }}
-            </h4>
-          </div>
-        </div>
-
-        <ul>
-          <li v-for="(item, index) in list" :key="index">
-
-            <button class="btn btn-primary" @click="removeFromList(index)">Remove</button> {{ item }}
-          </li>
-        </ul>
-        <div class="form-group">
-          <button class="btn btn-primary" @click="checkempty">Add Expense</button>
-        </div>
-        <h3>Expense Table</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Expense Name</th>
-              <th>Expense Amount</th>
-              <th>People Owing Names</th>
-              <th>People Owing Amount</th>
-              <th>Person Owed Name</th>
-              <th>Delete Expense</th>
-              <th>Update Expense</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr v-for="(expense, index) in expenses" :key="index">
-              <td>{{ expense.expenseName }}</td>
-              <td>{{ expense.expenseAmount }}</td>
-              <td>
-              <td v-for="name in expense.peopleOwingNames">{{ name }} &nbsp;</td>
-              </td>
-              <td>{{ expense.peopleOwingAmount }}</td>
-              <td>{{ expense.personOwedName }}</td>
-              <td><button @click="deleteExpense(index, docId)">Delete Expense</button></td>
-              <td><button @click="updateExpense(index, docId)">Update Expense</button></td>
-            </tr>
-          </tbody>
-        </table>
-        <h3>whoOwesWho Table</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Amount Owed</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr v-for="key in Object.keys(whoOwesWho)">
-              <td>{{ key }}</td>
-              <td>{{ whoOwesWho[key] }}</td>
-            </tr>
-          </tbody>
-        </table>
-        <div class="form-group">
-          <button class="btn btn-primary" @click="breakeven">Breakeven</button>
-        </div>
-        <div id="amountToPay"></div>
-      </div>
-    </div>
-  </body>
+    
+   
 </template>
 
-
 <script>
+
 // Importing the functions we need from firebase
 import {
   getFirestore, collection, getDocs,
   addDoc, deleteDoc, doc, updateDoc, setDoc, query, onSnapshot, getDoc
 } from "firebase/firestore";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import navbar from "../components/navbar.vue";
+
 
 
 // Declaring the database data points we need
 const db = getFirestore();
 const tripsRef = collection(db, 'trips');
-const auth = getAuth();
-var uid = null;
-
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    console.log('User is signed in', user.uid + " " + user.email)
-    uid = user.uid;
-    console.log(uid);
-  } else {
-    console.log('User is signed out')
-  }
-});
-console.log(uid);
 
 // Display trips
 function tripExists() {
@@ -280,11 +74,6 @@ export default {
 
   // Methods for adding data to firebase
   methods: {
-    backToTrips() {
-      // this.selected = false;
-      window.location.reload();
-    },
-
     goToTrip(trip) {
       console.log(trip);
       this.trip = trip;
@@ -448,16 +237,6 @@ export default {
         });
     },
 
-    async deleteTrip(trip) {
-      deleteDoc(doc(tripsRef, trip))
-        .then(() => {
-          console.log("Document successfully deleted!");
-          window.location.reload();
-        }).catch((error) => {
-          console.error("Error removing document: ", error);
-        });
-    },
-
     // Update expense in database
     async updateExpense(index, docId) {
       updateDoc(collection(tripsRef, this.trip, 'expenses'), docId[index]), {
@@ -529,25 +308,23 @@ export default {
 
     }
   },
-  async updated() {
-    onSnapshot(collection(tripsRef, this.trip, 'expenses'), (querySnapshot) => {
-      if (this.expenses.length > 0) {
-        this.expenses = [];
-      }
-      querySnapshot.docs.forEach((doc) => {
-        // doc.data() is never undefined for query doc snapshots
-        this.docId.push(doc.id);
-        this.expenses.push(doc.data());
-      });
-    });
-  },
-
   async created() {
     getDocs(tripsRef).then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
         // doc.data() is never undefined for query doc snapshots
         // console.log(doc.id, " => ", doc.data());
         this.trips.push(doc.id);
+      });
+    });
+
+    onSnapshot(collection(tripsRef, this.trip, 'expenses'), (querySnapshot) => {
+      if (this.expenses.length > 0) {
+        this.expenses = [];
+      }
+      querySnapshot.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        this.docId.push(doc.id);
+        this.expenses.push(doc.data());
       });
     });
 

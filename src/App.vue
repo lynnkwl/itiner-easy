@@ -72,6 +72,7 @@ const handleSignOut = () => {
     <Navbar/>
     <router-view/>
   </div>
+ 
   
   <div>
     <Footer></Footer>

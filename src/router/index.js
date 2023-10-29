@@ -25,8 +25,9 @@ const router = createRouter({
         {path: "/profile", component: () => import("../views/Profile.vue")},
         {path: "/add-trip", component: () => import("../views/addtrip.vue")},
         {path: "/tools", component: () => import ("../views/Toolpage.vue")},
-        {path:"/billbuddytest", component: () => import ("../views/editingbillbuddy.vue")},
-        {path:"/faq", component: () => import ("../views/FAQ.vue")}
+        {path:"/billbuddytest", component: () => import ("../views/billbuddydraft2.vue")},
+        {path:"/faq", component: () => import ("../views/FAQ.vue")},
+        {path:"/landinglogin", component:()=> import("../views/landinglogin.vue")}
     ],
 });
 

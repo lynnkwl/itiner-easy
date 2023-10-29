@@ -68,6 +68,13 @@ export default {
       var value = response.data.currencies[key];
       this.currencyList.push({key, value});
     }
+    //sort currency list by alphabet
+    this.currencyList.sort(function(a, b){
+      if(a.value < b.value) { return -1; }
+      if(a.value > b.value) { return 1; }
+      return 0;
+    })
+    
   } catch (error) {
     console.log(error);
   }
