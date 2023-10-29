@@ -203,12 +203,24 @@ import {
   getFirestore, collection, getDocs,
   addDoc, deleteDoc, doc, updateDoc, setDoc, query, onSnapshot, getDoc
 } from "firebase/firestore";
-
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import navbar from "../components/navbar.vue";
+
 
 // Declaring the database data points we need
 const db = getFirestore();
 const tripsRef = collection(db, 'trips');
+const auth = getAuth();
+
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    console.log('User is signed in', user.uid + " " + user.email)
+    const uid = user.uid;
+  } else {
+    console.log('User is signed out')
+  }
+});
 
 // Display trips
 function tripExists() {
