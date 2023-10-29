@@ -3,18 +3,6 @@
     /* height: 100%; */
     width: 100%;  
   }
-  a{
-    color: blue;
-  }
-  a:visited{
-    color: red;
-  }
-  a:focus{
-    color: green;
-  }
-  a:hover{
-    color: yellow;
-  }
 
 </style>
 <!-- OLD FORM -->
@@ -44,105 +32,7 @@
     </div> -->
 
 <template>
-  <h1 class="text-3xl text-center text-blue-400 mt-5">Let's plan your next trip!</h1>
-  <div class="flex justify-center"> 
-    <FormKit type="form"
-          :actions="false"
-          >
-              <FormKit type="multi-step"
-              tab-style="progress"
-              :allow-incomplete="false"   
-              >
-              <!-- Destination: start -->
-                  <FormKit type="step" name="Destination">
-                  <!-- collect name, email, and company info -->
-                      <FormKit 
-                          v-model="town"
-                          type="text" 
-                          label="Destination" 
-                          validation="required"
-                      />
-                      <FormKit 
-                          v-model="sliderValue"
-                          type="range" 
-                          label="Duration" 
-                          validation="required"
-                          value=""
-                          min="1"
-                          max="3" 
-                      />
-                    <!-- reformat to change day/days based on value -->
-                      <p>Days: {{ sliderValue }}</p>
-                      
-                  </FormKit>
-              <!-- Destination: end -->
-            
-
-              <!-- preferences: start -->
-                  <FormKit type="step" name="Preferences">
-                  <!-- Get talk title, brief, and track -->
-                  <FormKit 
-                      type="radio" 
-                      label="Outdoors or Indoors?" 
-                      help="Which type of setting do you prefer?" 
-                      validation="required"
-                      v-model="outgoing"
-                      :options="[
-                          'Outdoors',
-                          'Indoors',
-                          'I\'m fine with either',
-                      ]"
-                  />
-                  <FormKit 
-                      v-model= "interestsoptions"
-                      type="checkbox"
-                      label="Places of Interest (optional)"
-                      help="Any specific places you'd like to visit?" 
-                      :options="[
-                          'Museums',
-                          'Shopping Malls',
-                          'Gardens',
-                      ]"
-                  />
-                  <FormKit 
-                      v-model="transport"
-                      type="radio" 
-                      label="Mode of Transportation"
-                      help="How will you be getting around?"
-                      :options="[{label:'Car', value:`DRIVING`}, {label: 'Public Transport', value: `TRANSIT`}, {label:'Bicycle', value:`BICYCLING`}, {value:'WALKING' , label:'Walking'}]"
-                  />
-                  </FormKit>
-              <!-- preferences: end -->
-
-              <!-- Generate: start -->
-                <FormKit type="step" name="Let's go!">
-                  <!-- Ask the user to share how they heard about us -->
-                  <div class="text-center">
-                    <h1>Great! Now that we've gathered all the information we need...</h1>
-                  </div>
-                  <br>
-                  <br>
-                  <h2 class="text-center">Are you ready?</h2>
-                  <br>
-                  <br>
-                  <template #stepNext>
-                      <FormKit
-                       type="button" 
-                       style="background-color: #4CAF50; /* Green */; position: relative; left: 50%; transform: translate(-50%, 0%);"
-                      @click="checkempty"
-                      label="Generate an itinerary for me!"/>
-                  
-                    <FormKit type="button" 
-                     style="background-color: #4CAF50; /* Green */; position: relative; left: 50%; transform: translate(-50%, 0%);"
-                      @click="checkempty2"
-                      label="I'll decide myself!"/>
-
-                  </template>
-              <!-- Generate: end -->
-              </FormKit>
-            </FormKit>
-          </FormKit>
-    </div>
+  
 <!-- </div>  -->
   <!-- user input box: end -->
           
@@ -211,85 +101,83 @@
 </div>
 
 <div v-if="final_activities.length>0">
-    <!-- getmap -->
-    <!-- create table each day -->
-
-    <div class="flex">
-      <div v-for="(day, index) in activitiesandtime" :key="index">
-        <div class="flex">
-          <div class="w-1/4 sticky">
-            <h1>Day {{ index + 1 }}</h1>
-            <h3 class="text-gray-400">Date: {{ day.date }}</h3>
-          </div>
-          <!-- Weather reminder -->
-          <!-- <div>
-            <div class="font-bold">Weather Condition: {{ day.weather }}</div>
-            <div v-if="day.weather.includes('sunny')">Bring sunscreen!</div>
-            <div v-if="day.weather.includes('hazy')">Bring a mask!</div>
-            <div v-if="day.weather.includes('rain')">Bring an umbrella!</div>
-          </div> -->
-          <!-- <div class="">
-            <button class="btn justify-self-end" @click="saveItinerary">Save Itinerary</button>
-          </div> -->
-      </div>
-    </div>
-    <div>
-      <button class="btn justify-self-end" @click="saveItinerary">Save Itinerary</button>
-    </div>
-  </div>
-      
-  <div class="flex">    
-
-      <div>
-        <!-- loop through activities: start-->
-        <div v-for="activity in day.activities" :key="activity.name">
-          <!-- display activities -->
-          <div v-if="activity.formatted_address !== 'Travel'" class="p-5 sticky">
-            <div class="card max-w-sm rounded overflow-hidden shadow-lg bg-blue-100">
-              <img class="w-full h-20" :src="activity.photo" alt="travel">
-                <div class="px-6 py-4">
-                  <h3 class="text-gray-400">{{ activity.name }}</h3>
-                  <p class="text-gray-700 text-base">
-                    {{ activity.time }} - {{ activity.endtime }}
-                  </p>
-                  <p class="text-gray-700 text-base">
-                    {{ activity.formatted_address}}
-                  </p>
+  <div class="m-5">
+      <!-- getmap -->
+      <!-- create table each day -->
+        <div v-for="(day, index) in activitiesandtime" :key="index">
+            <div class="flex pb-5 sticky top-0 z-10">
+              <div class="w-80 border p-3 rounded-md bg-blue-300">
+                <h1>Day {{ index + 1 }}</h1>
+                <h3 class="text-gray-500">Date: {{ day.date }}</h3>
+              
+              <!-- Weather reminder -->
+                <div>
+                  <div class="font-bold">Weather: {{ day.weather }}
+                    <span v-if="day.weather.includes('sunny')">☀️</span>
+                    <span v-if="day.weather.includes('hazy')">💨</span>
+                    <span v-if="day.weather.includes('rain')">🌧️</span>
+                  </div>
+                  <div v-if="day.weather.includes('sunny')">Bring sunscreen!!</div>
+                  <div v-if="day.weather.includes('hazy')">Bring a mask!!</div>
+                  <div v-if="day.weather.includes('rain')">Bring an umbrella!! ☂️</div>
                 </div>
+              </div>
+
+              <div v-if="index == 0" class="w-full flex justify-end">
+                 <button class="btn mt-7 mr-5" @click="saveItinerary">Save Itinerary</button>
+              </div>
+            </div>
+
+            <div class="flex">   
               <div>
-                <input class="mb-2 rounded border-none" placeholder="Add notes here" type="text" v-model="activity.remarks"><br>
-                <span class="text-black text-sm">Cost: </span><input class="placeholder-gray-400 rounded border-none" placeholder="Add an expense here" type="number" v-model="activity.expense"><br>
-              </div>
-              <div class="px-6 pt-4 pb-2">
-                  <button class="btn mb-3" href="#" @click="showLocation(activity)">Show on Map</button>
-                  &nbsp;
-                  <button class="btn" href="#" @click="geteateriesnearby(activity)">Where to eat!</button>
-              </div>
-            </div>
-          </div>
-            <!-- loop through activities: end-->
+                <!-- loop through activities: start-->
+                <div v-for="activity in day.activities" :key="activity.name">
+                  <!-- display activities -->
+                  <div v-if="activity.formatted_address !== 'Travel'" class="pr-5">
+                    <div class="card flex max-w-sm rounded overflow-hidden shadow-lg bg-blue-100 justify-centerzz">
+                      <img class="w-2/3 h-32 just" :src="activity.photo" alt="image of attraction">
+                        <div class="px-6 py-4">
+                          <h3 class="text-gray-400">{{ activity.name }}</h3>
+                          <p class="text-gray-700 text-base">
+                            {{ activity.time }} - {{ activity.endtime }}
+                          </p>
+                          <p class="text-gray-700 text-base">
+                            {{ activity.formatted_address}}
+                          </p>
+                        </div>
+                      <div>
+                        <input class="mb-2 rounded border-none" placeholder="Add notes here" type="text" v-model="activity.remarks"><br>
+                        <span class="text-black text-sm">Cost: </span><input class="placeholder-gray-400 rounded border-none" placeholder="Add an expense here" type="number" v-model="activity.expense"><br>
+                      </div>
+                      <div class="flex flex-col px-6 pt-4 pb-2 items-center">
+                          <button class="btn mb-2 w-2/3" href="#" @click="showLocation(activity)">Show on Map</button>
+                          <button class="btn w-2/3" href="#" @click="geteateriesnearby(activity)">Where to eat?</button>
+                      </div>
+                    </div>
+                  </div>
+                    <!-- loop through activities: end-->
 
-            <!-- loop through travel: start-->
-          <div v-else class="p-5">
-            <div class="card max-w-sm max-h-xs rounded overflow-hidden shadow-lg bg-blue-100">
-              <!-- <img class="w-full h-20" src="../components/logo/itiner-easy.svg" alt="travel"> -->
-              <div class="px-6 py-4">
-                <div class="font-bold text-sm mb-2">{{ activity.name }}</div>
-                <p class="text-gray-700 text-base">
-                  {{ activity.time }} - {{ activity.endtime }}
-                </p>
+                    <!-- loop through travel: start-->
+                  <div v-else class="pr-5">
+                    <div class="card max-w-sm max-h-xs rounded overflow-hidden shadow-lg bg-blue-100">
+                      <!-- <img class="w-full h-20" src="../components/logo/itiner-easy.svg" alt="travel"> -->
+                      <div class="px-6 py-4">
+                        <div class="font-bold text-sm mb-2">{{ activity.name }}</div>
+                        <p class="text-gray-700 text-base">
+                          {{ activity.time }} - {{ activity.endtime }}
+                        </p>
+                      </div>
+                        <button class="btn w-max self-center" href="#" @click="displaydirectionsonmap(day.activities[day.activities.indexOf(activity) - 1].geometry.location, day.activities[day.activities.indexOf(activity) + 1].geometry.location)">The way there!</button>
+                    </div>
+                  </div>
+                  <br>
+                </div>
               </div>
-                <button class="btn w-max self-center" href="#" @click="displaydirectionsonmap(day.activities[day.activities.indexOf(activity) - 1].geometry.location, day.activities[day.activities.indexOf(activity) + 1].geometry.location)">The way there!</button>
-            </div>
-          </div>
-          <br>
-        </div>
-    </div>
-
-    <div id="map" class="sticky min-h-full rounded"></div>
-   
+        
+        <div id="map" class="sticky top-0 rounded"></div>
+      </div>
   </div>
-
+</div>
         <!-- <td v-if="activity.name.includes('Travel')"></td>
           <td v-else>
             <input placeholder="Add notes here" class="rounded " type="text" v-model="activity.remarks"><br>
@@ -367,8 +255,8 @@
         </tr>
       </tbody>
     </table>
-</div>
 
+  </div>
 <div>
   <!-- <h3>Please input a city and Click on Generate Itinerary to get started!</h3> -->
 </div>
@@ -392,6 +280,7 @@ import {
   addDoc, deleteDoc, doc, updateDoc, setDoc, query, getDoc
 } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import itineraryRouter from "../router/index.js";
 const auth = getAuth();
 const db = getFirestore();
 const tripsRef = collection(db, 'trips');
