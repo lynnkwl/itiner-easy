@@ -36,11 +36,22 @@ import {
     getFirestore, collection, getDocs,
     addDoc, deleteDoc, doc, updateDoc, setDoc, query, onSnapshot
 } from "firebase/firestore";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+const auth = getAuth();
 
 const db = getFirestore();
 const tripsRef = collection(db, 'trips');
 const expensesRef = collection(tripsRef, 'europe', 'expenses');
 const whoOwesWhoRef = collection(tripsRef, 'europe', 'whoOwesWho');
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    console.log('User is signed in', user.uid + " " + user.email)
+    const uid = user.uid;
+  } else {
+    console.log('User is signed out')
+  }
+});
 
 export default {
     data() {
