@@ -211,16 +211,18 @@ import navbar from "../components/navbar.vue";
 const db = getFirestore();
 const tripsRef = collection(db, 'trips');
 const auth = getAuth();
-
+var uid = null;
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
     console.log('User is signed in', user.uid + " " + user.email)
-    const uid = user.uid;
+    uid = user.uid;
+    console.log(uid);
   } else {
     console.log('User is signed out')
   }
 });
+console.log(uid);
 
 // Display trips
 function tripExists() {
