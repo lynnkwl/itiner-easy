@@ -32,6 +32,103 @@
     </div> -->
 
 <template>
+  <h1 class="text-3xl text-center text-blue-400 mt-5">Let's plan your next trip!</h1>
+  <div class="flex justify-center"> 
+    <FormKit type="form"
+          :actions="false"
+          >
+              <FormKit type="multi-step"
+              tab-style="progress"
+              :allow-incomplete="false"   
+              >
+              <!-- Destination: start -->
+                  <FormKit type="step" name="Destination">
+                  <!-- collect name, email, and company info -->
+                      <FormKit 
+                          v-model="town"
+                          type="text" 
+                          label="Destination" 
+                          validation="required"
+                      />
+                      <FormKit 
+                          v-model="sliderValue"
+                          type="range" 
+                          label="Duration" 
+                          validation="required"
+                          value=""
+                          min="1"
+                          max="3" 
+                      />
+                    <!-- reformat to change day/days based on value -->
+                      <p>Days: {{ sliderValue }}</p>
+                      
+                  </FormKit>
+              <!-- Destination: end -->
+            
+
+              <!-- preferences: start -->
+                  <FormKit type="step" name="Preferences">
+                  <!-- Get talk title, brief, and track -->
+                  <FormKit 
+                      type="radio" 
+                      label="Outdoors or Indoors?" 
+                      help="Which type of setting do you prefer?" 
+                      validation="required"
+                      v-model="outgoing"
+                      :options="[
+                          'Outdoors',
+                          'Indoors',
+                          'I\'m fine with either',
+                      ]"
+                  />
+                  <FormKit 
+                      v-model= "interestsoptions"
+                      type="checkbox"
+                      label="Places of Interest (optional)"
+                      help="Any specific places you'd like to visit?" 
+                      :options="[
+                          'Museums',
+                          'Shopping Malls',
+                          'Gardens',
+                      ]"
+                  />
+                  <FormKit 
+                      v-model="transport"
+                      type="radio" 
+                      label="Mode of Transportation"
+                      help="How will you be getting around?"
+                      :options="[{label:'Car', value:`DRIVING`}, {label: 'Public Transport', value: `TRANSIT`}, {label:'Bicycle', value:`BICYCLING`}, {value:'WALKING' , label:'Walking'}]"
+                  />
+                  </FormKit>
+              <!-- preferences: end -->
+
+              <!-- Generate: start -->
+                <FormKit type="step" name="Let's go!">
+                  <!-- Ask the user to share how they heard about us -->
+                  <div class="text-center">
+                    <h1>Great! Now that we've gathered all the information we need...</h1>
+                  </div>
+                  <br>
+                  <br>
+                  <h2 class="text-center">Are you ready?</h2>
+                  <br>
+                  <br>
+                  <template #stepNext>                    
+                  
+                    <FormKit type="button" 
+                     style="background-color: #4CAF50; /* Green */; position: relative; left: 50%; transform: translate(-50%, 0%);"
+                      @click="checkempty2"
+                      label="I'll decide myself!"/>
+
+                  </template>
+              <!-- Generate: end -->
+              </FormKit>
+            </FormKit>
+          </FormKit>      
+    </div>
+    <div class="flex justify-center">
+      <button class="btn object-center bg-blue-600" @click="checkempty">Generate an Itinerary for me!</button>
+    </div>
   
 <!-- </div>  -->
   <!-- user input box: end -->
