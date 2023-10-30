@@ -4,23 +4,32 @@
         <div class="h-screen"></div>
     </div>
     
-    <div class="flex items-center justify-center h-screen" >
-        <div class="col-lg-12">
-            <div class="col">
-                <h1 class="text-center">Itiner-easy</h1>
-                <h2 class="text-center">Your one stop travel companion</h2>
-                <img src="../../assets/goingmerry.gif">
+
+    <div class="relative min-h-screen flex flex-col justify-center overflow-hidden bg-gradient-to-b from-blue-200 to-sky-200 font-inter antialiased">
+        <div class="w-full max-w-6xl mx-auto px-4 md:px-6 py-24">
+            <div class="text-center">
+                <div class="font-extrabold text-3xl md:text-4xl [text-wrap:balance] bg-clip-text text-transparent bg-gradient-to-r from-slate-500/60 to-50% to-slate-800">Want to go to anywhere in <span class="text-indigo-500 inline-flex flex-col h-[calc(theme(fontSize.3xl)*theme(lineHeight.tight))] md:h-[calc(theme(fontSize.4xl)*theme(lineHeight.tight))] overflow-hidden">
+                <ul class="block animate-text-slide text-left leading-tight [&_li]:block">
+                    <li>Asia</li>
+                    <li>Africa</li>
+                    <li>America</li>
+                    <li>Europe</li>
+                    <li>Oceania</li>
+                    <li aria-hidden="true">Asia</li>
+                </ul>
+                    </span>
+                    ?
+                </div>
+
             </div>
-            <div class="col"><Vue3Lottie :animationData="LottieJSON" :height="700" :width="700" /></div>
         </div>
-        
     </div>
     
 
-    <div class="flex items-center justify-center bg-blue-200 pt-10">
+    <div class="flex items-center justify-center bg-sky-200 pt-10">
     <h2 class="text-center">What we have to offer</h2>
     </div>
-    <div class="flex items-center px-56 py-10 h-5/6 justify-center bg-gradient-to-b from-blue-200 to-sky-200">
+    <div class="flex items-center px-56 py-10 h-5/6 justify-center bg-gradient-to-b from-sky-200 to-blue-200">
         <div class="col-sm-6 col-lg-4">
             <Vue3Lottie :animationData="PlanningJSON" :height="200" :width="300" />
             <div class=" d-flex flex-column col-sm-12">
@@ -47,21 +56,23 @@
         </div>
     </div>
         
-    <div class="flex items-center mx-auto h-screen justify-center bg-gradient-to-b from-sky-200 to-blue-200">
+    <div class="flex items-center mx-auto h-screen justify-center bg-gradient-to-b from-blue-200 to-sky-200">
         <div class="col-lg-12">
             <h2 class="mb-3 text-center">What our Travelers have to say</h2>
             <testimonials></testimonials>
         </div>
     </div>
 
-    <div class="flex items-center h-1/2 justify-center bg-gradient-to-b from-blue-200 to-base-100">
+    <div class="flex items-center h-screen justify-center bg-gradient-to-b from-sky-200 to-base-100">
         <div class="col-lg-12 items-center justify-center py-96">
             <div class="my-10">
                 <Vue3Lottie :animationData="EndingJSON" :height="500" :width="1500" />
             </div>
             <h2 class="mb-5 text-center">Ready to Supercharge Your Travel Planning?</h2>
             <div class="flex items-center justify-center">
-                <router-link to="/sign-up"><button class="h-12 px-6 text-lg text-white transition-colors duration-150 bg-blue-400 rounded-full focus:shadow-outline hover:bg-blue-500 ">Sign Up</button></router-link>
+                <router-link to="/sign-up"><button class="inline-flex items-center h-12 px-6 text-lg text-white transition-colors duration-150 bg-blue-400 rounded-full focus:shadow-outline hover:bg-blue-500 ">
+                    <svg class="w-4 h-4 mr-3 fill-current" viewBox="0 0 20 20"><path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" fill-rule="evenodd"></path></svg>
+                    <span>Lets Go!</span></button></router-link>
             </div>
             
         </div>
