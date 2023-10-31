@@ -112,7 +112,7 @@ button:focus-visible {
   }
 /* for subheadings */
   h3{
-    @apply font-body font-semibold text-xl italic
+    @apply font-body font-semibold text-xl
   }
 /* for body text*/
   h4 {
