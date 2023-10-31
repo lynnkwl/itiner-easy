@@ -8,7 +8,7 @@
     <div class="relative min-h-screen flex flex-col justify-center overflow-hidden bg-gradient-to-b from-blue-200 to-sky-200 font-inter antialiased">
         <div class="w-full max-w-6xl mx-auto px-4 md:px-6 py-24">
             <div class="text-center">
-                <div class="font-extrabold text-3xl md:text-4xl [text-wrap:balance] bg-clip-text text-transparent bg-gradient-to-r from-slate-500/60 to-50% to-slate-800">Want to go to anywhere in <span class="text-indigo-500 inline-flex flex-col h-[calc(theme(fontSize.3xl)*theme(lineHeight.tight))] md:h-[calc(theme(fontSize.4xl)*theme(lineHeight.tight))] overflow-hidden">
+                <div class="font-extrabold text-3xl md:text-4xl [text-wrap:balance] bg-clip-text text-transparent bg-slate-800">Want to go to anywhere in <span class="text-indigo-500 inline-flex flex-col h-[calc(theme(fontSize.3xl)*theme(lineHeight.tight))] md:h-[calc(theme(fontSize.4xl)*theme(lineHeight.tight))] overflow-hidden">
                 <ul class="block animate-text-slide text-left leading-tight [&_li]:block">
                     <li>Asia</li>
                     <li>Africa</li>
@@ -20,7 +20,9 @@
                     </span>
                     ?
                 </div>
-
+                <div class="text-xl mt-10">
+                    Let us help with that.
+                </div>
             </div>
         </div>
     </div>
