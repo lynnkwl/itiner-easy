@@ -421,6 +421,7 @@ export default {
       final_activities : [],
       eateries: [],
       activitiesandtime: [],
+      photoUrl: "",
       weatherData: [],
       suggested_activities: [],
       isOpenNow: false,
@@ -595,7 +596,7 @@ async searchBothAttractions(city) {
   const mapDiv = document.getElementById("map");
   const mapOptions = {
     center: coords,
-    zoom: 8,
+    zoom: 15,
   };
   const map = new google.maps.Map(mapDiv, mapOptions);
 }
@@ -752,7 +753,7 @@ async displaydirectionsonmap(origin, destination){
   var directionsService = new google.maps.DirectionsService();
   var directionsRenderer = new google.maps.DirectionsRenderer();
   var map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 7,
+    zoom: 20,
     center: { lat: 41.85, lng: -87.65 }
   });
   directionsRenderer.setMap(map);
@@ -990,21 +991,26 @@ async titlephotogenerator() {
         console.log(place);
         place.origin = geometry.location;
         place.order = activity.order;
-        place.photo = photo;
         this.eateries.push(place);
       }
+      this.geteateryphotos();
     }
   })},
-  async geteateryphotos(){
-    this.eateries.forEach(eatery => {
-      eatery.photo = this.getphoto(eatery.place_id);
-      eatery.remarks = "";
-      eatery.expense= 0;
-      eatery.rating= 3;
-    });
-  }
-
-  ,
+  async geteateryphotos() {
+  const promises = this.eateries.map(async (eatery) => {
+    eatery.remarks = "";
+    eatery.expense = 0;
+    eatery.rating = 3;
+    try {
+      eatery.photo = await this.getphoto(eatery.place_id);
+    } catch (error) {
+      console.error(`Failed to get photo for eatery ${eatery.name}: ${error}`);
+      eatery.photo = "";
+    }
+  });
+  await Promise.all(promises);
+  console.log(this.eateries);
+},
   //get link of photo of place with place id
   async getphoto(placeid){
     var request = {
@@ -1015,14 +1021,30 @@ async titlephotogenerator() {
     return new Promise((resolve, reject) => {
     service.getDetails(request, (place, status) => {
       if (status === google.maps.places.PlacesServiceStatus.OK) {
-        var photo = place.photos[0].getUrl();
-        resolve(photo); // Resolve the promise with the search results
+        if (place.photos && place.photos.length > 0) {
+          let photoUrl = place.photos[0].getUrl({ maxWidth: 200, maxHeight: 200 });
+          resolve(photoUrl);
+
+      resolve(photo); // Resolve the promise with the search results
+
+    } else {
+      console.error('No photos found for this place.');
+      reject('No photos found'); // Reject the promise with an error message
+    }
       } else {
         console.error(`Error: ${status}`);
         reject(status); // Reject the promise with the error status
       }
     });
   });
+  }
+    ,
+    async loadPhoto(placeid) {
+    try {
+      this.photoUrl = await this.getphoto(placeid);
+    } catch (error) {
+      console.error(error);
+    }
   }
     ,
 
@@ -1069,7 +1091,7 @@ async titlephotogenerator() {
 async showLocation(place){
   event.preventDefault();
   var map = new google.maps.Map(document.getElementById("map"), {
-        zoom: 15,
+        zoom: 20,
         center: place.geometry.location,
       });
       var marker = new google.maps.Marker({
