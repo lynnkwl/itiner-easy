@@ -438,6 +438,7 @@ export default {
       isOpenNow: false,
       twelvehrtime: "",
       dates: [],
+      cityexists: false,
       citycoords: {},
       interestsoptions:[],
       customactivitiesandtime: [],
@@ -1100,6 +1101,20 @@ async titlephotogenerator() {
     });
   });
 },
+async checkCityExists(cityName) {
+  return new Promise((resolve, reject) => {
+    var geocoder = new google.maps.Geocoder();
+    geocoder.geocode({ 'address': cityName }, function(results, status) {
+      if (status == google.maps.GeocoderStatus.OK) {
+        this.cityexists = true;
+        resolve(true);
+      } else {
+        this.cityexists = false;
+        resolve(false);
+      }
+    });
+  });
+},
 
 async showLocation(place,eatery){
   event.preventDefault();
@@ -1141,15 +1156,22 @@ async loadingpage(){
     
 async checkempty(){
   console.log(this.town);
-    if (!this.town || !this.sliderValue || !this.outgoing || !this.transport) {
+
+  if (!this.town || !this.sliderValue || !this.outgoing || !this.transport) {
         window.alert
 ("Please fill in all the fields!");
       }
     else{
-      this.isLoading = true;
+      await this.checkCityExists(this.town);
+      if(this.cityexists == true){
+        this.isLoading = true;
         await this.getweather();
         await this.getactivitieslist();
         this.isLoading = false;
+      }
+      else{
+        window.alert("Please enter a valid city!");
+      }
 
     }
     },
@@ -1175,12 +1197,19 @@ async checkempty2(){
 ("Please fill in all the fields!");
       }
     else{
+      await this.checkCityExists(this.town);
+      if(this.cityexists == true){
       this.isLoading = true;
       this.strongIndependentWoman = true;
       await this.getweather();
       await this.getlist2();
       this.isLoading = false;
     }
+    else{
+      window.alert("Please enter a valid city!");
+    }
+    }
+    
     },
 
 
