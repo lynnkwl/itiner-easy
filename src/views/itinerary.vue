@@ -337,7 +337,7 @@
             {{ eatery.rating }}
           </td>
           <td>
-            <a href="#" @click="showLocation(eatery)">Show on Map</a>
+            <a href="#" @click="showLocation(eatery,eatery)">Show on Map</a>
           </td>
           <td>
             <a href="#" @click="displaydirectionsonmap(eatery.origin, eatery.geometry.location)">Show Route</a>
@@ -991,6 +991,8 @@ async titlephotogenerator() {
         console.log(place);
         place.origin = geometry.location;
         place.order = activity.order;
+        place.url = "'https://www.google.com/search?q=" + place.name + "&rlz=1C1CHBF_enSG941SG941&oq=google&aqs=chrome..69i57j69i59j69i60l3j69i65l2.1001j0j7&sourceid=chrome&ie=UTF-8'";
+        place.formatted_address = place.vicinity;
         this.eateries.push(place);
       }
       this.geteateryphotos();
@@ -1088,8 +1090,11 @@ async titlephotogenerator() {
   });
 },
 
-async showLocation(place){
+async showLocation(place,eatery){
   event.preventDefault();
+  if(this.eateries.length > 0 && eatery == null){
+    this.eateries = [];
+  }
   var map = new google.maps.Map(document.getElementById("map"), {
         zoom: 20,
         center: place.geometry.location,
@@ -1118,7 +1123,7 @@ async showLocation(place){
 },
 
 
-async loadingppage(){
+async loadingpage(){
 
 },    
 
