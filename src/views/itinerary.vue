@@ -1147,7 +1147,7 @@ async titlephotogenerator() {
 async checkCityExists(cityName) {
   return new Promise((resolve, reject) => {
     var geocoder = new google.maps.Geocoder();
-    geocoder.geocode({ 'address': cityName }, function(results, status) {
+    geocoder.geocode({ 'address': cityName }, (results, status) => { // Use an arrow function here
       if (status == google.maps.GeocoderStatus.OK) {
         this.cityexists = true;
         resolve(true);
