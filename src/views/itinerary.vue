@@ -4,6 +4,11 @@
     width: 100%;  
   }
 
+  .custom-class {
+    background-color: #1ae021;
+    color: white;
+  }
+
 </style>
 <!-- OLD FORM -->
 <!-- <div class="rounded-lg border-blue bg-blue-100 mx-5"> -->
@@ -199,84 +204,116 @@
     </div>
 </div>
 
-<div v-if="final_activities.length>0">
-  <div class="m-5">
-      <!-- getmap -->
-      <!-- create table each day -->
+<!-- <fwb-dropdown class="" type="green" text="Bottom">
+    <p class="p-2">Dropdown here</p>
+</fwb-dropdown>
+<fwb-button class="text-lg">Large Text Button</fwb-button>
+<fwb-dropdown class="custom-class" text="Bottom">
+    <p class="p-2">Dropdown here</p>
+</fwb-dropdown> -->
+
+
+
+<div class="grid grid-cols-3">
+    <div v-if="final_activities.length>0">
+      <div class="m-10 w-2/3">
+          <!-- getmap -->
+          <!-- create table each day -->
+          <!-- <details class="collapse bg-base-200 max-w-sm">
+                          <summary class="collapse-title text-xl font-medium">Click to open/close</summary>
+                          <div class="collapse-content"> 
+                          
+                          </div>
+                        </details> -->
+                    <!-- loop through activities: start-->
         <div v-for="(day, index) in activitiesandtime" :key="index">
-            <div class="flex pb-5 sticky top-0 z-10">
-              <div class="w-80 border p-3 rounded-md bg-blue-300">
-                <h1>Day {{ index + 1 }}</h1>
-                <h3 class="text-gray-500">Date: {{ day.date }}</h3>
-              
-              <!-- Weather reminder -->
-                <div>
-                  <div class="font-bold">Weather: {{ day.weather }}
-                    <span v-if="day.weather.includes('sunny')">☀️</span>
-                    <span v-if="day.weather.includes('hazy')">💨</span>
-                    <span v-if="day.weather.includes('rain')">🌧️</span>
-                  </div>
-                  <div v-if="day.weather.includes('sunny')">Bring sunscreen!!</div>
-                  <div v-if="day.weather.includes('hazy')">Bring a mask!!</div>
-                  <div v-if="day.weather.includes('rain')">Bring an umbrella!! ☂️</div>
-                </div>
-              </div>
-
-              <div v-if="index == 0" class="w-full flex justify-end">
-                 <button class="btn mt-7 mr-5" @click="saveItinerary">Save Itinerary</button>
-              </div>
-            </div>
-
-            <div class="flex">   
-              <div>
-                <!-- loop through activities: start-->
-                <div v-for="activity in day.activities" :key="activity.name">
-                  <!-- display activities -->
-                  <div v-if="activity.formatted_address !== 'Travel'" class="pr-5">
-                    <div class="card flex max-w-sm rounded overflow-hidden shadow-lg bg-blue-100 justify-center">
-                      <img class="w-2/3 h-32 self-center rounded-md" :src="activity.photo" alt="image of attraction">
-                        <div class="px-6 py-4">
-                          <h3 class="text-gray-400">{{ activity.name }}</h3>
-                          <p class="text-gray-700 text-base">
-                            {{ activity.time }} - {{ activity.endtime }}
-                          </p>
-                          <p class="text-gray-700 text-base">
-                            {{ activity.formatted_address}}
-                          </p>
-                        </div>
-                      <div>
-                        <input class="mb-2 rounded border-none" placeholder="Add notes here" type="text" v-model="activity.remarks"><br>
-                        <span class="text-black text-sm">Cost: </span><input class="placeholder-gray-400 rounded border-none" placeholder="Add an expense here" type="number" v-model="activity.expense"><br>
-                      </div>
-                      <div class="flex flex-col px-6 pt-4 pb-2 items-center">
-                          <button class="btn mb-2 w-2/3" href="#" @click="showLocation(activity)">Show on Map</button>
-                          <button class="btn w-2/3" href="#" @click="geteateriesnearby(activity)">Where to eat?</button>
-                      </div>
-                    </div>
-                  </div>
-                    <!-- loop through activities: end-->
-
-                    <!-- loop through travel: start-->
-                  <div v-else class="pr-5">
-                    <div class="ml-8 max-w-sm max-h-xs rounded overflow-hidden border-l-4 border-dashed border-gray-700">
-                      <!-- <img class="w-full h-20" src="../components/logo/itiner-easy.svg" alt="travel"> -->
-                      <div class="px-6 py-4">
-                        <div class="font-bold text-sm mb-2">{{ activity.name }}</div>
-                        <p class="text-gray-700 text-base">
-                          {{ activity.time }} - {{ activity.endtime }}
-                        </p>
-                      </div>
-                        <button class="btn w-max self-center ml-5 mb-5" href="#" @click="displaydirectionsonmap(day.activities[day.activities.indexOf(activity) - 1].geometry.location, day.activities[day.activities.indexOf(activity) + 1].geometry.location)">The way there!</button>
-                    </div>
-                  </div>
+            <details class="collapse bg-base-200 shadow-md">
+                <!-- <div class="flex pb-5 sticky top-0 z-10"> -->
+                  <!-- <div class="w-96 border p-3 rounded-md bg-blue-300"> -->
+                  <summary class="collapse-title text-xl font-medium">
+                    <h1>Day {{ index + 1 }}</h1>
+                    <h3 class="text-gray-500">Date: {{ day.date }}</h3>
                   
+                  <!-- Weather reminder -->
+                    <div>
+                      <div class="font-bold">Weather: {{ day.weather }}
+                        <span v-if="day.weather.includes('sunny')">☀️</span>
+                        <span v-if="day.weather.includes('hazy')">💨</span>
+                        <span v-if="day.weather.includes('rain')">🌧️</span>
+                      </div>
+                      <div v-if="day.weather.includes('sunny')">Bring sunscreen!!</div>
+                      <div v-if="day.weather.includes('hazy')">Bring a mask!!</div>
+                      <div v-if="day.weather.includes('rain')">Bring an umbrella!! ☂️</div>
+                    </div>
+                  <!-- </div> -->
+                </summary>
+                
+
+                  <!-- <div v-if="index == 0" class="w-full flex justify-end">
+                    <button class="btn mt-7 mr-5" @click="saveItinerary">Save Itinerary</button>
+                  </div>
+                </div> -->
+
+          <div class="collapse-content"> 
+              <div class="flex overflow-auto">   
+                  <div>
+                    <div v-for="activity in day.activities" :key="activity.name">
+                      <!-- display activities -->
+                      <div v-if="activity.formatted_address !== 'Travel'" class="pr-5">
+                        <div class="rounded-xl mx-auto card flex min-w-full max-w-md overflow-hidden shadow-lg bg-blue-100 justify-center">
+                          <img class="w-52 h-32 self-center rounded-md" :src="activity.photo" alt="image of attraction">
+
+                            <div class="px-2 py-2 border-l-4 my-4 border-gray-400">
+                              <h3 class="text-gray-700 text-left">{{ activity.name }}</h3>
+                                <div>
+                                <p class="text-gray-700 text-base text-left">
+                                  {{ activity.time }} - {{ activity.endtime }}
+                                </p>
+                                <p class="text-gray-500 text-base text-left">
+                                  {{ activity.formatted_address}}
+                                </p>
+                              </div>
+                            </div>
+                          <div>
+                            <textarea class="mb-2 rounded border-none" placeholder="Add notes here" type="text" v-model="activity.remarks"/>
+                            <!-- <span class="text-black text-sm">Cost: </span><input class="placeholder-gray-400 rounded border-none" placeholder="Add an expense here" type="number" v-model="activity.expense"><br> -->
+                          </div>
+                          <div class="flex flex-col px-6 pt-4 pb-2 items-center">
+                              <button class="btn mb-2 w-2/3" href="#" @click="showLocation(activity)">Show on Map</button>
+                              <button class="btn w-2/3" href="#" @click="geteateriesnearby(activity)">Where to eat?</button>
+                          </div>
+                        </div>
+                      </div>
+                        <!-- loop through activities: end-->
+
+                        <!-- loop through travel: start-->
+                      <div v-else class="pr-5">
+                        <div class="ml-8 max-w-sm max-h-xs rounded overflow-hidden border-l-4 border-dashed border-gray-700">
+                          <!-- <img class="w-full h-20" src="../components/logo/itiner-easy.svg" alt="travel"> -->
+                          <div class="px-6 py-4">
+                            <div class="font-bold text-sm mb-2">{{ activity.name }}</div>
+                            <p class="text-gray-700 text-base">
+                              {{ activity.time }} - {{ activity.endtime }}
+                            </p>
+                          </div>
+                            <button class="btn w-max self-center ml-5 mb-5" href="#" @click="displaydirectionsonmap(day.activities[day.activities.indexOf(activity) - 1].geometry.location, day.activities[day.activities.indexOf(activity) + 1].geometry.location)">The way there!</button>
+                        </div>
+                      </div>
+                      
+                    </div>
+                  </div>
                 </div>
-              </div>
-        
-        <div id="map" class="sticky top-0 rounded"></div>
+                <!-- collapse div -->
+              </div> 
+            </details> 
+               <br> 
+          </div>
       </div>
-  </div>
+    </div>
+  <div id="map" class="col-span-2 rounded-lg"></div>  
 </div>
+
+
         <!-- <td v-if="activity.name.includes('Travel')"></td>
           <td v-else>
             <input placeholder="Add notes here" class="rounded " type="text" v-model="activity.remarks"><br>
@@ -354,8 +391,6 @@
         </tr>
       </tbody>
     </table>
-
-  </div>
 <div>
   <!-- <h3>Please input a city and Click on Generate Itinerary to get started!</h3> -->
 </div>
@@ -372,6 +407,9 @@
 
 
 <script >
+import { FwbDropdown } from 'flowbite-vue'
+import { FwbButton } from 'flowbite-vue'
+
 import axios from 'axios'; // Import Axios
 import { initMap } from "../main.js"
 import {
@@ -379,7 +417,7 @@ import {
   addDoc, deleteDoc, doc, updateDoc, setDoc, query, getDoc
 } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import itineraryRouter from "../router/index.js";
+
 const auth = getAuth();
 const db = getFirestore();
 const tripsRef = collection(db, 'trips');
@@ -394,6 +432,10 @@ onAuthStateChanged(auth, (user) => {
 });
 
 export default {
+  components: {
+    FwbDropdown,
+    FwbButton
+  },
   mounted(){
     const script = document.createElement('script');
     script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCrtlMuj3mZnI5NGVkgw5ME1hZL-XEtRzI&libraries=places&callback=initMap';
