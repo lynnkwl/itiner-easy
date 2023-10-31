@@ -198,6 +198,16 @@
         </table>
     </div>
 </div>
+<div v-if="isLoading">
+  <!-- Your loading spinner goes here -->
+  <div class="flex justify-center">
+    <div class="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-64 w-64">
+
+    </div>
+    <h3>I'll be waiting for you in the Land of Wano! Come at any cost!</h3>
+      <p>-Monkey D. Luffy</p>
+</div>
+</div>
 
 <div v-if="final_activities.length>0">
   <div class="m-5">
@@ -417,6 +427,7 @@ export default {
       interestsresults: [],
       generatenow: false,
       map: null,
+      isLoading: false,
       days: 0,
       final_activities : [],
       eateries: [],
@@ -1135,8 +1146,11 @@ async checkempty(){
 ("Please fill in all the fields!");
       }
     else{
+      this.isLoading = true;
         await this.getweather();
         await this.getactivitieslist();
+        this.isLoading = false;
+
     }
     },
   async addeaterytotrip(){
@@ -1161,10 +1175,11 @@ async checkempty2(){
 ("Please fill in all the fields!");
       }
     else{
+      this.isLoading = true;
       this.strongIndependentWoman = true;
       await this.getweather();
       await this.getlist2();
-
+      this.isLoading = false;
     }
     },
 
