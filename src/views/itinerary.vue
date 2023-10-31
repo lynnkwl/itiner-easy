@@ -203,6 +203,16 @@
         </table>
     </div>
 </div>
+<div v-if="isLoading">
+  <!-- Your loading spinner goes here -->
+  <div class="flex justify-center">
+    <div class="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-64 w-64">
+
+    </div>
+    <h3>I'll be waiting for you in the Land of Wano! Come at any cost!</h3>
+      <p>-Monkey D. Luffy</p>
+</div>
+</div>
 
 <!-- <fwb-dropdown class="" type="green" text="Bottom">
     <p class="p-2">Dropdown here</p>
@@ -374,7 +384,7 @@
             {{ eatery.rating }}
           </td>
           <td>
-            <a href="#" @click="showLocation(eatery)">Show on Map</a>
+            <a href="#" @click="showLocation(eatery,eatery)">Show on Map</a>
           </td>
           <td>
             <a href="#" @click="displaydirectionsonmap(eatery.origin, eatery.geometry.location)">Show Route</a>
@@ -416,6 +426,7 @@ import {
   getFirestore, collection, getDocs,
   addDoc, deleteDoc, doc, updateDoc, setDoc, query, getDoc
 } from "firebase/firestore";
+
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const auth = getAuth();
@@ -459,15 +470,18 @@ export default {
       interestsresults: [],
       generatenow: false,
       map: null,
+      isLoading: false,
       days: 0,
       final_activities : [],
       eateries: [],
       activitiesandtime: [],
+      photoUrl: "",
       weatherData: [],
       suggested_activities: [],
       isOpenNow: false,
       twelvehrtime: "",
       dates: [],
+      cityexists: false,
       citycoords: {},
       interestsoptions:[],
       customactivitiesandtime: [],
@@ -637,7 +651,7 @@ async searchBothAttractions(city) {
   const mapDiv = document.getElementById("map");
   const mapOptions = {
     center: coords,
-    zoom: 8,
+    zoom: 15,
   };
   const map = new google.maps.Map(mapDiv, mapOptions);
 }
@@ -794,7 +808,7 @@ async displaydirectionsonmap(origin, destination){
   var directionsService = new google.maps.DirectionsService();
   var directionsRenderer = new google.maps.DirectionsRenderer();
   var map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 7,
+    zoom: 20,
     center: { lat: 41.85, lng: -87.65 }
   });
   directionsRenderer.setMap(map);
@@ -1032,21 +1046,28 @@ async titlephotogenerator() {
         console.log(place);
         place.origin = geometry.location;
         place.order = activity.order;
-        place.photo = photo;
+        place.url = "'https://www.google.com/search?q=" + place.name + "&rlz=1C1CHBF_enSG941SG941&oq=google&aqs=chrome..69i57j69i59j69i60l3j69i65l2.1001j0j7&sourceid=chrome&ie=UTF-8'";
+        place.formatted_address = place.vicinity;
         this.eateries.push(place);
       }
+      this.geteateryphotos();
     }
   })},
-  async geteateryphotos(){
-    this.eateries.forEach(eatery => {
-      eatery.photo = this.getphoto(eatery.place_id);
-      eatery.remarks = "";
-      eatery.expense= 0;
-      eatery.rating= 3;
-    });
-  }
-
-  ,
+  async geteateryphotos() {
+  const promises = this.eateries.map(async (eatery) => {
+    eatery.remarks = "";
+    eatery.expense = 0;
+    eatery.rating = 3;
+    try {
+      eatery.photo = await this.getphoto(eatery.place_id);
+    } catch (error) {
+      console.error(`Failed to get photo for eatery ${eatery.name}: ${error}`);
+      eatery.photo = "";
+    }
+  });
+  await Promise.all(promises);
+  console.log(this.eateries);
+},
   //get link of photo of place with place id
   async getphoto(placeid){
     var request = {
@@ -1057,14 +1078,30 @@ async titlephotogenerator() {
     return new Promise((resolve, reject) => {
     service.getDetails(request, (place, status) => {
       if (status === google.maps.places.PlacesServiceStatus.OK) {
-        var photo = place.photos[0].getUrl();
-        resolve(photo); // Resolve the promise with the search results
+        if (place.photos && place.photos.length > 0) {
+          let photoUrl = place.photos[0].getUrl({ maxWidth: 200, maxHeight: 200 });
+          resolve(photoUrl);
+
+      resolve(photo); // Resolve the promise with the search results
+
+    } else {
+      console.error('No photos found for this place.');
+      reject('No photos found'); // Reject the promise with an error message
+    }
       } else {
         console.error(`Error: ${status}`);
         reject(status); // Reject the promise with the error status
       }
     });
   });
+  }
+    ,
+    async loadPhoto(placeid) {
+    try {
+      this.photoUrl = await this.getphoto(placeid);
+    } catch (error) {
+      console.error(error);
+    }
   }
     ,
 
@@ -1107,11 +1144,28 @@ async titlephotogenerator() {
     });
   });
 },
+async checkCityExists(cityName) {
+  return new Promise((resolve, reject) => {
+    var geocoder = new google.maps.Geocoder();
+    geocoder.geocode({ 'address': cityName }, function(results, status) {
+      if (status == google.maps.GeocoderStatus.OK) {
+        this.cityexists = true;
+        resolve(true);
+      } else {
+        this.cityexists = false;
+        resolve(false);
+      }
+    });
+  });
+},
 
-async showLocation(place){
+async showLocation(place,eatery){
   event.preventDefault();
+  if(this.eateries.length > 0 && eatery == null){
+    this.eateries = [];
+  }
   var map = new google.maps.Map(document.getElementById("map"), {
-        zoom: 15,
+        zoom: 20,
         center: place.geometry.location,
       });
       var marker = new google.maps.Marker({
@@ -1138,20 +1192,30 @@ async showLocation(place){
 },
 
 
-async loadingppage(){
+async loadingpage(){
 
 },    
 
     
 async checkempty(){
   console.log(this.town);
-    if (!this.town || !this.sliderValue || !this.outgoing || !this.transport) {
+
+  if (!this.town || !this.sliderValue || !this.outgoing || !this.transport) {
         window.alert
 ("Please fill in all the fields!");
       }
     else{
+      await this.checkCityExists(this.town);
+      if(this.cityexists == true){
+        this.isLoading = true;
         await this.getweather();
         await this.getactivitieslist();
+        this.isLoading = false;
+      }
+      else{
+        window.alert("Please enter a valid city!");
+      }
+
     }
     },
   async addeaterytotrip(){
@@ -1176,11 +1240,19 @@ async checkempty2(){
 ("Please fill in all the fields!");
       }
     else{
+      await this.checkCityExists(this.town);
+      if(this.cityexists == true){
+      this.isLoading = true;
       this.strongIndependentWoman = true;
       await this.getweather();
       await this.getlist2();
-
+      this.isLoading = false;
     }
+    else{
+      window.alert("Please enter a valid city!");
+    }
+    }
+    
     },
 
 
