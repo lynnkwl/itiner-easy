@@ -233,8 +233,8 @@
                 <div v-for="activity in day.activities" :key="activity.name">
                   <!-- display activities -->
                   <div v-if="activity.formatted_address !== 'Travel'" class="pr-5">
-                    <div class="card flex max-w-sm rounded overflow-hidden shadow-lg bg-blue-100 justify-centerzz">
-                      <img class="w-2/3 h-32 just" :src="activity.photo" alt="image of attraction">
+                    <div class="card flex max-w-sm rounded overflow-hidden shadow-lg bg-blue-100 justify-center">
+                      <img class="w-2/3 h-32 self-center rounded-md" :src="activity.photo" alt="image of attraction">
                         <div class="px-6 py-4">
                           <h3 class="text-gray-400">{{ activity.name }}</h3>
                           <p class="text-gray-700 text-base">
@@ -258,7 +258,7 @@
 
                     <!-- loop through travel: start-->
                   <div v-else class="pr-5">
-                    <div class="card max-w-sm max-h-xs rounded overflow-hidden shadow-lg bg-blue-100">
+                    <div class="ml-8 max-w-sm max-h-xs rounded overflow-hidden border-l-4 border-dashed border-gray-700">
                       <!-- <img class="w-full h-20" src="../components/logo/itiner-easy.svg" alt="travel"> -->
                       <div class="px-6 py-4">
                         <div class="font-bold text-sm mb-2">{{ activity.name }}</div>
@@ -266,10 +266,10 @@
                           {{ activity.time }} - {{ activity.endtime }}
                         </p>
                       </div>
-                        <button class="btn w-max self-center" href="#" @click="displaydirectionsonmap(day.activities[day.activities.indexOf(activity) - 1].geometry.location, day.activities[day.activities.indexOf(activity) + 1].geometry.location)">The way there!</button>
+                        <button class="btn w-max self-center ml-5 mb-5" href="#" @click="displaydirectionsonmap(day.activities[day.activities.indexOf(activity) - 1].geometry.location, day.activities[day.activities.indexOf(activity) + 1].geometry.location)">The way there!</button>
                     </div>
                   </div>
-                  <br>
+                  
                 </div>
               </div>
         
