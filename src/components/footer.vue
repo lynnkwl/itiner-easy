@@ -60,7 +60,7 @@
                 <h2 class="mb-3 text-sm font-medium tracking-widest text-gray-900 uppercase title-font">Support</h2>
                 <nav class="mb-10 list-none">
                     <li class="mt-3">
-                        <a class="text-gray-500 cursor-pointer hover:text-gray-900">Website feedback</a>
+                        <router-link to="/contactus"> <a class="text-gray-500 cursor-pointer hover:text-gray-900">Website feedback</a> </router-link>
                     </li>
                 </nav>
             </div>
@@ -72,7 +72,7 @@
                         <a class="text-gray-500 cursor-pointer hover:text-gray-900">Terms &amp; Privacy</a>
                     </li>
                     <li class="mt-3">
-                        <a class="text-gray-500 cursor-pointer hover:text-gray-900">FAQ</a>
+                        <router-link to="/faq"><a class="text-gray-500 cursor-pointer hover:text-gray-900">FAQ</a></router-link>
                     </li>
                 </nav>
             </div>
