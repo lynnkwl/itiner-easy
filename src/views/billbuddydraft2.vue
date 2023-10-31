@@ -1,7 +1,90 @@
 
 <template>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2">
+      <div class="left col mt-7 mb-4 ml-7">
+        <h1 class="text-2xl md:text-3xl"><a class="italic text-indigo-500">tokyo's</a> expenses</h1>
+        <div class="card bg-white rounded-md mt-3 ml-3 mr-3 gap-1 grid grid-cols-12">
+              <!-- icon -->
+              <div class="rectangle col-span-1 flex w-10 bg-blue-400 h-10 rounded-lg justify-center items-center">
+                <img class="w-7 h-auto" src="../assets/expenses/food.png">
+              </div>
+              <!-- description -->
+              <div class=" col-span-5 flex justify-center items-center">
+                <h2 class="text-xl">Hamburger</h2>
+              </div>
+              <div class="col-span-4">
+                <div class="subheader">
+                  <h2 class="text-lg">$24</h2>
+                  <h3 class="text-sm">Paid by Timmy</h3>
+                </div>
+              </div>
+              
+                <div class="flex justify-center items-center col-span-1">
+                  <button class="btn">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                      <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                      <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                      </svg>
+                    </button>
+                </div>
+              
+              
+                <div class="flex justify-center items-center col-span-1">
+                  <button class="btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"/>
+                    <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+         </div>
+
+
+      
+
+      <div class="right col mt-7 ml-7 mr-7">
+        <h1 class="text-2xl md:text-3xl"><a class="italic text-indigo-500">splitter</a></h1>
+        <div class="right col col-span-1">
+          <div class="grid grid-cols-3  mt-4">
+            <div class="w-fit text-center">
+              <div class="circle rounded-full w-20 h-20 bg-white">
+                <img src="../assets/expenses/people/p1.png">
+              </div>
+
+              <div class="amount and name ">
+                <h2 class="text-xl">Timmy</h2>
+              </div>
+            </div>
+            <div class="pays">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-20 h-20">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
+              </svg>
+              <h3>pays $30 to</h3>
+            </div>
+            <div class="whotopay">
+              <div class="circle rounded-full w-20 h-20 bg-white">
+                <img src="../assets/expenses/people/p1.png">
+              </div>
+              <div class="amount and name">
+                <h2 class="text-xl">Johnny</h2>
+              </div>
+            </div>
+          </div> 
+          
+      </div>
+      
+      </div>
+      
+    </div>
+        
+            
+            
+
+
+
     
-   
 </template>
 
 <script>
