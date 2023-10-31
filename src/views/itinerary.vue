@@ -207,22 +207,12 @@
   <!-- Your loading spinner goes here -->
   <div class="flex justify-center">
     <div class="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-64 w-64">
-
     </div>
     <h3>I'll be waiting for you in the Land of Wano! Come at any cost!</h3>
-      <p>-Monkey D. Luffy</p>
+            <p>-Monkey D. Luffy</p>
+    
 </div>
 </div>
-
-<!-- <fwb-dropdown class="" type="green" text="Bottom">
-    <p class="p-2">Dropdown here</p>
-</fwb-dropdown>
-<fwb-button class="text-lg">Large Text Button</fwb-button>
-<fwb-dropdown class="custom-class" text="Bottom">
-    <p class="p-2">Dropdown here</p>
-</fwb-dropdown> -->
-
-
 
 <div class="grid grid-cols-3">
     <div v-if="final_activities.length>0">
@@ -264,13 +254,13 @@
                   </div>
                 </div> -->
 
-          <div class="collapse-content"> 
+          <div class="collapse-content max-h-screen overflow-auto"> 
               <div class="flex overflow-auto">   
                   <div>
                     <div v-for="activity in day.activities" :key="activity.name">
                       <!-- display activities -->
                       <div v-if="activity.formatted_address !== 'Travel'" class="pr-5">
-                        <div class="rounded-xl mx-auto card flex min-w-full max-w-md overflow-hidden shadow-lg bg-blue-100 justify-center">
+                        <div class="mx-auto card flex min-w-full max-w-md overflow-auto shadow-lg bg-blue-100 justify-center">
                           <img class="w-52 h-32 self-center rounded-md" :src="activity.photo" alt="image of attraction">
 
                             <div class="px-2 py-2 border-l-4 my-4 border-gray-400">
