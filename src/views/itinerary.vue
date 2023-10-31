@@ -388,6 +388,7 @@ import {
   getFirestore, collection, getDocs,
   addDoc, deleteDoc, doc, updateDoc, setDoc, query, getDoc
 } from "firebase/firestore";
+
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import itineraryRouter from "../router/index.js";
 const auth = getAuth();
