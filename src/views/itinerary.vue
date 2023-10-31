@@ -113,21 +113,23 @@
                   <h2 class="text-center">Are you ready?</h2>
                   <br>
                   <br>
-                  <template #stepNext>                    
+                  <template #stepNext>    
+                    <FormKit type="button"
+                    @click="checkempty"
+                    label="Generate an Itinerary for me!"
+                    />
+
                   
-                    <FormKit type="button" 
+                    <!-- <FormKit type="button" 
                      style="background-color: #4CAF50; /* Green */; position: relative; left: 50%; transform: translate(-50%, 0%);"
                       @click="checkempty2"
-                      label="I'll decide myself!"/>
+                      label="I'll decide myself!"/> -->
 
                   </template>
               <!-- Generate: end -->
               </FormKit>
             </FormKit>
           </FormKit>      
-    </div>
-    <div class="flex justify-center">
-      <button class="btn object-center bg-blue-600" @click="checkempty">Generate an Itinerary for me!</button>
     </div>
   
 <!-- </div>  -->
