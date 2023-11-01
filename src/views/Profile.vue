@@ -16,7 +16,9 @@
 
 <script>
 import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
+import { useRouter } from 'vue-router'; //import router
 const auth = getAuth();
+
 
 onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -34,6 +36,8 @@ export default {
             signOut(auth).then(() => {
                 // Sign-out successful.
                 console.log("signed out")
+                const router = useRouter() // get reference to vue router
+                router.push("/sign-in") // redirect to feed
             }).catch((error) => {
                 // An error happened.
                 console.log("error signing out", error)

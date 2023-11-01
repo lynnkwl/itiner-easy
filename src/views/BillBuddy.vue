@@ -23,8 +23,10 @@
             <tr v-for="trip in trips">
               <td>{{ trip }}</td>
               <td>{{ whoOwesWho }}</td>
-              <td><button class="btn btn-neutral ml-7 p-2 text-white btn-xs sm:btn-sm md:btn-md lg:btn-lg" @click="goToTrip(trip)">Go to Trip</button></td>
-              <td><button class="btn btn-neutral ml-7 p-2 text-white btn-xs sm:btn-sm md:btn-md lg:btn-lg" @click="deleteTrip(trip)">Delete Trip</button></td>
+              <td><button class="btn btn-neutral ml-7 p-2 text-white btn-xs sm:btn-sm md:btn-md lg:btn-lg"
+                  @click="goToTrip(trip)">Go to Trip</button></td>
+              <td><button class="btn btn-neutral ml-7 p-2 text-white btn-xs sm:btn-sm md:btn-md lg:btn-lg"
+                  @click="deleteTrip(trip)">Delete Trip</button></td>
             </tr>
           </tbody>
 
@@ -208,40 +210,8 @@ import navbar from "../components/navbar.vue";
 
 
 // Declaring the database data points we need
-const db = getFirestore();
-const tripsRef = collection(db, 'trips');
-const auth = getAuth();
-var uid = null;
-
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    console.log('User is signed in', user.uid + " " + user.email)
-    uid = user.uid;
-    console.log(uid);
-  } else {
-    console.log('User is signed out')
-  }
-});
-console.log(uid);
 
 // Display trips
-function tripExists() {
-  if (
-    getDocs(tripsRef).then((querySnapshot) => {
-      if (querySnapshot.empty) {
-        console.log('No matching documents.');
-        return false;
-      } else {
-        // console.log('Document data:', querySnapshot.docs);
-        return true;
-      };
-    })
-  ) {
-    return true;
-  } else {
-    return false;
-  }
-}
 
 // Exporting the data to firebase
 export default {
@@ -262,7 +232,6 @@ export default {
       inputValue: '',
       list: [],
       splitmethod: null,
-      tripExists: tripExists(),
       trips: [],
       trip: null,
       quicksettleamount: [],
@@ -270,7 +239,26 @@ export default {
       shares: [],
       custom: [],
       selected: false,
+      db: null,
+      auth: null,
+      tripsRef: null,
+      uid: null,
     }
+  },
+  mounted() {
+    console.log('Component mounted.')
+    this.db = getFirestore();
+    this.auth = getAuth();
+    onAuthStateChanged(this.auth, (user) => {
+      if (user) {
+        console.log('User is signed in', user.uid + " " + user.email)
+        this.uid = user.uid;
+        console.log(this.uid);
+        this.tripsRef = collection(this.db, 'users', this.uid, 'trips');
+      } else {
+        console.log('User is signed out')
+      }
+    });
   },
   computed: {
     selectedTrip() {
@@ -280,6 +268,24 @@ export default {
 
   // Methods for adding data to firebase
   methods: {
+    tripExists() {
+      if (
+        getDocs(this.tripsRef).then((querySnapshot) => {
+          if (querySnapshot.empty) {
+            console.log('No matching documents.');
+            return false;
+          } else {
+            // console.log('Document data:', querySnapshot.docs);
+            return true;
+          };
+        })
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+
     backToTrips() {
       // this.selected = false;
       window.location.reload();
@@ -290,7 +296,7 @@ export default {
       this.trip = trip;
       this.selected = true;
 
-      getDocs(collection(tripsRef, this.trip, 'expenses')).then((querySnapshot) => {
+      getDocs(collection(this.tripsRef, this.trip, 'expenses')).then((querySnapshot) => {
         if (this.expenses.length > 0) {
           this.expenses = [];
         }
@@ -305,7 +311,7 @@ export default {
         });
       });
 
-      getDoc(doc(tripsRef, this.trip)).then(doc => {
+      getDoc(doc(this.tripsRef, this.trip)).then(doc => {
         if (doc.exists()) {
           console.log("Document data:", doc.data());
           this.whoOwesWho = doc.data().whoOwesWho;
@@ -317,7 +323,7 @@ export default {
         console.log("Error getting document:", error);
       });
 
-      const querySnapshot1 = getDocs(doc(tripsRef, this.trip));
+      const querySnapshot1 = getDocs(doc(this.tripsRef, this.trip));
       querySnapshot1.forEach((doc) => {
         // doc.data() is never undefined for query doc snapshots
         console.log(doc.id, " => ", doc.data());
@@ -335,7 +341,7 @@ export default {
       this.expense.peopleOwingAmount = peopleOwingAmount;
 
       // Adds the expense to the database
-      addDoc(collection(db, 'trips', this.trip, 'expenses'), this.expense)
+      addDoc(collection(this.tripsRef, this.trip, 'expenses'), this.expense)
         .then(function (docRef) {
           console.log("Document written with ID: ", docRef.id);
         })
@@ -368,7 +374,7 @@ export default {
         }
       }
       // Update the whoOwesWho collection in firebase
-      updateDoc(doc(tripsRef, this.trip), {
+      updateDoc(doc(this.tripsRef, this.trip), {
         whoOwesWho: this.whoOwesWho
       })
         .then(() => {
@@ -440,7 +446,7 @@ export default {
     async deleteExpense(index, docId) {
       console.log(docId)
       console.log(index)
-      deleteDoc(doc(tripsRef, this.trip, 'expenses', docId[index]))
+      deleteDoc(doc(this.tripsRef, this.trip, 'expenses', docId[index]))
         .then(() => {
           console.log("Document successfully deleted!");
         }).catch((error) => {
@@ -449,7 +455,7 @@ export default {
     },
 
     async deleteTrip(trip) {
-      deleteDoc(doc(tripsRef, trip))
+      deleteDoc(doc(this.tripsRef, trip))
         .then(() => {
           console.log("Document successfully deleted!");
           window.location.reload();
@@ -460,7 +466,7 @@ export default {
 
     // Update expense in database
     async updateExpense(index, docId) {
-      updateDoc(collection(tripsRef, this.trip, 'expenses'), docId[index]), {
+      updateDoc(collection(this.tripsRef, this.trip, 'expenses'), docId[index]), {
         expenseName: "Updated Expense Name",
         expenseAmount: 100,
         peopleOwingNames: ["Updated Name 1", "Updated Name 2"],
@@ -529,8 +535,9 @@ export default {
 
     }
   },
+
   async updated() {
-    onSnapshot(collection(tripsRef, this.trip, 'expenses'), (querySnapshot) => {
+    onSnapshot(collection(this.tripsRef, this.trip, 'expenses'), (querySnapshot) => {
       if (this.expenses.length > 0) {
         this.expenses = [];
       }
@@ -543,15 +550,18 @@ export default {
   },
 
   async created() {
-    getDocs(tripsRef).then((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        // doc.data() is never undefined for query doc snapshots
-        // console.log(doc.id, " => ", doc.data());
-        this.trips.push(doc.id);
+    // await this.tripsRef;
+    setTimeout(() => {
+      getDocs(this.tripsRef).then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          // doc.data() is never undefined for query doc snapshots
+          console.log(doc.id, " => ", doc.data());
+          this.trips.push(doc.id);
+        });
       });
-    });
-
-    const querySnapshot1 = await getDocs(doc(tripsRef, this.trip, 'whoOwesWho'));
+    }, 500);
+    
+    const querySnapshot1 = await getDocs(doc(this.tripsRef, this.trip, 'whoOwesWho'));
     querySnapshot1.forEach((doc) => {
       // doc.data() is never undefined for query doc snapshots
       console.log(doc.id, " => ", doc.data());

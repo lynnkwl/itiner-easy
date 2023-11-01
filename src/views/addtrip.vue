@@ -37,21 +37,6 @@ import {
     addDoc, deleteDoc, doc, updateDoc, setDoc, query, onSnapshot
 } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-const auth = getAuth();
-
-const db = getFirestore();
-const tripsRef = collection(db, 'trips');
-const expensesRef = collection(tripsRef, 'europe', 'expenses');
-const whoOwesWhoRef = collection(tripsRef, 'europe', 'whoOwesWho');
-
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    console.log('User is signed in', user.uid + " " + user.email)
-    const uid = user.uid;
-  } else {
-    console.log('User is signed out')
-  }
-});
 
 export default {
     data() {
@@ -60,6 +45,30 @@ export default {
             // startDate: '',
             // endDate: '',
             // expenses: [{ name: '', amount: '' }]
+            db: null,
+            auth: null,
+            tripsRef: null,
+            uid: null,
+        }
+    },
+    mounted() {
+        console.log('Component mounted.')
+        this.db = getFirestore();
+        this.auth = getAuth();
+        onAuthStateChanged(this.auth, (user) => {
+            if (user) {
+                console.log('User is signed in', user.uid + " " + user.email)
+                this.uid = user.uid;
+                console.log(this.uid);
+                this.tripsRef = collection(this.db, 'users', this.uid, 'trips');
+            } else {
+                console.log('User is signed out')
+            }
+        });
+    },
+    computed: {
+        selectedTrip() {
+            return this.trip;
         }
     },
     methods: {
@@ -70,10 +79,11 @@ export default {
             this.expenses.splice(index, 1)
         },
         submitForm() {
-            console.log(this.destination)
-            setDoc(doc(tripsRef, this.destination), {
+            setDoc(doc(this.tripsRef, this.destination), {
                 whoOwesWho: {}
             })
+            console.log(this.destination)
+            console.log(this.tripsRef)
         }
     }
 }
