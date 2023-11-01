@@ -219,34 +219,27 @@
       <div class="m-10 w-2/3">
           <!-- getmap -->
           <!-- create table each day -->
-          <!-- <details class="collapse bg-base-200 max-w-sm">
-                          <summary class="collapse-title text-xl font-medium">Click to open/close</summary>
-                          <div class="collapse-content"> 
-                          
-                          </div>
-                        </details> -->
-                    <!-- loop through activities: start-->
         <div v-for="(day, index) in activitiesandtime" :key="index">
-            <details class="collapse bg-base-200 shadow-md">
+          <div tabindex="0" class="collapse collapse-arrow border border-base-300 bg-base-200">
                 <!-- <div class="flex pb-5 sticky top-0 z-10"> -->
                   <!-- <div class="w-96 border p-3 rounded-md bg-blue-300"> -->
-                  <summary class="collapse-title text-xl font-medium">
+                  <div class="collapse-title text-xl font-medium">
                     <h1>Day {{ index + 1 }}</h1>
                     <h3 class="text-gray-500">Date: {{ day.date }}</h3>
                   
                   <!-- Weather reminder -->
                     <div>
                       <div class="font-bold">Weather: {{ day.weather }}
-                        <span v-if="day.weather.includes('sunny')">☀️</span>
+                        <span v-if="day.weather.includes('Sunny', 'sunny')">☀️</span>
                         <span v-if="day.weather.includes('hazy')">💨</span>
                         <span v-if="day.weather.includes('rain')">🌧️</span>
                       </div>
-                      <div v-if="day.weather.includes('sunny')">Bring sunscreen!!</div>
-                      <div v-if="day.weather.includes('hazy')">Bring a mask!!</div>
-                      <div v-if="day.weather.includes('rain')">Bring an umbrella!! ☂️</div>
+                      <div v-if="day.weather.includes('Sunny')">Apply sunscreen!!</div>
+                      <div v-if="day.weather.includes('hazy')">Wear a mask!!</div>
+                      <div v-if="day.weather.includes('rain')">Pack an umbrella!! ☂️</div>
                     </div>
                   <!-- </div> -->
-                </summary>
+                  </div>
                 
 
                   <!-- <div v-if="index == 0" class="w-full flex justify-end">
@@ -305,7 +298,7 @@
                 </div>
                 <!-- collapse div -->
               </div> 
-            </details> 
+              </div> 
                <br> 
           </div>
       </div>
