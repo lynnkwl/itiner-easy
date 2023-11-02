@@ -68,6 +68,7 @@
                 <button class="btn btn-primary">Click to Go Back to Feed</button>
             </router-link>
         </form>
+        
     </div>
 </template>
 
@@ -175,6 +176,9 @@ export default {
                 console.log(error);
             }
         },
+       async getitinerary(){
+
+       }
     },
     created() {
         this.getCurrencyList();

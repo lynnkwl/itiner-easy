@@ -430,6 +430,7 @@ export default {
       isOpenNow: false,
       twelvehrtime: "",
       dates: [],
+      uid: null,
       cityexists: false,
       starttimeint: 900,
       citycoords: {},
