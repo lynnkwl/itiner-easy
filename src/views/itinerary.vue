@@ -98,6 +98,7 @@
                           'Gardens',
                       ]"
                   />
+                  
                   <FormKit 
                       v-model="transport"
                       type="radio" 
@@ -105,7 +106,21 @@
                       help="How will you be getting around?"
                       :options="[{label:'Car', value:`DRIVING`}, {label: 'Public Transport', value: `TRANSIT`}, {label:'Bicycle', value:`BICYCLING`}, {value:'WALKING' , label:'Walking'}]"
                   />
+                  <FormKit 
+                          v-model="starttime"
+                          type="range" 
+                          label="What time do you want to start your day?"
+                          validation="required"
+                          value=""
+                          min="0800"
+                          max="1200"
+                          step="100"
+                      />
+                    <!-- reformat to change day/days based on value -->
+                      <p>Time: {{ starttime }}</p>
+                      
                   </FormKit>
+                  
               <!-- preferences: end -->
 
               <!-- Generate: start -->
@@ -124,6 +139,7 @@
                     @click="checkempty"
                     label="Generate an Itinerary for me!"
                     />
+          
 
                   
                     <!-- <FormKit type="button" 
@@ -134,8 +150,8 @@
                   </template>
               <!-- Generate: end -->
               </FormKit>
+            </FormKit>   
             </FormKit>
-          </FormKit>      
     </div>
   
 <!-- </div>  -->
@@ -474,6 +490,7 @@ export default {
       interestsoptions:[],
       customactivitiesandtime: [],
       possiblephotos: [],
+      starttime: "0900",
       nextStepDisabled: true,
     };
   },
