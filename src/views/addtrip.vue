@@ -7,8 +7,14 @@
         <form @submit.prevent="submitForm">
             <label for="destination">Destination:</label>
             <input type="text" id="destination" v-model="destination" required>
-            Which Currency do you use normally!
             <br>
+            Which Currency do you use normally!
+            <select class="w-9/12 rounded bg-blue-200 cursor-pointer border-2 border-blue-400" name="currencylist" id="currencylist" @change="convertit">
+                    <option v-for="currency in currencyList" :key="currency.key" :value="currency.key">
+                        {{ currency.value }} </option>
+            </select>
+            <br>
+            Which Currency are you going to use!
             <select class="w-9/12 rounded bg-blue-200 cursor-pointer border-2 border-blue-400" name="currencylist" id="currencylist" @change="convertit">
                     <option v-for="currency in currencyList" :key="currency.key" :value="currency.key">
                         {{ currency.value }} </option>
