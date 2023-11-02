@@ -22,6 +22,12 @@
                 <h1>Create an account</h1>
                 <form @submit.prevent="register">
                   <div class="inputbox">
+                    <input v-model="name" @input="checkName" type="text" required class="w-full p-3 rounded border" />
+                    <span class="caption">
+                      <span>Name <span style="color: red" class="warning">{{ nameWarning }}</span></span>
+                    </span>
+                  </div>
+                  <div class="inputbox">
                     <input v-model="email" @input="checkEmail" type="text" required class="w-full p-3 rounded border" />
                     <span class="caption">
                       <span>Email <span style="color: red" class="warning">{{ emailWarning }}</span></span>
@@ -106,9 +112,11 @@ import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, signInWith
 import { useRouter } from 'vue-router'; //import router
 import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, updateDoc, setDoc, query, onSnapshot } from "firebase/firestore";
 const db = getFirestore();
+const name = ref("");
 const email = ref("");
 const password = ref("");
 const confirm = ref("");
+const nameWarning = ref("");
 const emailWarning = ref("");
 const passwordWarning = ref("");
 const ConfirmWarning = ref("");
@@ -120,6 +128,7 @@ const register = () => {
     .then((data) => {
       console.log("Successfully registered!");
       setDoc(doc(db, "users", data.user.uid), {
+        displayName: name.value,
         email: email.value,
         password: password.value,
         uid: data.user.uid,
@@ -182,6 +191,16 @@ const checkEmail = () => {
   } else {
     emailWarning.value = '';
     isValid.email = true;
+  }
+};
+
+const checkName = () => {
+  if (name.value.length === 0) {
+    nameWarning.value = 'Please enter a name';
+    isValid.name = false;
+  } else {
+    nameWarning.value = '';
+    isValid.name = true;
   }
 };
 
