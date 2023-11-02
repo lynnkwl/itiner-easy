@@ -166,7 +166,8 @@
           <thead>
             <tr>
               <th>Expense Name</th>
-              <th>Expense Amount</th>
+              <th>Expense Amount in {{ tripCurrency }}</th>
+              <th>Expense Amount in {{ homeCurrency }}</th>
               <th>People Owing Names</th>
               <th>People Owing Amount</th>
               <th>Person Owed Name</th>
@@ -178,10 +179,9 @@
           <tbody>
             <tr v-for="(expense, index) in expenses" :key="index">
               <td>{{ expense.expenseName }}</td>
-              <td>{{ expense.expenseAmount }}</td>
-              <td>
+              <td>{{ expense.expenseAmounttrip }}</td>
+              <td>{{ expense.expenseAmounthome }}</td>
               <td v-for="name in expense.peopleOwingNames">{{ name }} &nbsp;</td>
-              </td>
               <td>{{ expense.peopleOwingAmount }}</td>
               <td>{{ expense.personOwedName }}</td>
               <td><button @click="deleteExpense(index, docId)">Delete Expense</button></td>
@@ -236,7 +236,8 @@ export default {
       // Objects of data we want to add to firebase
       expense: {
         expenseName: null,
-        expenseAmount: null,
+        expenseAmounttrip: null,
+        expenseAmounthome: null,
         peopleOwingNames: null,
         personOwedName: null,
         peopleOwingAmount: null,
@@ -280,6 +281,7 @@ export default {
         console.log('User is signed out')
       }
     });
+    this.convertCurrency();
   },
   computed: {
     selectedTrip() {
@@ -306,6 +308,34 @@ export default {
         return false;
       }
     },
+    async  convertCurrency(expense) {
+      var url= 'https://currency-converter5.p.rapidapi.com/currency/convert';
+      var XRapidAPIKey= '2f0bfe79abmsh886342ca61bbf11p1e6dd8jsna7f5de5249b0';
+      var XRapidAPIHost= 'currency-converter5.p.rapidapi.com';
+      var amount = expense.expenseAmounttrip;
+      var from = this.tripCurrency;
+      var to = this.homeCurrency;
+      console.log(from);
+      console.log(to);
+      axios.get(url, {
+        headers: {
+          'x-rapidapi-key': XRapidAPIKey,
+          'x-rapidapi-host': XRapidAPIHost
+        },
+        params: {
+          amount: amount,
+          from: from,
+          to: to
+        }
+      })
+      .then(function(response) {
+        console.log(response.data);
+        var convertedmoney = response.data.rates[to].rate_for_amount;
+        var convertedmoneydiv = document.getElementById("convertedmoney");
+        var html = "<h7>"+convertedmoney+"</h7>";
+        convertedmoneydiv.innerHTML = html;
+
+      })    },
 
     backToTrips() {
       // this.selected = false;
@@ -513,30 +543,29 @@ export default {
       var url = 'https://currency-converter5.p.rapidapi.com/currency/convert';
       var XRapidAPIKey = '2f0bfe79abmsh886342ca61bbf11p1e6dd8jsna7f5de5249b0';
       var XRapidAPIHost = 'currency-converter5.p.rapidapi.com';
-      var amount = document.getElementById("moneymoneyahhhhh").value;
-      var from = document.getElementById("currencylist").value;
-      var to = document.getElementById("currencylisttoconvert").value;
-      console.log(from);
-      console.log(to);
-      axios.get(url, {
-        headers: {
-          'x-rapidapi-key': XRapidAPIKey,
-          'x-rapidapi-host': XRapidAPIHost
-        },
-        params: {
-          amount: amount,
-          from: from,
-          to: to
-        }
-      })
-        .then(function (response) {
-          console.log(response.data);
-          var convertedmoney = response.data.rates[to].rate_for_amount;
-          var convertedmoneydiv = document.getElementById("convertedmoney");
-          var html = "<h7>" + convertedmoney + "</h7>";
-          convertedmoneydiv.innerHTML = html;
-
+      for (let i = 0; i < this.expenses.length; i++) {
+        var amount = this.expenses[i].expenseAmount;
+        var from = this.tripCurrency;
+        var to = this.homeCurrency;
+        console.log(from);
+        console.log(to);
+        axios.get(url, {
+          headers: {
+            'x-rapidapi-key': XRapidAPIKey,
+            'x-rapidapi-host': XRapidAPIHost
+          },
+          params: {
+            amount: amount,
+            from: from,
+            to: to
+          }
         })
+          .then(function (response) {
+            console.log(response.data);
+            var convertedmoney = response.data.rates[to].rate_for_amount;
+            this.expenses[i].expenseAmounthome = convertedmoney;
+          })
+      }
     },
     checkempty() {
       if (this.expense.currency == null || this.expense.expenseName == null || this.expense.expenseAmount == null || this.expense.personOwedName == null || this.inputValue == '') {
@@ -651,4 +680,5 @@ export default {
     });
   },
 }
+
 </script>
