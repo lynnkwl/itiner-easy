@@ -8,12 +8,7 @@
             <label for="destination">Destination:</label>
             <input type="text" id="destination" v-model="destination" required>
 
-            <div>
-                <h3>Names:</h3>
-                <input style="margin-bottom: 10px;" type="text" placeholder="Person 1" id="person1" class="form-control">
-                <span id="personNames" v-html="htmlStr"></span>
-            </div>
-            <div     class='col-6'>
+            <div class='col-6'>
                 <h3>No of People:</h3>
                 <select name="numPeople" id="numPeople" class="form-control" @change="updateNumNames($event.target.value)">
                     <option value="1">1</option>
@@ -27,6 +22,11 @@
                     <option value="9">9</option>
                     <option value="10">10</option>
                 </select>
+            </div>
+            <div>
+                <h3>Names:</h3>
+                <input style="margin-bottom: 10px;" type="text" placeholder="Person 1" id="person1" class="form-control">
+                <span id="personNames" v-html="htmlStr"></span>
             </div>
 
 
@@ -95,6 +95,7 @@ export default {
             homeCurrency: null,
             htmlStr: "",
             tripCurrency: null,
+            personNames: [],
         }
     },
     mounted() {
@@ -135,10 +136,16 @@ export default {
             this.expenses.splice(index, 1)
         },
         submitForm() {
+            let numPeople = document.getElementById("numPeople").value;
+            for (let i=1; i<=numPeople; i++) {
+                this.personNames.push(document.getElementById("person" + i).value);
+            }
             setDoc(doc(this.tripsRef, this.destination), {
                 whoOwesWho: {},
                 homeCurrency: this.homeCurrency,
                 tripCurrency: this.tripCurrency,
+                numPeople: numPeople,
+                personNames: this.personNames,
             })
             this.submitted = true;
             console.log(this.destination)
