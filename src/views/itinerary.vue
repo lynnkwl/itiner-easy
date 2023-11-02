@@ -213,7 +213,7 @@
     </div>
     <h2 class="text-center col-span-2">I'll be waiting for you in {{town}}! Come at any cost!</h2>
     <div></div>
-    <h4 class="text-center col-span-2">- Monkey D. Luffy</h4>
+    <h4 class="text-center ">- Monkey D. Luffy</h4>
    </div>
             
 </div>
@@ -225,10 +225,10 @@
           <!-- getmap -->
           <!-- create table each day -->
         <div v-for="(day, index) in activitiesandtime" :key="index">
-          <div tabindex="0" class="collapse collapse-arrow border border-base-300 bg-base-200">
+          <details class="collapse border border-base-300 bg-base-200">
                 <!-- <div class="flex pb-5 sticky top-0 z-10"> -->
                   <!-- <div class="w-96 border p-3 rounded-md bg-blue-300"> -->
-                  <div class="collapse-title text-xl font-medium">
+                  <summary class="collapse-title text-xl font-medium">
                     <h1>Day {{ index + 1 }}</h1>
                     <h3 class="text-gray-500">Date: {{ day.date }}</h3>
                   
@@ -244,7 +244,7 @@
                       <div v-if="day.weather.includes('rain')">Pack an umbrella!! ☂️</div>
                     </div>
                   <!-- </div> -->
-                  </div>
+                  </summary>
                 
 
                   <!-- <div v-if="index == 0" class="w-full flex justify-end">
@@ -303,7 +303,7 @@
                 </div>
                 <!-- collapse div -->
               </div> 
-              </div> 
+            </details> 
                <br> 
           </div>
       </div>
@@ -417,6 +417,19 @@ import {
 
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
+const auth = getAuth();
+const db = getFirestore();
+const tripsRef = collection(db, 'trips');
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    console.log('User is signed in', user.uid + " " + user.email)
+    const uid = user.uid;
+  } else {
+    console.log('User is signed out')
+  }
+});
+
 export default {
   components: {
     FwbDropdown,
@@ -430,27 +443,10 @@ export default {
     //add main.js
     document.head.appendChild(script);
     window.history.scrollRestoration = "manual";
-    this.db = getFirestore();
-    this.auth = getAuth();
-    onAuthStateChanged(this.auth, (user) => {
-      if (user) {
-        console.log('User is signed in', user.uid + " " + user.email)
-        this.uid = user.uid;
-        console.log(this.uid);
-        this.tripsRef = collection(this.db, 'users', this.uid, 'trips');
-      } else {
-        console.log('User is signed out')
-      }
-    });
-
 
   },
   data() {
     return {
-      db: null,
-      auth: null,
-      tripsRef: null,
-      uid: null,
       sliderValue: 1,
       selectedOption: null, // Initially no option is selected
       town: "",
@@ -1267,14 +1263,14 @@ async saveItinerary() {
   var json = JSON.stringify(activitiesandtime);
   console.log(json);
   
-  const docSnap = await getDoc(doc(this.tripsRef, this.town));
+  const docSnap = await getDoc(doc(tripsRef, this.town));
   if (docSnap.exists()) {
     console.log("Document data:", docSnap.data());
-    updateDoc(doc(this.tripsRef, this.town), {activitiesandtime: json});
+    updateDoc(doc(tripsRef, this.town), {activitiesandtime: json});
   } else {
     // doc.data() will be undefined in this case
     console.log("No such document!");
-    setDoc(doc(this.tripsRef, this.town), {activitiesandtime: json, whoOwesWho: {}});
+    setDoc(doc(tripsRef, this.town), {activitiesandtime: json, whoOwesWho: {}});
   }
 }
     

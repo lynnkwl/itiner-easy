@@ -77,9 +77,9 @@
         </div>
         <div>
           <p>Which Currency Are We Using?</p>
-          <input type="radio" value="{{tripCurrency}}" id="tripCurrency">
+          <input name="currency" type="radio" value="{{tripCurrency}}" id="tripCurrency" v-model="currency">
           <label for="tripCurrency">{{tripCurrency}}</label><br>
-          <input type="radio" value="{{homeCurrency}}" id="homeCurrency">
+          <input name="currency" type="radio" value="{{homeCurrency}}" id="homeCurrency" v-model="currency">
           <label for="homeCurrency">{{homeCurrency}}</label><br>
         </div>
 
@@ -253,6 +253,7 @@ export default {
       currencyList: [],
       tripCurrency: null,
       homeCurrency: null,
+      currency: null,
     }
   },
   mounted() {
@@ -535,7 +536,7 @@ export default {
 
       })    },
     checkempty() {
-      if (this.expense.expenseName == null || this.expense.expenseAmount == null || this.expense.personOwedName == null || this.list.length == 0) {
+      if (this.currency == null || this.expense.expenseName == null || this.expense.expenseAmount == null || this.expense.personOwedName == null || this.list.length == 0) {
         alert("Please fill in all fields")
       } else {
         this.addExpense();
