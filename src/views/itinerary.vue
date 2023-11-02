@@ -47,13 +47,14 @@
               :allow-incomplete="false"   
               >
               <!-- Destination: start -->
-                  <FormKit type="step" name="Destination">
+                  <FormKit type="step" name="Destination" :nextLabel="nextStepDisabled ?  `Next`: 'Please enter a valid city'" nextAttrs:nextStepDisabled>
                   <!-- collect name, email, and company info -->
                       <FormKit 
                           v-model="town"
                           type="text" 
                           label="Destination" 
                           validation="required"
+                          @blur ="checkCityExists(town)"
                       />
                       <FormKit 
                           v-model="sliderValue"
@@ -97,6 +98,7 @@
                           'Gardens',
                       ]"
                   />
+                  
                   <FormKit 
                       v-model="transport"
                       type="radio" 
@@ -104,7 +106,21 @@
                       help="How will you be getting around?"
                       :options="[{label:'Car', value:`DRIVING`}, {label: 'Public Transport', value: `TRANSIT`}, {label:'Bicycle', value:`BICYCLING`}, {value:'WALKING' , label:'Walking'}]"
                   />
+                  <FormKit 
+                          v-model="starttime"
+                          type="range" 
+                          label="What time do you want to start your day?"
+                          validation="required"
+                          value=""
+                          min="0800"
+                          max="1200"
+                          step="100"
+                      />
+                    <!-- reformat to change day/days based on value -->
+                      <p>Time: {{ starttime }}</p>
+                      
                   </FormKit>
+                  
               <!-- preferences: end -->
 
               <!-- Generate: start -->
@@ -123,6 +139,7 @@
                     @click="checkempty"
                     label="Generate an Itinerary for me!"
                     />
+          
 
                   
                     <!-- <FormKit type="button" 
@@ -133,8 +150,8 @@
                   </template>
               <!-- Generate: end -->
               </FormKit>
+            </FormKit>   
             </FormKit>
-          </FormKit>      
     </div>
   
 <!-- </div>  -->
@@ -473,6 +490,8 @@ export default {
       interestsoptions:[],
       customactivitiesandtime: [],
       possiblephotos: [],
+      starttime: "0900",
+      nextStepDisabled: true,
     };
   },
     methods: {
@@ -1134,13 +1153,20 @@ async titlephotogenerator() {
 async checkCityExists(cityName) {
   return new Promise((resolve, reject) => {
     var geocoder = new google.maps.Geocoder();
+    console.log("imrunning");
     geocoder.geocode({ 'address': cityName }, (results, status) => { // Use an arrow function here
       if (status == google.maps.GeocoderStatus.OK) {
         this.cityexists = true;
         resolve(true);
+        console.log("city exists");
+        return true;
       } else {
         this.cityexists = false;
         resolve(false);
+        console.log("city does not exist");
+        console.log(this.nextStepDisabled);
+        return false;
+
       }
     });
   });
@@ -1265,6 +1291,12 @@ async saveItinerary() {
   }
 }
     
+},
+watch: {
+  async town(newTown) {
+    this.cityExists = await this.checkCityExists(newTown);
+    this.nextStepDisabled = this.cityExists; // Disable the "Next" button if the city does not exist
+  },
 },
   };
 
