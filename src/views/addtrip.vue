@@ -7,6 +7,12 @@
         <form @submit.prevent="submitForm">
             <label for="destination">Destination:</label>
             <input type="text" id="destination" v-model="destination" required>
+            Which Currency do you use normally!
+            <br>
+            <select class="w-9/12 rounded bg-blue-200 cursor-pointer border-2 border-blue-400" name="currencylist" id="currencylist" @change="convertit">
+                    <option v-for="currency in currencyList" :key="currency.key" :value="currency.key">
+                        {{ currency.value }} </option>
+            </select>
             <!-- <br><br> -->
             <!-- <label for="start-date">Start Date:</label>
             <input type="date" id="start-date" v-model="startDate" required>
@@ -49,6 +55,8 @@ export default {
             auth: null,
             tripsRef: null,
             uid: null,
+            currencyList: [],
+
         }
     },
     mounted() {
@@ -84,7 +92,31 @@ export default {
             })
             console.log(this.destination)
             console.log(this.tripsRef)
-        }
+        },
+        async getCurrencyList() {
+  try {
+    const response = await axios.get('https://currency-converter5.p.rapidapi.com/currency/list', {
+      headers: {
+        'x-rapidapi-key': '2f0bfe79abmsh886342ca61bbf11p1e6dd8jsna7f5de5249b0',
+        'x-rapidapi-host': 'currency-converter5.p.rapidapi.com',
+      },
+    });
+    console.log(response.data);
+    for(var key in response.data.currencies) {
+      var value = response.data.currencies[key];
+      this.currencyList.push({key, value});
+    }
+    //sort currency list by alphabet
+    this.currencyList.sort(function(a, b){
+      if(a.value < b.value) { return -1; }
+      if(a.value > b.value) { return 1; }
+      return 0;
+    })
+    
+  } catch (error) {
+    console.log(error);
+  }
+},
     }
 }
 </script>
