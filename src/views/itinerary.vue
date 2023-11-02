@@ -32,7 +32,7 @@
               <!-- Destination: start -->
                   <FormKit type="step" name="Destination" :nextLabel="nextStepDisabled ?  `Next`: 'Please enter a valid city'" nextAttrs:nextStepDisabled>
                   <!-- collect name, email, and company info -->
-                      <FormKit 
+                      <FormKit
                           v-model="town"
                           type="text" 
                           label="Destination" 
@@ -173,9 +173,9 @@
     <div class="flex justify-center">
       <span class="loading loading-spinner loading-lg object-center"></span>
     </div>
-    <h2 class="text-center col-span-2">I'll be waiting for you in {{town}}! Come at any cost!</h2>
+    <h2 class="text-center col-span-2 text-blue-700">I'll be waiting for you in {{town}}! Come at any cost!</h2>
     <div></div>
-    <h4 class="text-center ">- Monkey D. Luffy</h4>
+    <h3 class="text-center col-span-2">- Monkey D. Luffy</h3>
    </div>
             
 </div>
