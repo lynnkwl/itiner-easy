@@ -63,24 +63,36 @@
 
       <div class="expense-add">
         <div class="form-group">
+          <p>Expense Name:</p>
           <input type="text" placeholder="Expense Name" v-model="expense.expenseName" class="form-control" required>
         </div>
         <div class="form-group">
+          <p>Expense Amount:</p>
           <input type="number" placeholder="Expense Amount" v-model="expense.expenseAmount" class="form-control" required>
         </div>
         <div class="form-group">
-          <input type="text" placeholder="Person Owed" v-model="expense.personOwedName" class="form-control" required>
+          <p>Person Owed:</p>
+          <select v-model="expense.personOwedName" class="form-control" required>
+            <option v-for="name in personNames" :key="name" :value="name" selected>
+              {{ name }}
+            </option>
+          </select>
         </div>
         <div class="form-group">
+          <p>Who Owes Money:</p>
+          <label v-for="name in personNames">
+            <input type="checkbox" :name="name" :value="name" v-model="inputValue" @click="addToList">{{ name }}<br>
+          </label>
+
           <input type="text" placeholder="Who Owes Money (Type and press Enter)" v-model="inputValue" class="form-control"
             @keyup.enter="addToList">
         </div>
         <div>
           <p>Which Currency Are We Using?</p>
-          <input name="currency" type="radio" value="{{tripCurrency}}" id="tripCurrency" v-model="currency">
-          <label for="tripCurrency">{{tripCurrency}}</label><br>
-          <input name="currency" type="radio" value="{{homeCurrency}}" id="homeCurrency" v-model="currency">
-          <label for="homeCurrency">{{homeCurrency}}</label><br>
+          <input name="currency" type="radio" id="tripCurrency" v-model="expense.currency">
+          <label for="tripCurrency">{{ tripCurrency }}</label><br>
+          <input name="currency" type="radio" id="homeCurrency" v-model="expense.currency">
+          <label for="homeCurrency">{{ homeCurrency }}</label><br>
         </div>
 
         <div class="form-group">
@@ -230,13 +242,14 @@ export default {
         expenseAmount: null,
         peopleOwingNames: null,
         personOwedName: null,
-        peopleOwingAmount: null
+        peopleOwingAmount: null,
+        currency: null,
       },
       expenses: [],
       docId: [],
       whoOwesWho: {},
       // This is for the list of people who owe money
-      inputValue: '',
+      inputValue: [],
       list: [],
       splitmethod: null,
       trips: [],
@@ -253,7 +266,7 @@ export default {
       currencyList: [],
       tripCurrency: null,
       homeCurrency: null,
-      currency: null,
+      personNames: [],
     }
   },
   mounted() {
@@ -322,25 +335,14 @@ export default {
         });
       });
 
-      // Displays whoOwesWho
+      // Gets whoOwesWho, personNames and currencies used from database
       getDoc(doc(this.tripsRef, this.trip)).then(doc => {
         if (doc.exists()) {
           console.log("Document data:", doc.data());
           this.whoOwesWho = doc.data().whoOwesWho;
-        } else {
-          // doc.data() will be undefined in this case
-          console.log("No such document!");
-        }
-      }).catch((error) => {
-        console.log("Error getting document:", error);
-      });
-
-      // Displays currencies used
-      getDoc(doc(this.tripsRef, this.trip)).then(doc => {
-        if (doc.exists()) {
-          console.log("Document data:", doc.data());
           this.tripCurrency = doc.data().tripCurrency;
           this.homeCurrency = doc.data().homeCurrency;
+          this.personNames = doc.data().personNames;
         } else {
           // doc.data() will be undefined in this case
           console.log("No such document!");
@@ -425,7 +427,7 @@ export default {
     // Supporting function for addExpense()
     addToList() {
       this.list.push(this.inputValue);
-      this.inputValue = '';
+      this.inputValue = [];
       this.list = this.list.sort();
     },
 
@@ -508,9 +510,9 @@ export default {
         });
     },
     async convertCurrency() {
-      var url= 'https://currency-converter5.p.rapidapi.com/currency/convert';
-      var XRapidAPIKey= '2f0bfe79abmsh886342ca61bbf11p1e6dd8jsna7f5de5249b0';
-      var XRapidAPIHost= 'currency-converter5.p.rapidapi.com';
+      var url = 'https://currency-converter5.p.rapidapi.com/currency/convert';
+      var XRapidAPIKey = '2f0bfe79abmsh886342ca61bbf11p1e6dd8jsna7f5de5249b0';
+      var XRapidAPIHost = 'currency-converter5.p.rapidapi.com';
       var amount = document.getElementById("moneymoneyahhhhh").value;
       var from = document.getElementById("currencylist").value;
       var to = document.getElementById("currencylisttoconvert").value;
@@ -527,14 +529,15 @@ export default {
           to: to
         }
       })
-      .then(function(response) {
-        console.log(response.data);
-        var convertedmoney = response.data.rates[to].rate_for_amount;
-        var convertedmoneydiv = document.getElementById("convertedmoney");
-        var html = "<h7>"+convertedmoney+"</h7>";
-        convertedmoneydiv.innerHTML = html;
+        .then(function (response) {
+          console.log(response.data);
+          var convertedmoney = response.data.rates[to].rate_for_amount;
+          var convertedmoneydiv = document.getElementById("convertedmoney");
+          var html = "<h7>" + convertedmoney + "</h7>";
+          convertedmoneydiv.innerHTML = html;
 
-      })    },
+        })
+    },
     checkempty() {
       if (this.currency == null || this.expense.expenseName == null || this.expense.expenseAmount == null || this.expense.personOwedName == null || this.list.length == 0) {
         alert("Please fill in all fields")
@@ -543,29 +546,29 @@ export default {
       }
     },
     async getCurrencyList() {
-  try {
-    const response = await axios.get('https://currency-converter5.p.rapidapi.com/currency/list', {
-      headers: {
-        'x-rapidapi-key': '2f0bfe79abmsh886342ca61bbf11p1e6dd8jsna7f5de5249b0',
-        'x-rapidapi-host': 'currency-converter5.p.rapidapi.com',
-      },
-    });
-    console.log(response.data);
-    for(var key in response.data.currencies) {
-      var value = response.data.currencies[key];
-      this.currencyList.push({key, value});
-    }
-    //sort currency list by alphabet
-    this.currencyList.sort(function(a, b){
-      if(a.value < b.value) { return -1; }
-      if(a.value > b.value) { return 1; }
-      return 0;
-    })
-    
-  } catch (error) {
-    console.log(error);
-  }
-},
+      try {
+        const response = await axios.get('https://currency-converter5.p.rapidapi.com/currency/list', {
+          headers: {
+            'x-rapidapi-key': '2f0bfe79abmsh886342ca61bbf11p1e6dd8jsna7f5de5249b0',
+            'x-rapidapi-host': 'currency-converter5.p.rapidapi.com',
+          },
+        });
+        console.log(response.data);
+        for (var key in response.data.currencies) {
+          var value = response.data.currencies[key];
+          this.currencyList.push({ key, value });
+        }
+        //sort currency list by alphabet
+        this.currencyList.sort(function (a, b) {
+          if (a.value < b.value) { return -1; }
+          if (a.value > b.value) { return 1; }
+          return 0;
+        })
+
+      } catch (error) {
+        console.log(error);
+      }
+    },
 
     computeexpense() {
       this.quicksettleamount = [];
@@ -638,7 +641,7 @@ export default {
         });
       });
     }, 500);
-    
+
     const querySnapshot1 = await getDocs(doc(this.tripsRef, this.trip, 'whoOwesWho'));
     querySnapshot1.forEach((doc) => {
       // doc.data() is never undefined for query doc snapshots
