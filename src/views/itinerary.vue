@@ -47,13 +47,14 @@
               :allow-incomplete="false"   
               >
               <!-- Destination: start -->
-                  <FormKit type="step" name="Destination">
+                  <FormKit type="step" name="Destination" :nextLabel="nextStepDisabled ?  `Next`: 'Please enter a valid city'" nextAttrs:nextStepDisabled>
                   <!-- collect name, email, and company info -->
                       <FormKit 
                           v-model="town"
                           type="text" 
                           label="Destination" 
                           validation="required"
+                          @blur ="checkCityExists(town)"
                       />
                       <FormKit 
                           v-model="sliderValue"
@@ -477,6 +478,7 @@ export default {
       interestsoptions:[],
       customactivitiesandtime: [],
       possiblephotos: [],
+      nextStepDisabled: true,
     };
   },
     methods: {
@@ -1138,13 +1140,20 @@ async titlephotogenerator() {
 async checkCityExists(cityName) {
   return new Promise((resolve, reject) => {
     var geocoder = new google.maps.Geocoder();
+    console.log("imrunning");
     geocoder.geocode({ 'address': cityName }, (results, status) => { // Use an arrow function here
       if (status == google.maps.GeocoderStatus.OK) {
         this.cityexists = true;
         resolve(true);
+        console.log("city exists");
+        return true;
       } else {
         this.cityexists = false;
         resolve(false);
+        console.log("city does not exist");
+        console.log(this.nextStepDisabled);
+        return false;
+
       }
     });
   });
@@ -1269,6 +1278,12 @@ async saveItinerary() {
   }
 }
     
+},
+watch: {
+  async town(newTown) {
+    this.cityExists = await this.checkCityExists(newTown);
+    this.nextStepDisabled = this.cityExists; // Disable the "Next" button if the city does not exist
+  },
 },
   };
 
