@@ -11,11 +11,11 @@
             <div>
                 <h3>Names:</h3>
                 <input style="margin-bottom: 10px;" type="text" placeholder="Person 1" id="person1" class="form-control">
-                <span id="personNames"></span>
+                <span id="personNames" v-html="htmlStr"></span>
             </div>
-            <div class='col-6'>
+            <div     class='col-6'>
                 <h3>No of People:</h3>
-                <select name="numPeople" id="numPeople" class="form-control" @change="updateNumNames(this.value)">
+                <select name="numPeople" id="numPeople" class="form-control" @change="updateNumNames($event.target.value)">
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -28,6 +28,7 @@
                     <option value="10">10</option>
                 </select>
             </div>
+
 
             Which Currency do you use normally!
             <select class="w-9/12 rounded bg-blue-200 cursor-pointer border-2 border-blue-400" name="currencylist"
@@ -92,6 +93,7 @@ export default {
             currencyList: [],
             submitted: false,
             homeCurrency: null,
+            htmlStr: "",
             tripCurrency: null,
         }
     },
@@ -118,12 +120,12 @@ export default {
     methods: {
         updateNumNames(number) {
             let i = 1;
-            var str = "";
+            this.htmlStr = "";
             while (i < number) {
-                str += "<input style='margin-bottom: 10px;' type='text' placeholder='Person " + (i + 1) + "' id='person" + (i + 1) + "' class='form-control'>";
+                this.htmlStr += "<input style='margin-bottom: 10px;' type='text' placeholder='Person " + (i + 1) + "' id='person" + (i + 1) + "' class='form-control'>";
                 i++;
             }
-            document.getElementById("personNames").innerHTML = str;
+
         },
 
         addExpense() {
