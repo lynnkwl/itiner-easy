@@ -100,6 +100,7 @@
     <div class="text-3xl m-7 font-bold">
       <h2>{{ selectedTrip }} expenses</h2>
     </div>
+    
 
     <div class="expense-add">
       <div class="form-group">
@@ -215,6 +216,7 @@
           </tr>
         </thead>
 
+
         <tbody>
           <tr v-for="(expense, index) in expenses" :key="index">
             <td>{{ expense.expenseName }}</td>
@@ -251,6 +253,46 @@
       <div id="amountToPay"></div>
     </div>
   </div>
+
+<div class="grid grid-cols-1 md:grid-cols-2">
+      <!-- expensecards -->
+      <div class="rightcol">
+      <div class="expensecards">
+        <expensecards 
+        v-for="(expense, index) in expenses"
+        :itemDesc="expense.expenseName"
+        :price="expense.expenseAmount"
+        :TransfereeName="expense.personOwedName"
+        @button-clicked="deleteExpense(index,docId)">
+      </expensecards>
+
+      <button class="btn mt-4 ml-3 btn-primary">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
+          <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+          <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+        </svg>
+      Add an expense
+      </button>
+
+
+      </div>
+      </div>
+
+      <!-- splittercards
+      <div class="splittercards">
+        <splittercards
+        :v-for="key in Object.keys(whoOwesWho)"
+        :Name1="key">
+      </splittercards>
+      </div> -->
+
+
+</div>
+
+
+
+
+
 </template>
 
 
@@ -263,6 +305,8 @@ import {
   addDoc, deleteDoc, doc, updateDoc, setDoc, query, onSnapshot, getDoc
 } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import expensecards from "../components/expensecards.vue"
+import splittercards from "../components/splittercards.vue"
 </script>
 
 
@@ -674,5 +718,8 @@ export default {
       });
     });
   },
+  components:{
+    expensecards,splittercards
+  }
 }
 </script>

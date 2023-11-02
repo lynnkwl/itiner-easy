@@ -37,6 +37,14 @@
     </div> -->
 
 <template>
+
+  <div class="text-sm ml-7 breadcrumbs">
+    <ul>
+      <li><router-link to="/landinglogin"><a class="text-blue-900">Home</a></router-link></li>  
+      <li>Plan itinerary</li>
+    </ul>
+  </div>
+
   <h1 class="text-3xl text-center text-blue-400 mt-5">Let's plan your next trip!</h1>
   <div class="flex justify-center"> 
     <FormKit type="form"
