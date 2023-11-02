@@ -896,9 +896,9 @@ async formattimestrfrom24hourto12hour(input) {
   });
 },
 
-async titlephotogenerator() {
+async titlephotogenerator(town) {
   // get photos of town using Google Place Photos API
-  let townsearched = this.town;
+  let townsearched = town;
   let request = {
     query: townsearched,
     fields: ['photos'],
