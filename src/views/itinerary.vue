@@ -108,15 +108,13 @@
                   />
                   <FormKit 
                           v-model="starttime"
-                          type="range" 
+                          type="time" 
                           label="What time do you want to start your day?"
                           validation="required"
-                          value=""
-                          min="0800"
-                          max="1200"
-                          step="100"
+                          value="09:00"
+                          min="08:00"
+                          max="12:00"
                       />
-                    <!-- reformat to change day/days based on value -->
                       <p>Time: {{ starttime }}</p>
                       
                   </FormKit>
@@ -486,11 +484,12 @@ export default {
       twelvehrtime: "",
       dates: [],
       cityexists: false,
+      starttimeint: 900,
       citycoords: {},
       interestsoptions:[],
       customactivitiesandtime: [],
       possiblephotos: [],
-      starttime: "0900",
+      starttime:"09:00",
       nextStepDisabled: true,
     };
   },
@@ -685,11 +684,20 @@ async searchBothAttractions(city) {
       })});
     },
 
+    async timeToMinutes(timeString) {
+  // Split the time string into hours and minutes
+  const [hours, minutes] = timeString.split(':').map(Number);
+      //change 09:00 to 900
+      this.starttimeint = hours*100 + minutes;
+      console.log(this.starttimeint);
+  },
+
   async managetime() {
+  await this.timeToMinutes(this.starttime);
   this.days = this.sliderValue;
   this.activitiesandtime = [];
   for (var i = 0; i < this.days; i++) {
-    let timeint = 900;
+    let timeint = this.starttimeint;
     let maxtimeint = 2100;
     var actorder = 0;
     var day = {};
