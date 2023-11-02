@@ -75,6 +75,13 @@
           <input type="text" placeholder="Who Owes Money (Type and press Enter)" v-model="inputValue" class="form-control"
             @keyup.enter="addToList">
         </div>
+        <div>
+          <p>Which Currency Are We Using?</p>
+          <input type="radio" value="{{tripCurrency}}" id="tripCurrency">
+          <label for="tripCurrency">{{tripCurrency}}</label><br>
+          <input type="radio" value="{{homeCurrency}}" id="homeCurrency">
+          <label for="homeCurrency">{{homeCurrency}}</label><br>
+        </div>
 
         <div class="form-group">
           How are we splitting this?
@@ -232,7 +239,6 @@ export default {
       inputValue: '',
       list: [],
       splitmethod: null,
-      currenciesUsed: [],
       trips: [],
       trip: null,
       quicksettleamount: [],
@@ -245,6 +251,8 @@ export default {
       tripsRef: null,
       uid: null,
       currencyList: [],
+      tripCurrency: null,
+      homeCurrency: null,
     }
   },
   mounted() {
@@ -313,10 +321,25 @@ export default {
         });
       });
 
+      // Displays whoOwesWho
       getDoc(doc(this.tripsRef, this.trip)).then(doc => {
         if (doc.exists()) {
           console.log("Document data:", doc.data());
           this.whoOwesWho = doc.data().whoOwesWho;
+        } else {
+          // doc.data() will be undefined in this case
+          console.log("No such document!");
+        }
+      }).catch((error) => {
+        console.log("Error getting document:", error);
+      });
+
+      // Displays currencies used
+      getDoc(doc(this.tripsRef, this.trip)).then(doc => {
+        if (doc.exists()) {
+          console.log("Document data:", doc.data());
+          this.tripCurrency = doc.data().tripCurrency;
+          this.homeCurrency = doc.data().homeCurrency;
         } else {
           // doc.data() will be undefined in this case
           console.log("No such document!");
