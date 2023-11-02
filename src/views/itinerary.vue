@@ -344,18 +344,18 @@ import {
 
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
-const auth = getAuth();
-const db = getFirestore();
-const tripsRef = collection(db, 'trips');
+// const auth = getAuth();
+// const db = getFirestore();
+// const tripsRef = collection(db, 'trips');
 
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    console.log('User is signed in', user.uid + " " + user.email)
-    const uid = user.uid;
-  } else {
-    console.log('User is signed out')
-  }
-});
+// onAuthStateChanged(auth, (user) => {
+//   if (user) {
+//     console.log('User is signed in', user.uid + " " + user.email)
+//     const uid = user.uid;
+//   } else {
+//     console.log('User is signed out')
+//   }
+// });
 
 export default {
   components: {
@@ -371,9 +371,26 @@ export default {
     document.head.appendChild(script);
     window.history.scrollRestoration = "manual";
 
+    console.log('Component mounted.')
+    this.db = getFirestore();
+    this.auth = getAuth();
+    onAuthStateChanged(this.auth, (user) => {
+      if (user) {
+        console.log('User is signed in', user.uid + " " + user.email)
+        this.uid = user.uid;
+        console.log(this.uid);
+        this.tripsRef = collection(this.db, 'users', this.uid, 'trips');
+      } else {
+        console.log('User is signed out')
+      }
+    });
   },
   data() {
     return {
+      db: null,
+      auth: null,
+      tripsRef: null,
+      uid: null,
       sliderValue: 1,
       selectedOption: null, // Initially no option is selected
       town: "",
@@ -1208,14 +1225,14 @@ async saveItinerary() {
   var json = JSON.stringify(activitiesandtime);
   console.log(json);
   
-  const docSnap = await getDoc(doc(tripsRef, this.town));
+  const docSnap = await getDoc(doc(this.tripsRef, this.town));
   if (docSnap.exists()) {
     console.log("Document data:", docSnap.data());
-    updateDoc(doc(tripsRef, this.town), {activitiesandtime: json});
+    updateDoc(doc(this.tripsRef, this.town), {activitiesandtime: json});
   } else {
     // doc.data() will be undefined in this case
     console.log("No such document!");
-    setDoc(doc(tripsRef, this.town), {activitiesandtime: json, whoOwesWho: {}});
+    setDoc(doc(this.tripsRef, this.town), {activitiesandtime: json, whoOwesWho: {}});
   }
 }
     
