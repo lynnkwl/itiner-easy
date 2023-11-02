@@ -1,23 +1,46 @@
 <template>
     <div>
-        <router-link to="/billbuddy">
+        <router-link to="/billbuddy" v-if="!submitted">
             <button class="btn btn-primary">Back to Trips</button>
         </router-link>
         <h1>Add Trip</h1>
         <form @submit.prevent="submitForm">
             <label for="destination">Destination:</label>
             <input type="text" id="destination" v-model="destination" required>
-            <br>
+
+            <div>
+                <h3>Names:</h3>
+                <input style="margin-bottom: 10px;" type="text" placeholder="Person 1" id="person1" class="form-control">
+                <span id="personNames"></span>
+            </div>
+            <div class='col-6'>
+                <h3>No of People:</h3>
+                <select name="numPeople" id="numPeople" class="form-control" @change="updateNumNames(this.value)">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                </select>
+            </div>
+
             Which Currency do you use normally!
-            <select class="w-9/12 rounded bg-blue-200 cursor-pointer border-2 border-blue-400" name="currencylist" id="currencylist" @change="convertit">
-                    <option v-for="currency in currencyList" :key="currency.key" :value="currency.key">
-                        {{ currency.value }} </option>
+            <select class="w-9/12 rounded bg-blue-200 cursor-pointer border-2 border-blue-400" name="currencylist"
+                id="currencylist" @change="convertit" v-model="homeCurrency">
+                <option v-for="currency in currencyList" :key="currency.key" :value="currency.key">
+                    {{ currency.value }} </option>
             </select>
             <br>
             Which Currency are you going to use!
-            <select class="w-9/12 rounded bg-blue-200 cursor-pointer border-2 border-blue-400" name="currencylist" id="currencylist" @change="convertit">
-                    <option v-for="currency in currencyList" :key="currency.key" :value="currency.key">
-                        {{ currency.value }} </option>
+            <select class="w-9/12 rounded bg-blue-200 cursor-pointer border-2 border-blue-400" name="currencylist"
+                id="currencylist" @change="convertit" v-model="tripCurrency">
+                <option v-for="currency in currencyList" :key="currency.key" :value="currency.key">
+                    {{ currency.value }} </option>
             </select>
             <!-- <br><br> -->
             <!-- <label for="start-date">Start Date:</label>
@@ -38,7 +61,11 @@
             </div>
             <button type="button" @click="addExpense">Add Expense</button> -->
             <br><br>
-            <button type="submit">Submit</button>
+            <button class="btn btn-primary" type="submit" v-if="!submitted">Submit</button>
+            <p v-if="submitted">Trip Added!</p>
+            <router-link to="/billbuddy" v-if="submitted">
+                <button class="btn btn-primary">Click to Go Back to Trips</button>
+            </router-link>
         </form>
     </div>
 </template>
@@ -63,7 +90,9 @@ export default {
             tripsRef: null,
             uid: null,
             currencyList: [],
-
+            submitted: false,
+            homeCurrency: null,
+            tripCurrency: null,
         }
     },
     mounted() {
@@ -87,6 +116,16 @@ export default {
         }
     },
     methods: {
+        updateNumNames(number) {
+            let i = 1;
+            var str = "";
+            while (i < number) {
+                str += "<input style='margin-bottom: 10px;' type='text' placeholder='Person " + (i + 1) + "' id='person" + (i + 1) + "' class='form-control'>";
+                i++;
+            }
+            document.getElementById("personNames").innerHTML = str;
+        },
+
         addExpense() {
             this.expenses.push({ name: '', amount: '' })
         },
@@ -95,35 +134,38 @@ export default {
         },
         submitForm() {
             setDoc(doc(this.tripsRef, this.destination), {
-                whoOwesWho: {}
+                whoOwesWho: {},
+                homeCurrency: this.homeCurrency,
+                tripCurrency: this.tripCurrency,
             })
+            this.submitted = true;
             console.log(this.destination)
             console.log(this.tripsRef)
         },
         async getCurrencyList() {
-  try {
-    const response = await axios.get('https://currency-converter5.p.rapidapi.com/currency/list', {
-      headers: {
-        'x-rapidapi-key': '2f0bfe79abmsh886342ca61bbf11p1e6dd8jsna7f5de5249b0',
-        'x-rapidapi-host': 'currency-converter5.p.rapidapi.com',
-      },
-    });
-    console.log(response.data);
-    for(var key in response.data.currencies) {
-      var value = response.data.currencies[key];
-      this.currencyList.push({key, value});
-    }
-    //sort currency list by alphabet
-    this.currencyList.sort(function(a, b){
-      if(a.value < b.value) { return -1; }
-      if(a.value > b.value) { return 1; }
-      return 0;
-    })
-    
-  } catch (error) {
-    console.log(error);
-  }
-},
+            try {
+                const response = await axios.get('https://currency-converter5.p.rapidapi.com/currency/list', {
+                    headers: {
+                        'x-rapidapi-key': '2f0bfe79abmsh886342ca61bbf11p1e6dd8jsna7f5de5249b0',
+                        'x-rapidapi-host': 'currency-converter5.p.rapidapi.com',
+                    },
+                });
+                console.log(response.data);
+                for (var key in response.data.currencies) {
+                    var value = response.data.currencies[key];
+                    this.currencyList.push({ key, value });
+                }
+                //sort currency list by alphabet
+                this.currencyList.sort(function (a, b) {
+                    if (a.value < b.value) { return -1; }
+                    if (a.value > b.value) { return 1; }
+                    return 0;
+                })
+
+            } catch (error) {
+                console.log(error);
+            }
+        },
     },
     created() {
         this.getCurrencyList();
