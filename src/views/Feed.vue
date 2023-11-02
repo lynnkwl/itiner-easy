@@ -347,6 +347,7 @@ export default {
       tripCurrency: null,
       homeCurrency: null,
       personNames: [],
+      activitiesandtime: [],
     }
   },
   mounted() {
@@ -402,6 +403,9 @@ export default {
           this.tripCurrency = doc.data().tripCurrency;
           this.homeCurrency = doc.data().homeCurrency;
           this.personNames = doc.data().personNames;
+          this.activitiesandtime = doc.data().activitiesandtime;
+          this.activitiesandtime = JSON.parse(this.activitiesandtime);
+          console.log(this.activitiesandtime);
         } else {
           // doc.data() will be undefined in this case
           console.log("No such document!");
