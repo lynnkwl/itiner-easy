@@ -21,6 +21,7 @@
   </div>
 
   <h1 class="text-3xl text-center text-blue-400 mt-5">Let's plan your next trip!</h1>
+  <!-- Form -->
   <div class="flex justify-center"> 
     <FormKit type="form"
           :actions="false"
@@ -134,6 +135,7 @@
             </FormKit>
     </div>
 
+    <!-- select places -->
 <div id="selectplaces">
   <div v-if="strongIndependentWoman">
     
@@ -181,20 +183,20 @@
 </div>
 <br>
 <br>
-<div class="grid grid-cols-3 mr-10">
-    <div v-if="final_activities.length>0">
-      <div class="w-2/3 flex justify-center ml-10">
-        <button class="btn mt-7 mr-5" @click="saveItinerary">Save Itinerary</button>
+<!-- itinerary display -->
+<div class="grid grid-cols-1 md:grid-cols-3 mr-10">
+    <div v-if="final_activities.length>0" class="">
+      <div class="flex justify-center">
+        <button class="transition ease-in-out delay-150 bg-blue-500 hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 duration-300 btn mt-7 mr-2" @click="saveItinerary">Save Itinerary</button>
       </div>      
-      <div class="m-10 w-2/3">
+      <div class="m-10">
           <!-- getmap -->
           <!-- create table each day -->
         <div v-for="(day, index) in activitiesandtime" :key="index">
-              
-          <details class="collapse collapse-arrow bg-blue-300 shadow-md min-w-fit z-1">
+          <details class="collapse collapse-arrow bg-blue-300 shadow-md min-w-fit">
                 <!-- <div class="flex pb-5 sticky top-0 z-10"> -->
                   <!-- <div class="w-96 border p-3 rounded-md bg-blue-300"> -->
-                  <summary class="collapse-title text-xl font-medium">
+                  <summary class="collapse-title text-xl font-medium ">
                     <h1 class="mb-1">Day {{ index + 1 }}</h1>
                     <h3 class="text-gray-500 mb-2">🗓️ {{ day.date }}</h3>
                   
@@ -220,13 +222,13 @@
                   
                   </summary>
     
-          <div class="collapse-content max-h-screen overflow-auto bg-blue-100"> 
+          <div class="collapse-content max-h-screen overflow-auto bg-blue-100 snap-both snap-mandatory"> 
               <div class="flex overflow-auto">   
                   <div>
-                    <div v-for="activity in day.activities" :key="activity.name">
+                    <div v-for="activity in day.activities" :key="activity.name" >
                       <!-- display activities -->
-                      <div v-if="activity.formatted_address !== 'Travel'" class="pr-5">
-                        <div class="mx-auto card flex min-w-full max-w-md overflow-auto shadow-lg bg-blue-100 justify-center">
+                      <div v-if="activity.formatted_address !== 'Travel'" class="pr-5 snap-start snap-always">
+                        <div class="mx-auto card flex min-w-full max-w-md overflow-auto shadow-lg bg-indigo-200 justify-center">
                           <img class="w-52 h-32 self-center rounded-md" :src="activity.photo" alt="image of attraction">
 
                             <div class="px-2 py-2 border-l-4 my-4 border-gray-400">
@@ -276,28 +278,42 @@
           </div>
       </div>
     </div>
-  <div id="map" class="col-span-2 rounded-lg z-1"></div>  
+  <div id="map" class="md:col-span-2 rounded-lg"></div>  
 </div>
 
-      <br>
-    <table v-if="eateries.length>0">
-      <tr colspan = "3"><th>Eateries</th></tr>
-      <tr><th>Name</th><th>Address</th><th>Photo</th><th>Price Level</th><th>Rating</th><th>Map Details</th><th>How to get there!</th><th>Remarks</th></tr>
+<br>
+  
+  <div v-if="eateries.length>0" class="overflow-auto overflow-x-hidden h-96 m-10 rounded-lg">
+    <h1 class="text-gray-700 text-center underline">Places to eat</h1>
+    <table class="bg-blue-300 table table-pin-rows rounded-lg max-w-fit">
+      <thead>
+        <tr class="bg-blue-400 rounded">
+          <th class="text-xl text-gray-600">Name</th>
+          <th class="text-xl text-gray-600">Address</th>
+          <th class="text-xl text-gray-600">Photo</th>
+          <th class="text-xl text-gray-600">Price Level</th>
+          <th class="text-xl text-gray-600">Rating</th>
+          <th class="text-xl text-gray-600">Map Details</th>
+          <th class="text-xl text-gray-600">How to get there!</th>
+          <th class="text-xl text-gray-600">Remarks</th>
+        </tr>
+      </thead>
+
       <tbody>
         <tr v-for="eatery in eateries" :key="eatery.name">
           <td>
             <label>
-              {{ eatery.name }}
+              <h3>{{ eatery.name }}</h3>
             </label>
           </td>
           <td>
-            {{ eatery.vicinity}}
+            <h4>{{ eatery.vicinity}}</h4>
           </td>
           <td>
-            <img :src="eatery.photo" style="width: 100px; height: 100px;">
+            <img :src="eatery.photo" class="w-32 h-1/2 rounded hover:scale-1.25">
           </td>
           <td>
-            {{ eatery.price_level }}
+            {{ eatery.price_level}}
           </td>
           <td>
             {{ eatery.rating }}
@@ -319,6 +335,7 @@
         </tr>
       </tbody>
     </table>
+  </div>
 <div>
 
 </div>
