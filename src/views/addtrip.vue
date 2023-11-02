@@ -43,6 +43,7 @@ import {
     addDoc, deleteDoc, doc, updateDoc, setDoc, query, onSnapshot
 } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import axios from 'axios'; // Import Axios
 
 export default {
     data() {
@@ -120,7 +121,8 @@ export default {
     },
     created() {
         this.getCurrencyList();
-    }
+    },
+
 }
 </script>
 <style>
