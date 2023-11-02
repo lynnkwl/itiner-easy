@@ -574,6 +574,7 @@ export default {
         this.addExpense();
       }
     },
+    
     async getCurrencyList() {
       try {
         const response = await axios.get('https://currency-converter5.p.rapidapi.com/currency/list', {

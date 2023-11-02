@@ -1,7 +1,7 @@
 <template>
     <div>
-        <router-link to="/billbuddy" v-if="!submitted">
-            <button class="btn btn-primary">Back to Trips</button>
+        <router-link to="/feed" v-if="!submitted">
+            <button class="btn btn-primary">Back to Feed</button>
         </router-link>
         <h1>Add Trip</h1>
         <form @submit.prevent="submitForm">
@@ -64,8 +64,8 @@
             <br><br>
             <button class="btn btn-primary" type="submit" v-if="!submitted">Submit</button>
             <p v-if="submitted">Trip Added!</p>
-            <router-link to="/billbuddy" v-if="submitted">
-                <button class="btn btn-primary">Click to Go Back to Trips</button>
+            <router-link to="/feed" v-if="submitted">
+                <button class="btn btn-primary">Click to Go Back to Feed</button>
             </router-link>
         </form>
     </div>
