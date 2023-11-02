@@ -277,6 +277,7 @@
 
                             <div class="px-2 py-2 border-l-4 my-4 border-gray-400">
                               <h3 class="text-gray-700 text-left">{{ activity.name }}</h3>
+                              <h4 class="text-gray-700 text-left">Opening Hours:{{ activity.openTime }} : {{ activity.closeTime }} </h4>
                                 <div>
                                 <p class="text-gray-700 text-base text-left">
                                   {{ activity.time }} - {{ activity.endtime }}
@@ -394,12 +395,24 @@
           <td v-if="eatery.formatted_address !== 'Travel'">
             Remarks: <input type="text" v-model="eatery.remarks"><br>
             Expenses: <input type="number" v-model="eatery.expense"><br>
-            My Rating: 1<input type="slider" min="1" max="5" v-model="eatery.rating">5
           </td>
           <!-- <td>
             I want to eat here<input name = "eateries{{ index }}" type="radio" :value="eatery" @click="addeaterytotrip(eatery,)" v-model="selectedEateries">
           </td> -->
           
+        </tr>
+      </tbody>
+    </table>
+    <table v-else>
+      <tr colspan = "3"><th>Eateries</th></tr>
+      <tr><th>Name</th><th>Address</th><th>Photo</th><th>Price Level</th><th>Rating</th><th>Map Details</th><th>How to get there!</th><th>Remarks</th></tr>
+      <tbody>
+        <tr>
+          <td>
+            <label>
+              No eateries found!
+            </label>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -490,6 +503,8 @@ export default {
       customactivitiesandtime: [],
       possiblephotos: [],
       starttime:"09:00",
+      openingTime: "",
+      closeTime: "",
       nextStepDisabled: true,
     };
   },
@@ -795,6 +810,8 @@ async searchBothAttractions(city) {
           remarks: "",
           expense: 0,
           rating: 3,
+          openTime: this.openingTime,
+          closeTime: this.closeTime,
           url: "'https://www.google.com/search?q=" + randomactivity.name + "&rlz=1C1CHBF_enSG941SG941&oq=google&aqs=chrome..69i57j69i59j69i60l3j69i65l2.1001j0j7&sourceid=chrome&ie=UTF-8'",
         }; 
         //store activities in each day
@@ -1142,6 +1159,9 @@ async titlephotogenerator() {
           closeTime = parseInt(closeTime);        
           if (openTime <= checkTime && (closeTime >= checkTime || closeTime <= openTime)) {
             this.isOpenNow = true;
+            this.openingTime = openTime;
+            this.closeTime = closeTime;
+            console.log(this.openingTime);
             //add url into place
           } else {
             this.isOpenNow = false;
