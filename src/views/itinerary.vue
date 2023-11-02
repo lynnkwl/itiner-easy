@@ -403,19 +403,6 @@
         </tr>
       </tbody>
     </table>
-    <table v-else>
-      <tr colspan = "3"><th>Eateries</th></tr>
-      <tr><th>Name</th><th>Address</th><th>Photo</th><th>Price Level</th><th>Rating</th><th>Map Details</th><th>How to get there!</th><th>Remarks</th></tr>
-      <tbody>
-        <tr>
-          <td>
-            <label>
-              No eateries found!
-            </label>
-          </td>
-        </tr>
-      </tbody>
-    </table>
 <div>
   <!-- <h3>Please input a city and Click on Generate Itinerary to get started!</h3> -->
 </div>
