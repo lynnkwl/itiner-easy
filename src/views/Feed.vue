@@ -95,7 +95,7 @@
 
   <div name="after-selecting-trip" v-if="selected">
     <div>
-      <button class="btn btn-primary" @click="backToTrips">Back to trips</button>
+      <button class="btn btn-primary" @click="backToTrips">Back to Feed</button>
     </div>
     <div class="text-3xl m-7 font-bold">
       <h2>{{ selectedTrip }} expenses</h2>
