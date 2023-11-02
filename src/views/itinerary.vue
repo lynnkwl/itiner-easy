@@ -10,31 +10,6 @@
   }
 
 </style>
-<!-- OLD FORM -->
-<!-- <div class="rounded-lg border-blue bg-blue-100 mx-5"> -->
-    <!-- user input box: start -->
-    <!-- <div class="flex flex-col content-start">
-        <div class="flex justify-center items-center "> 
-            <label class="" for="country">Where are you headed to?</label>
-            &nbsp;
-            &nbsp;
-            <div class="pb-4">
-              <input type="text" id="country" name="City"  v-model="town" class="placeholder-white mt-4 w-80 form-control input-sm rounded bg-blue-400 text-white " placeholder="Enter destination" required>
-            </div> 
-        </div>
-        
-        <div class="slidecontainer flex justify-center items-center">
-            <label class="object-left">For how many days?</label>
-            &nbsp;
-            &nbsp;
-            <div>
-              <input class="w-full" type="range" min="1" max="3" step="1" v-model="sliderValue" @input="sliderChange" required />
-            </div>
-            &nbsp;
-            &nbsp;
-            <p>Days: {{ sliderValue }}</p>
-        </div>
-    </div> -->
 
 <template>
 
@@ -66,15 +41,14 @@
                       />
                       <FormKit 
                           v-model="sliderValue"
-                          type="range" 
-                          label="Duration" 
+                          type="number" 
+                          label="Duration (days)" 
                           validation="required"
-                          value=""
+                          value="1"
                           min="1"
                           max="3" 
                       />
                     <!-- reformat to change day/days based on value -->
-                      <p>Days: {{ sliderValue }}</p>
                       
                   </FormKit>
               <!-- Destination: end -->
@@ -123,7 +97,7 @@
                           min="08:00"
                           max="12:00"
                       />
-                      <p>Time: {{ starttime }}</p>
+                      <!-- <p>Time: {{ starttime }}</p> -->
                       
                   </FormKit>
                   
@@ -159,40 +133,6 @@
             </FormKit>   
             </FormKit>
     </div>
-  
-<!-- </div>  -->
-  <!-- user input box: end -->
-          
-          <!-- What kind of person are you?<br>
-              <input type="radio" id="Indoor" value="Indoor" v-model="outgoing" required>
-              <label for="Indoor">Indoor</label>
-              <input type="radio" id="Outdoor"  value="Outdoor" v-model="outgoing" required>
-              <label for="Outdoor">Outdoor</label>
-              <input type="radio" id="Both"  value="Both" v-model="outgoing" required >
-              <label for="Both">I'm fine with either!</label>
-                <br>
-                    Are there any places you would prefer to visit?(optional)
-                <br>
-              <input type="checkbox" id="Museums" name="interests" value="Museums">
-              <label for="Museums">Museums</label>
-              <input type="checkbox" id="Shopping Malls" name="interests" value="Shopping Malls">
-              <label for="Shopping Malls">Shopping Malls</label>
-              <input type="checkbox" id="Gardens" name="interests" value="Gardens">
-              <label for="Gardens">Gardens</label>
-                <br>
-          How will you be getting around?<br>
-          <input type="radio" id="car" value="DRIVING" v-model="transport" required>
-          <label for="car">Car</label>
-          <input type="radio" id="Public Transport" value="TRANSIT"  v-model="transport" required>
-          <label for="Public Transport">Public Transport</label>
-          <input type="radio" id="Cycling" value = "BICYCLING"  v-model="transport" required>
-          <label for="Cycling">Bicycle</label>
-          <input type="radio" id="walking" value="WALKING"  v-model="transport" required>
-          <label for="walking">Walking</label>
-                <br>
-                <br>
-                <br>
-              <button @click="checkempty2" name="strongindependentwoman">I want to choose where I can go!</button><br> -->
 
 <div id="selectplaces">
   <div v-if="strongIndependentWoman">
@@ -241,40 +181,46 @@
 </div>
 <br>
 <br>
-<div class="grid grid-cols-3">
+<div class="grid grid-cols-3 mr-10">
     <div v-if="final_activities.length>0">
+      <div class="w-2/3 flex justify-center ml-10">
+        <button class="btn mt-7 mr-5" @click="saveItinerary">Save Itinerary</button>
+      </div>      
       <div class="m-10 w-2/3">
           <!-- getmap -->
           <!-- create table each day -->
         <div v-for="(day, index) in activitiesandtime" :key="index">
-          <details class="collapse border border-base-300 bg-base-200">
+              
+          <details class="collapse collapse-arrow bg-blue-300 shadow-md min-w-fit z-1">
                 <!-- <div class="flex pb-5 sticky top-0 z-10"> -->
                   <!-- <div class="w-96 border p-3 rounded-md bg-blue-300"> -->
                   <summary class="collapse-title text-xl font-medium">
-                    <h1>Day {{ index + 1 }}</h1>
-                    <h3 class="text-gray-500">Date: {{ day.date }}</h3>
+                    <h1 class="mb-1">Day {{ index + 1 }}</h1>
+                    <h3 class="text-gray-500 mb-2">🗓️ {{ day.date }}</h3>
                   
                   <!-- Weather reminder -->
-                    <div>
-                      <div class="font-bold">Weather: {{ day.weather }}
-                        <span v-if="day.weather.includes('Sunny', 'sunny')">☀️</span>
-                        <span v-if="day.weather.includes('hazy')">💨</span>
-                        <span v-if="day.weather.includes('rain')">🌧️</span>
+                    <div class="rounded-lg bg-blue-200 p-3 shadow-sm min-w-fit">
+                      <div>
+                        <div class="text-md">
+                          <p class="font-bold">Weather forecast: </p>  
+                          <span class="">{{ day.weather }}</span>
+                          <span class="" v-if="day.weather.includes('Sunny', 'sunny')"> ☀️</span>
+                          <span v-if="day.weather.includes('hazy')"> 💨</span>
+                          <span v-if="day.weather.includes('rain')"> 🌧️</span>
+                        </div>  
+                        <div class="alert bg-inherit border-none">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                          <span class="text-sm" v-if="day.weather.includes('Sunny','sunny')">Apply sunscreen!!</span>
+                          <span class="text-sm" v-if="day.weather.includes('hazy')">Wear a mask!!</span>
+                          <span class="text-sm" v-if="day.weather.includes('rain')">Pack an umbrella!! ☂️</span>
+                        </div>
                       </div>
-                      <div v-if="day.weather.includes('Sunny')">Apply sunscreen!!</div>
-                      <div v-if="day.weather.includes('hazy')">Wear a mask!!</div>
-                      <div v-if="day.weather.includes('rain')">Pack an umbrella!! ☂️</div>
                     </div>
                   <!-- </div> -->
+                  
                   </summary>
-                
-
-                  <!-- <div v-if="index == 0" class="w-full flex justify-end">
-                    <button class="btn mt-7 mr-5" @click="saveItinerary">Save Itinerary</button>
-                  </div>
-                </div> -->
-
-          <div class="collapse-content max-h-screen overflow-auto"> 
+    
+          <div class="collapse-content max-h-screen overflow-auto bg-blue-100"> 
               <div class="flex overflow-auto">   
                   <div>
                     <div v-for="activity in day.activities" :key="activity.name">
@@ -330,46 +276,9 @@
           </div>
       </div>
     </div>
-  <div id="map" class="col-span-2 rounded-lg"></div>  
+  <div id="map" class="col-span-2 rounded-lg z-1"></div>  
 </div>
 
-
-        <!-- <td v-if="activity.name.includes('Travel')"></td>
-          <td v-else>
-            <input placeholder="Add notes here" class="rounded " type="text" v-model="activity.remarks"><br>
-            Expenses: <input type="number" v-model="activity.expense"><br>
-            My Rating: 1<input type="range" min="1" max="5" v-model="activity.rating">5
-          </td> -->
-        <!-- card: end -->
-
-          <!-- <td>
-            <label>
-              {{ activity.name }}
-            </label>
-          </td>
-          <td>
-            {{ activity.time }} - {{ activity.endtime }}
-          </td>
-          <td>
-            <img :src="activity.photo" v-if="activity.formatted_address !== 'Travel'" style="width: 100px; height: 100px;">
-            <img v-else src ="https://i.pinimg.com/originals/c0/c2/5a/c0c25a5a71939b968e67deb530854641.png" alt="../components/logo/itiner-easy.svg" style="width: 100px; height: 100px;">
-          </td>
-          <td>
-            {{ activity.formatted_address}}
-          </td>
-          <td>
-            <a href="#" v-if="activity.formatted_address !== 'Travel'"  @click="showLocation(activity)">Show on Map</a>
-            <a href="#" v-else></a>
-          </td> 
-          <td>
-            if its a travel display route
-            <a v-if="activity.name.includes('Travel')" href="#" @click="displaydirectionsonmap(day.activities[day.activities.indexOf(activity) - 1].geometry.location, day.activities[day.activities.indexOf(activity) + 1].geometry.location)">The way there!</a>
-            if its not a travel display eateries
-            <a v-else href="#" @click="geteateriesnearby(activity)">Where to eat!</a>
-          </td> -->
-
-
-      
       <br>
     <table v-if="eateries.length>0">
       <tr colspan = "3"><th>Eateries</th></tr>
@@ -411,12 +320,9 @@
       </tbody>
     </table>
 <div>
-  <!-- <h3>Please input a city and Click on Generate Itinerary to get started!</h3> -->
-</div>
-<!-- <div>
-  <button @click="checkempty">Generate Itinerary</button>
 
-</div> -->
+</div>
+
 <div v-if="customactivitiesandtime">
 
 </div>
