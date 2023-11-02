@@ -81,11 +81,8 @@
         <div class="form-group">
           <p>Who Owes Money:</p>
           <label v-for="name in personNames">
-            <input type="checkbox" :name="name" :value="name" v-model="inputValue" @click="addToList">{{ name }}<br>
+            <input type="checkbox" :name="name" :value="name" v-model="inputValue">{{ name }}<br>
           </label>
-
-          <input type="text" placeholder="Who Owes Money (Type and press Enter)" v-model="inputValue" class="form-control"
-            @keyup.enter="addToList">
         </div>
         <div>
           <p>Which Currency Are We Using?</p>
@@ -361,12 +358,14 @@ export default {
     },
     // This function retrieves user input and adds it to the database. (Both in expenses and whoOwesWho)
     async addExpense() {
+      this.addToList();
       // Assigns the value of list to the peopleOwingNames object
       this.expense.peopleOwingNames = this.list;
       console.log(this.expense.peopleOwingNames);
       // Assigns the amount owed to peopleOwingAmount object
       var peopleOwingAmount = Number((this.expense.expenseAmount / this.expense.peopleOwingNames.length).toFixed(2));
       this.expense.peopleOwingAmount = peopleOwingAmount;
+
 
       // Adds the expense to the database
       addDoc(collection(this.tripsRef, this.trip, 'expenses'), this.expense)
@@ -426,7 +425,8 @@ export default {
 
     // Supporting function for addExpense()
     addToList() {
-      this.list.push(this.inputValue);
+      this.list = this.inputValue;
+      console.log(this.list)
       this.inputValue = [];
       this.list = this.list.sort();
     },
@@ -539,7 +539,7 @@ export default {
         })
     },
     checkempty() {
-      if (this.currency == null || this.expense.expenseName == null || this.expense.expenseAmount == null || this.expense.personOwedName == null || this.list.length == 0) {
+      if (this.expense.currency == null || this.expense.expenseName == null || this.expense.expenseAmount == null || this.expense.personOwedName == null || this.inputValue == '') {
         alert("Please fill in all fields")
       } else {
         this.addExpense();
@@ -640,7 +640,7 @@ export default {
           this.trips.push(doc.id);
         });
       });
-    }, 500);
+    }, 800);
 
     const querySnapshot1 = await getDocs(doc(this.tripsRef, this.trip, 'whoOwesWho'));
     querySnapshot1.forEach((doc) => {
