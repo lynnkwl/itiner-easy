@@ -223,7 +223,7 @@ export default {
     
       })
   },
-    convertCurrency() {
+  async  convertCurrency() {
       var url= 'https://currency-converter5.p.rapidapi.com/currency/convert';
       var XRapidAPIKey= '2f0bfe79abmsh886342ca61bbf11p1e6dd8jsna7f5de5249b0';
       var XRapidAPIHost= 'currency-converter5.p.rapidapi.com';

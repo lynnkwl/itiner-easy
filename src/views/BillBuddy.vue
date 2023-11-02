@@ -232,6 +232,7 @@ export default {
       inputValue: '',
       list: [],
       splitmethod: null,
+      currenciesUsed: [],
       trips: [],
       trip: null,
       quicksettleamount: [],
@@ -482,6 +483,34 @@ export default {
           console.error("Error updating document: ", error);
         });
     },
+    async convertCurrency() {
+      var url= 'https://currency-converter5.p.rapidapi.com/currency/convert';
+      var XRapidAPIKey= '2f0bfe79abmsh886342ca61bbf11p1e6dd8jsna7f5de5249b0';
+      var XRapidAPIHost= 'currency-converter5.p.rapidapi.com';
+      var amount = document.getElementById("moneymoneyahhhhh").value;
+      var from = document.getElementById("currencylist").value;
+      var to = document.getElementById("currencylisttoconvert").value;
+      console.log(from);
+      console.log(to);
+      axios.get(url, {
+        headers: {
+          'x-rapidapi-key': XRapidAPIKey,
+          'x-rapidapi-host': XRapidAPIHost
+        },
+        params: {
+          amount: amount,
+          from: from,
+          to: to
+        }
+      })
+      .then(function(response) {
+        console.log(response.data);
+        var convertedmoney = response.data.rates[to].rate_for_amount;
+        var convertedmoneydiv = document.getElementById("convertedmoney");
+        var html = "<h7>"+convertedmoney+"</h7>";
+        convertedmoneydiv.innerHTML = html;
+
+      })    },
     checkempty() {
       if (this.expense.expenseName == null || this.expense.expenseAmount == null || this.expense.personOwedName == null || this.list.length == 0) {
         alert("Please fill in all fields")
