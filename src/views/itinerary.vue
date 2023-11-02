@@ -203,17 +203,21 @@
         </table>
     </div>
 </div>
+
 <div v-if="isLoading">
   <!-- Your loading spinner goes here -->
-  <div class="flex justify-center">
-    <div class="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-64 w-64">
+  <div class="grid grid-cols-3">
+    <div class="flex justify-center">
+      <span class="loading loading-spinner loading-lg object-center"></span>
     </div>
-    <h3>I'll be waiting for you in the Land of Wano! Come at any cost!</h3>
-            <p>-Monkey D. Luffy</p>
-    
+    <h2 class="text-center col-span-2">I'll be waiting for you in {{town}}! Come at any cost!</h2>
+    <div></div>
+    <h4 class="text-center col-span-2">- Monkey D. Luffy</h4>
+   </div>
+            
 </div>
-</div>
-
+<br>
+<br>
 <div class="grid grid-cols-3">
     <div v-if="final_activities.length>0">
       <div class="m-10 w-2/3">
