@@ -277,7 +277,6 @@
 
                             <div class="px-2 py-2 border-l-4 my-4 border-gray-400">
                               <h3 class="text-gray-700 text-left">{{ activity.name }}</h3>
-                              <h4 class="text-gray-700 text-left">Opening Hours:{{ activity.openTime }} : {{ activity.closeTime }} </h4>
                                 <div>
                                 <p class="text-gray-700 text-base text-left">
                                   {{ activity.time }} - {{ activity.endtime }}
