@@ -21,17 +21,18 @@
     <div class="navbar font-navbar bg-[#5072A7]">
     <div class="navbar-start">
     <div class="dropdown">
-      <label tabindex="0" class="btn bg-[#5072A7] btn-ghost hover:bg-[#6699CC] lg:hidden">
+      <label tabindex="0" class="btn bg-[#5072A7] btn-ghost hover:bg-[#6699CC] lg:hidden" v-if="signedin">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" /></svg>
       </label>
       <ul tabindex="0" class="menu menu-sm bg-[#5072A7] text-white dropdown-content mt-3 z-[1] p-2 shadow rounded-box w-52">
-        <li>
-            <router-link to="/"><a>HOME</a></router-link>
+        <!-- signedin -->
+        <li v-if="signedin">
+            <router-link to="/landinglogin"><a>HOME</a></router-link>
         </li>
-        <li>
+        <li v-if="signedin">
             <router-link to="/itinerary"><a>ITINERARY</a></router-link>
         </li>
-        <li>
+        <li v-if="signedin">
           <a>TOOLS</a>
           <ul class="p-2">
             <li>
@@ -42,26 +43,30 @@
             </li>
           </ul>
         </li>
-        <li>
+        <li v-if="signedin">
             <router-link to="/billbuddy"><a>BILLBUDDY</a></router-link>
         </li>
       </ul>
     </div>
     <div class="flex items-center cursor-pointer">
-        <span class=" mr-1">
+        <span class=" mr-1" v-if="signedin">
+            <router-link to="/landinglogin"><img class="h-20 w-20" src="./logo/itiner-easy.svg"></router-link>
+        </span>
+        <span class=" mr-1 z-10" v-if="!signedin">
             <router-link to="/"><img class="h-20 w-20" src="./logo/itiner-easy.svg"></router-link>
         </span>
     </div>
   </div>
   <div class="navbar-center hidden lg:flex">
     <ul class="menu text-white hover:text-white text-m menu-horizontal px-1">
-      <li>
-        <router-link to="/"><a>HOME</a></router-link>
+      <!-- signed in -->
+      <li v-if="signedin">
+        <router-link to="/landinglogin"><a>HOME</a></router-link>
       </li>
-      <li>
+      <li v-if="signedin">
             <router-link to="/itinerary"><a>ITINERARY</a></router-link>
       </li>
-      <li style="z-index:2" tabindex="0">
+      <li style="z-index:2" tabindex="0" v-if="signedin">
         <details>
           <summary><a>TOOLS</a></summary>
           <ul class="p-2 bg-[#5072A7]">
@@ -74,26 +79,77 @@
           </ul>
         </details>
       </li>
-      <li>
+      <li v-if="signedin">
             <router-link to="/billbuddy"><a>BILLBUDDY</a></router-link>
       </li>
     </ul>
   </div>
-  <div class="navbar-end">
-    <router-link to="/profile">
-      <span class="btn border-none hover:bg-[#6699CC] bg-[#5072A7]">
-        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
-        <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
-        <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
-      </svg>
-      </span>
-    </router-link>
+  <!-- if signed in -->
+  <div class="navbar-end" v-if="signedin">
+
+    <div class="dropdown dropdown-bottom dropdown-end">
+    <label tabindex="0" class="btn m-1 border-none hover:bg-[#6699CC] bg-[#5072A7]">
+      <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+          <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+          <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
+        </svg>
+    </label>
+    <ul tabindex="0" class="dropdown-content bg-[#5072A7] z-[1] menu p-2 shadow rounded-box w-52">
+      <li><router-link to="/profile"><a>Profile</a></router-link></li>
+      <li><a>Sign out</a></li>
+    </ul>
+    </div>
+    </div>
+
+  <!-- if signed out -->
+  <div class="navbar-end z-10" v-if="!signedin">
+      <!-- sign in -->
+      <router-link to="/sign-in">
+      <button class="btn btn-primary shadow-sm z-10" >
+        <a>Sign in</a>
+      </button>
+      </router-link>
+
+      <!-- sign up -->
+      <router-link to="/sign-up">
+      <button class="btn btn-primary shadow-sm z-10 ml-3" >
+      <a>Sign up</a>
+      </button>
+      </router-link>
   </div>
 </div>
 </template>
 
 
 <script>
+
+
+import {
+  getFirestore, collection, getDocs,
+  addDoc, deleteDoc, doc, updateDoc, setDoc, query, onSnapshot, getDoc
+} from "firebase/firestore";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+
+export default {
+  data()
+  {
+    return {
+      signedin:null,
+  }},
+  mounted() {
+    this.db = getFirestore();
+    this.auth = getAuth();
+    onAuthStateChanged(this.auth, (user) => {
+      if (user) {
+        this.signedin = true
+      } else {
+        this.signedin = false
+        console.log('User is signed out')
+      }
+    });
+  },
+  methods(){}
+};
 
 
 </script>

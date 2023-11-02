@@ -52,7 +52,7 @@ router.beforeEach(async(to, from, next) =>{
         }
         else {
             alert ("You don't have access!");
-            next('/');
+            next('/landinglogin');
         }
     }
     else{
