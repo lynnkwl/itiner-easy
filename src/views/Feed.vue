@@ -340,6 +340,62 @@
                <br> 
           </div>
           <div id="map" class="w-full h-96"></div>
+          
+<br>
+  
+  <div v-if="eateries.length>0" class="overflow-auto overflow-x-hidden h-96 m-10 rounded-lg">
+    <h1 class="text-gray-700 text-center underline">Places to eat</h1>
+    <table class="bg-blue-300 table table-pin-rows rounded-lg max-w-fit">
+      <thead>
+        <tr class="bg-blue-400 rounded">
+          <th class="text-xl text-gray-600">Name</th>
+          <th class="text-xl text-gray-600">Address</th>
+          <th class="text-xl text-gray-600">Photo</th>
+          <th class="text-xl text-gray-600">Price Level</th>
+          <th class="text-xl text-gray-600">Rating</th>
+          <th class="text-xl text-gray-600">Map Details</th>
+          <th class="text-xl text-gray-600">How to get there!</th>
+          <th class="text-xl text-gray-600">Remarks</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr v-for="eatery in eateries" :key="eatery.name">
+          <td>
+            <label>
+              <h3>{{ eatery.name }}</h3>
+            </label>
+          </td>
+          <td>
+            <h4>{{ eatery.vicinity}}</h4>
+          </td>
+          <td>
+            <img :src="eatery.photo" class="w-32 h-1/2 rounded hover:scale-1.25">
+          </td>
+          <td>
+            {{ eatery.price_level}}
+          </td>
+          <td>
+            {{ eatery.rating }}
+          </td>
+          <td>
+            <a href="#" @click="showLocation(eatery,eatery)">Show on Map</a>
+          </td>
+          <td>
+            <a href="#" @click="displaydirectionsonmap(eatery.origin, eatery.geometry.location)">Show Route</a>
+          </td>
+          <td v-if="eatery.formatted_address !== 'Travel'">
+            Remarks: <input type="text" v-model="eatery.remarks"><br>
+            Expenses: <input type="number" v-model="eatery.expense"><br>
+          </td>
+          <!-- <td>
+            I want to eat here<input name = "eateries{{ index }}" type="radio" :value="eatery" @click="addeaterytotrip(eatery,)" v-model="selectedEateries">
+          </td> -->
+          
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
       </div>
   </div>
@@ -430,6 +486,7 @@ export default {
       percentages: [],
       shares: [],
       citycoords: [],
+      eateries: [],
       custom: [],
       selected: false,
       db: null,
