@@ -357,8 +357,6 @@ export default {
       if (user) {
         console.log('User is signed in', user.uid + " " + user.email)
         this.uid = user.uid;
-        console.log(user.displayName)
-        this.displayName = user.displayName;
         console.log(this.uid);
         this.tripsRef = collection(this.db, 'users', this.uid, 'trips');
       } else {
