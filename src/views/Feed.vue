@@ -5,7 +5,7 @@
     </div>
     <!-- title -->
     <div class="mt-7 mb-4 ml-7">
-      <h1 class="text-2xl md:text-3xl"><a class="italic text-indigo-500">Ralph's</a> current trips <router-link
+      <h1 class="text-2xl md:text-3xl"><a class="italic text-indigo-500">{{ displayName }}'s</a> current trips <router-link
           to="/add-trip">
           <button class="btn btn-neutral ml-7 p-2 text-white btn-xs sm:btn-sm md:btn-md lg:btn-lg">Add a new trip</button>
         </router-link></h1>
@@ -282,6 +282,7 @@ export default {
       },
       expenses: [],
       docId: [],
+      displayName: null,
       whoOwesWho: {},
       // This is for the list of people who owe money
       inputValue: [],
@@ -312,6 +313,8 @@ export default {
       if (user) {
         console.log('User is signed in', user.uid + " " + user.email)
         this.uid = user.uid;
+        console.log(user.displayName)
+        this.displayName = user.displayName;
         console.log(this.uid);
         this.tripsRef = collection(this.db, 'users', this.uid, 'trips');
       } else {
