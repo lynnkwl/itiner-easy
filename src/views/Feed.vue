@@ -5,7 +5,7 @@
     </div>
     <!-- title -->
     <div class="mt-7 mb-4 ml-7">
-      <h1 class="text-2xl md:text-3xl"><a class="italic text-indigo-500">{{ displayName }}'s</a> current trips <router-link
+      <h1 class="text-2xl md:text-3xl"><a class="italic text-indigo-500">{{ username }}'s</a> current trips <router-link
           to="/add-trip">
           <button class="btn btn-neutral ml-7 p-2 text-white btn-xs sm:btn-sm md:btn-md lg:btn-lg">Add a new trip</button>
         </router-link></h1>
@@ -16,7 +16,7 @@
         <img class="w-56 md:w-64"
           src="https://cdn.kimkim.com/files/a/images/11a9690afde1a50f9439e22aa8d564237970fb93/original-8ad1591102e554cd50d9e7cea18d990d.jpg">
         <h2 class="text-xl m-2">{{ trip }}</h2>
-        <h3 class="text-base">A _ day trip to Tokyo</h3>
+        <h3 class="text-base">{{username}} day trip to Tokyo</h3>
         <button class="btn btn-neutral ml-7 p-2 text-white btn-xs sm:btn-sm md:btn-md lg:btn-lg"
           @click="goToTrip(trip)">Go
           to Trip</button>
@@ -25,7 +25,7 @@
       </div>
     </section>
     <div class="ml-7 mb-4">
-      <h1 class="text-2xl md:text-3xl"><a class="italic text-indigo-500">Ralph's</a> shared trips</h1>
+      <h1 class="text-2xl md:text-3xl"><a class="italic text-indigo-500">{{username}}</a> shared trips</h1>
     </div>
 
     <section class="flex ml-2 flex-nowrap gap-5 px-5 overflow-x-auto snap-x snap-mandatory pb-7 no-scrollbar">
@@ -458,6 +458,7 @@ import splittercards from "../components/splittercards.vue"
 </script>
 
 
+
 <script>
 export default {
   name: "lightBlue-tabs",
@@ -493,9 +494,9 @@ export default {
       auth: null,
       tripsRef: null,
       uid: null,
+      username: null,
       currencyList: [],
-      tripCurrency: null,
-      homeCurrency: null,
+      tripCurrency: null,     homeCurrency: null,
       personNames: [],
       activitiesandtime: [],
     }
@@ -513,6 +514,7 @@ export default {
       if (user) {
         console.log('User is signed in', user.uid + " " + user.email)
         this.uid = user.uid;
+        this.username = user.displayName;
         console.log(this.uid);
         this.tripsRef = collection(this.db, 'users', this.uid, 'trips');
       } else {
