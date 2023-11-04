@@ -203,14 +203,14 @@
         <button class="btn btn-primary" @click="checkempty">Add Expense</button>
       </div> -->
       <h3>Expense Table</h3>
-      <table>
+      <table class="table table-striped table-bordered">
         <thead>
           <tr>
             <th>Expense Name</th>
             <th>Expense Amount</th>
-            <th>People Owing Names</th>
-            <th>People Owing Amount</th>
-            <th>Person Owed Name</th>
+            <th>People who Owe</th>
+            <th>How much is owed</th>
+            <th>Who paid</th>
             <th>Delete Expense</th>
             <th>Update Expense</th>
           </tr>
@@ -439,7 +439,7 @@
           </div>
           <!-- who paid -->
           <label for="whopaid" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"><h4>Who paid?</h4></label>
-          <select id="whopaid" class="bg-gray-50 border mb-3 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" v-model="expense.personOwedName">
+          <select id="whopaid" v-model="expense.personOwedName" class="bg-gray-50 border mb-3 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" >
             <option v-for="name in personNames" :key="name" :value="name" selected  >
             {{ name }}
           </option>
@@ -450,7 +450,7 @@
           <ul class="w-48 mb-3 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
               <li v-for="name in personNames" class="w-full border-b border-gray-200 rounded-t-lg dark:border-gray-600">
                   <div class="flex items-center pl-3">
-                      <input  id="vue-checkbox" type="checkbox" :value="name" :name="name" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                      <input  id="vue-checkbox" v-model="peopleOwing" type="checkbox" :value="name" :name="name" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
                       <label for="vue-checkbox" class="w-full py-3 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{name}}</label>
                   </div>
               </li>
@@ -482,28 +482,29 @@
           <div v-if="splitmethod=='percentage'">
             <h3>Split By Percentage</h3>
         <div class="form-group">
-          <h4 v-for="(name, index) in personNames ">
+          <h4 v-for="(name, index) in peopleOwing ">
             {{ name }} <input type="number" placeholder="Percentage" v-model="percentages[index]" class="form-control"
               @keyup.enter="computeexpense">
           </h4>
           <ul>
             <li v-for="(amt, index) in quicksettleamount" :key="index">
-              {{ this.list[index] }} pays {{ amt }}
+              {{ peopleOwing[index] }} pays {{ amt }}
             </li>
           </ul>
         </div>
+
 
         <!-- if shares -->
         <div v-if="splitmethod == 'shares'">
         <h3>Split By Shares</h3>
         <div class="form-group">
-          <h4 v-for="(name, index) in personNames ">
+          <h4 v-for="(name, index) in peopleOwing ">
             {{ name }} <input type="number" placeholder="Shares" v-model="shares[index]" class="form-control"
               @keyup.enter="computeexpense">
           </h4>
           <ul>
             <li v-for="(amt, index) in quicksettleamount" :key="index">
-              {{ this.list[index] }} pays {{ amt }}
+              {{ peopleOwing[index] }} pays {{ amt }}
             </li>
           </ul>
         </div>
@@ -513,13 +514,13 @@
       <div v-if="splitmethod == 'custom'">
         <h3>Have it your way!</h3>
         <div class="form-group">
-          <h4 v-for="(name, index) in personNames ">
+          <h4 v-for="(name, index) in peopleOwing ">
             {{ name }} <input type="number" placeholder="custom" v-model="custom[index]" class="form-control"
               @keyup.enter="computeexpense">
           </h4>
           <ul>
             <li v-for="(amt, index) in quicksettleamount" :key="index">
-              {{ list[index] }} pays {{ amt }}
+              {{ peopleOwing[index] }} pays {{ amt }}
             </li>
           </ul>
         </div>
@@ -527,13 +528,13 @@
       <div v-if="splitmethod == 'evenly'">
         <h3>Split Evenly</h3>
         <div class="form-group">
-          <h4 v-for="name in personNames ">
-            {{ name }} pays {{ expense.expenseAmount / list.length }}
+          <h4 v-for="name in peopleOwing ">
+            {{ name }} pays {{ expense.expenseAmount / peopleOwing.length }}
           </h4>
         </div>
       </div>
-          
-          </div>
+    </div>
+
 
 
           </form>
@@ -618,6 +619,7 @@ export default {
       citycoords: [],
       eateries: [],
       custom: [],
+      peopleOwing: [],
       selected: false,
       db: null,
       auth: null,
@@ -1184,7 +1186,7 @@ async saveItinerary() {
     ,
     // Supporting function for addExpense()
     addToList() {
-      this.list = this.personNames;
+      this.list = this.peopleOwing;
       console.log(this.list)
       this.inputValue = [];
       this.list = this.list.sort();
