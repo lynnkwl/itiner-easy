@@ -60,7 +60,7 @@
                 <h2 class="mb-3 text-sm font-medium tracking-widest text-gray-900 uppercase title-font">Support</h2>
                 <nav class="mb-10 list-none">
                     <li class="mt-3">
-                        <router-link to="/contactus"> <a class="text-gray-500 cursor-pointer hover:text-gray-900">Website feedback</a> </router-link>
+                        <router-link to="/contactus"> <a class="text-gray-500 cursor-pointer hover:text-gray-900" @click="handleContactUsClick">Website feedback</a> </router-link>
                     </li>
                 </nav>
             </div>
@@ -72,7 +72,7 @@
                         <a class="text-gray-500 cursor-pointer hover:text-gray-900">Terms &amp; Privacy</a>
                     </li>
                     <li class="mt-3">
-                        <router-link to="/faq"><a class="text-gray-500 cursor-pointer hover:text-gray-900">FAQ</a></router-link>
+                        <router-link to="/faq"><a class="text-gray-500 cursor-pointer hover:text-gray-900" @click="handlefaq">FAQ</a></router-link>
                     </li>
                 </nav>
             </div>
@@ -88,3 +88,22 @@
 
 </div>
 </template>
+
+<script>
+export default {
+  methods: {
+    handleContactUsClick() {
+      // Navigate to the "Contact Us" page
+      this.$router.push("/contactus");
+
+      // Scroll to the top of the page
+      window.scrollTo(0, 0);
+    },
+    handlefaq(){
+        this.$router.push("/faq");
+        window.scrollTo(0,0)
+    }
+  },
+  
+}
+</script>
