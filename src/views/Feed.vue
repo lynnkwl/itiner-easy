@@ -407,6 +407,7 @@
         <expensecards 
         v-for="(expense, index) in expenses"
         :itemDesc="expense.expenseName"
+        :currency="expense.currency"
         :price="expense.expenseAmount"
         :TransfereeName="expense.personOwedName"
         @button-clicked="deleteExpense(index,docId)">
@@ -492,6 +493,7 @@
             </li>
           </ul>
         </div>
+      </div>
 
 
         <!-- if shares -->
@@ -533,7 +535,6 @@
           </h4>
         </div>
       </div>
-    </div>
 
 
 
@@ -627,7 +628,8 @@ export default {
       uid: null,
       username: null,
       currencyList: [],
-      tripCurrency: null,     homeCurrency: null,
+      tripCurrency: null,     
+      homeCurrency: null,
       personNames: [],
       activitiesandtime: [],
     }
