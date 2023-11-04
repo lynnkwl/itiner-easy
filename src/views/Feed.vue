@@ -439,8 +439,8 @@
           </div>
           <!-- who paid -->
           <label for="whopaid" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"><h4>Who paid?</h4></label>
-          <select id="whopaid" class="bg-gray-50 border mb-3 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-            <option v-for="name in personNames" :key="name" :value="name" selected>
+          <select id="whopaid" class="bg-gray-50 border mb-3 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" v-model="expense.personOwedName">
+            <option v-for="name in personNames" :key="name" :value="name" selected  >
             {{ name }}
           </option>
           </select>
@@ -450,7 +450,7 @@
           <ul class="w-48 mb-3 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
               <li v-for="name in personNames" class="w-full border-b border-gray-200 rounded-t-lg dark:border-gray-600">
                   <div class="flex items-center pl-3">
-                      <input id="vue-checkbox" type="checkbox" :value="name" :name="name" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                      <input  id="vue-checkbox" type="checkbox" :value="name" :name="name" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
                       <label for="vue-checkbox" class="w-full py-3 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{name}}</label>
                   </div>
               </li>
@@ -460,11 +460,11 @@
           <label for="currency" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" ><h4>Which currency was this paid in?</h4></label>
 
           <div class="flex items-center mb-4">
-              <input id="tripCurrency" v-model="expense.currency" type="radio" value="" name="default-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+              <input id="tripCurrency" :value="tripCurrency" v-model="expense.currency" type="radio" name="default-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
               <label for="tripCurrency" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{ tripCurrency }}</label>
           </div>
           <div class="flex items-center">
-              <input checked id="homeCurrency" v-model="expense.currency" type="radio" value="" name="default-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+              <input id="homeCurrency" :value="homeCurrency" v-model="expense.currency" type="radio"  name="default-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
               <label for="homeCurrency" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{ homeCurrency }}</label>
           </div>
 
@@ -540,7 +540,7 @@
         
         <div class="modal-action">
           <div class="form-group">
-        <button class="btn btn-primary" @click="checkempty3">Add Expense</button>
+        <button class="btn btn-primary" @click="addExpense">Add Expense</button>
         </div>
           <form method="dialog">
             <!-- if there is a button in form, it will close the modal -->
@@ -1107,6 +1107,17 @@ async saveItinerary() {
     // This function retrieves user input and adds it to the database. (Both in expenses and whoOwesWho)
     async addExpense() {
       this.addToList();
+      if (this.expense.currency === null || this.expense.expenseName === null || this.expense.expenseAmount === null || this.expense.personOwedName === null || this.inputValue === '') {
+        console.log(this.expense.currency);
+        console.log(this.expense.expenseName);
+        console.log(this.expense.expenseAmount);
+        console.log(this.expense.personOwedName);
+        console.log(this.inputValue);
+        
+        alert("Please fill in all fields")
+
+      } else {
+      
       // Assigns the value of list to the peopleOwingNames object
       this.expense.peopleOwingNames = this.list;
       console.log(this.expense.peopleOwingNames);
@@ -1166,12 +1177,14 @@ async saveItinerary() {
       this.expense.expenseAmount = null;
       this.expense.peopleOwingNames = null;
       this.expense.personOwedName = null;
+      this.expense.currency = null;
       this.expense.peopleOwingAmount = null;
-      this.list = [];
-    },
+      this.perso = [];
+    }}
+    ,
     // Supporting function for addExpense()
     addToList() {
-      this.list = this.inputValue;
+      this.list = this.personNames;
       console.log(this.list)
       this.inputValue = [];
       this.list = this.list.sort();
@@ -1286,7 +1299,13 @@ async saveItinerary() {
 
     // Function to validate expense is not empty
     checkempty3() {
-      if (this.expense.currency == null || this.expense.expenseName == null || this.expense.expenseAmount == null || this.expense.personOwedName == null || this.inputValue == '') {
+      if (this.expense.currency === null || this.expense.expenseName === null || this.expense.expenseAmount === null || this.expense.personOwedName === null || this.inputValue === '') {
+        console.log(this.expense.currency);
+        console.log(this.expense.expenseName);
+        console.log(this.expense.expenseAmount);
+        console.log(this.expense.personOwedName);
+        console.log(this.inputValue);
+        
         alert("Please fill in all fields")
       } else {
         this.addExpense();
