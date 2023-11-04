@@ -482,7 +482,7 @@
           <div v-if="splitmethod=='percentage'">
             <h3>Split By Percentage</h3>
         <div class="form-group">
-          <h4 v-for="(name, index) in list ">
+          <h4 v-for="(name, index) in personNames ">
             {{ name }} <input type="number" placeholder="Percentage" v-model="percentages[index]" class="form-control"
               @keyup.enter="computeexpense">
           </h4>
@@ -497,7 +497,7 @@
         <div v-if="splitmethod == 'shares'">
         <h3>Split By Shares</h3>
         <div class="form-group">
-          <h4 v-for="(name, index) in list ">
+          <h4 v-for="(name, index) in personNames ">
             {{ name }} <input type="number" placeholder="Shares" v-model="shares[index]" class="form-control"
               @keyup.enter="computeexpense">
           </h4>
@@ -513,7 +513,7 @@
       <div v-if="splitmethod == 'custom'">
         <h3>Have it your way!</h3>
         <div class="form-group">
-          <h4 v-for="(name, index) in list ">
+          <h4 v-for="(name, index) in personNames ">
             {{ name }} <input type="number" placeholder="custom" v-model="custom[index]" class="form-control"
               @keyup.enter="computeexpense">
           </h4>
@@ -527,7 +527,7 @@
       <div v-if="splitmethod == 'evenly'">
         <h3>Split Evenly</h3>
         <div class="form-group">
-          <h4 v-for="name in list ">
+          <h4 v-for="name in personNames ">
             {{ name }} pays {{ expense.expenseAmount / list.length }}
           </h4>
         </div>
