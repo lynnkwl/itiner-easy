@@ -102,7 +102,7 @@
     </div>
     
 
-    <div class="expense-add">
+    <!-- <div class="expense-add">
       <div class="form-group">
         <p>Expense Name:</p>
         <input type="text" placeholder="Expense Name" v-model="expense.expenseName" class="form-control" required>
@@ -201,7 +201,7 @@
       </ul>
       <div class="form-group">
         <button class="btn btn-primary" @click="checkempty">Add Expense</button>
-      </div>
+      </div> -->
       <h3>Expense Table</h3>
       <table>
         <thead>
@@ -395,12 +395,12 @@
         </tr>
       </tbody>
     </table>
+
+
+      
   </div>
 
-      </div>
-  </div>
-
-<div class="grid grid-cols-1 md:grid-cols-2">
+<div class="grid grid-cols-1 lg:grid-cols-2">
       <!-- expensecards -->
       <div class="rightcol">
       <div class="expensecards">
@@ -412,27 +412,156 @@
         @button-clicked="deleteExpense(index,docId)">
       </expensecards>
 
-      <button class="btn mt-4 ml-3 btn-primary">
+
+      <!-- Open the modal using ID.showModal() method -->
+      <button class="btn mt-4 ml-3 btn-primary" onclick="my_modal_1.showModal()">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
           <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
           <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
         </svg>
       Add an expense
       </button>
+    <dialog id="my_modal_1" class="modal">
+      <div class="modal-box">
+        <h2 class="font-bold text-xl">Let's add an expense!</h2>
+        <hr>
+          <form>
+          <!-- expense name -->
+          <div class="form mt-3">
+            <div class="mb-3">
+              <label for="expensename" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" ><h4>Expense name</h4></label>
+              <input type="text" id="expensename"  v-model="expense.expenseName" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+          </div>
+          <!-- expense amount -->
+          <div class="mb-3">
+              <label for="expenseamount" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" ><h4>Expense amount</h4></label>
+              <input type="number" id="expenseamount"  v-model="expense.expenseAmount" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+          </div>
+          <!-- who paid -->
+          <label for="whopaid" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"><h4>Who paid?</h4></label>
+          <select id="whopaid" class="bg-gray-50 border mb-3 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <option v-for="name in personNames" :key="name" :value="name" selected>
+            {{ name }}
+          </option>
+          </select>
+          <!-- this expense is split among... -->
+          
+          <label for="whoowes" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" ><h4>Who was this expense split among?</h4></label>
+          <ul class="w-48 mb-3 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+              <li v-for="name in personNames" class="w-full border-b border-gray-200 rounded-t-lg dark:border-gray-600">
+                  <div class="flex items-center pl-3">
+                      <input id="vue-checkbox" type="checkbox" :value="name" :name="name" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                      <label for="vue-checkbox" class="w-full py-3 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{name}}</label>
+                  </div>
+              </li>
+          </ul>
 
+          <!-- which currency -->
+          <label for="currency" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" ><h4>Which currency was this paid in?</h4></label>
 
+          <div class="flex items-center mb-4">
+              <input id="tripCurrency" v-model="expense.currency" type="radio" value="" name="default-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+              <label for="tripCurrency" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{ tripCurrency }}</label>
+          </div>
+          <div class="flex items-center">
+              <input checked id="homeCurrency" v-model="expense.currency" type="radio" value="" name="default-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+              <label for="homeCurrency" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{ homeCurrency }}</label>
+          </div>
+
+          <!-- how are we splitting this -->
+          <label for="splitmethod" class="mt-3 block mb-2 text-sm font-medium text-gray-900 dark:text-white"><h4>How are we splitting this?</h4></label>
+          <select id="splitmethod" v-model="splitmethod" class="bg-gray-50 border mb-3 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <option value="evenly">Split Evenly</option>
+            <option value="percentage">Split by percentage</option>
+            <option value="shares">Split by Shares</option>
+            <option value="custom">Custom Split</option>
+          </select>
+          </div>
+
+          <!-- if percentage -->
+          <div v-if="splitmethod=='percentage'">
+            <h3>Split By Percentage</h3>
+        <div class="form-group">
+          <h4 v-for="(name, index) in list ">
+            {{ name }} <input type="number" placeholder="Percentage" v-model="percentages[index]" class="form-control"
+              @keyup.enter="computeexpense">
+          </h4>
+          <ul>
+            <li v-for="(amt, index) in quicksettleamount" :key="index">
+              {{ this.list[index] }} pays {{ amt }}
+            </li>
+          </ul>
+        </div>
+
+        <!-- if shares -->
+        <div v-if="splitmethod == 'shares'">
+        <h3>Split By Shares</h3>
+        <div class="form-group">
+          <h4 v-for="(name, index) in list ">
+            {{ name }} <input type="number" placeholder="Shares" v-model="shares[index]" class="form-control"
+              @keyup.enter="computeexpense">
+          </h4>
+          <ul>
+            <li v-for="(amt, index) in quicksettleamount" :key="index">
+              {{ this.list[index] }} pays {{ amt }}
+            </li>
+          </ul>
+        </div>
       </div>
-      </div>
 
-      <!-- splittercards
-      <div class="splittercards">
+      <!-- if custom -->
+      <div v-if="splitmethod == 'custom'">
+        <h3>Have it your way!</h3>
+        <div class="form-group">
+          <h4 v-for="(name, index) in list ">
+            {{ name }} <input type="number" placeholder="custom" v-model="custom[index]" class="form-control"
+              @keyup.enter="computeexpense">
+          </h4>
+          <ul>
+            <li v-for="(amt, index) in quicksettleamount" :key="index">
+              {{ list[index] }} pays {{ amt }}
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div v-if="splitmethod == 'evenly'">
+        <h3>Split Evenly</h3>
+        <div class="form-group">
+          <h4 v-for="name in list ">
+            {{ name }} pays {{ expense.expenseAmount / list.length }}
+          </h4>
+        </div>
+      </div>
+          
+          </div>
+
+
+          </form>
+        
+        <div class="modal-action">
+          <div class="form-group">
+        <button class="btn btn-primary" @click="checkempty">Add Expense</button>
+        </div>
+          <form method="dialog">
+            <!-- if there is a button in form, it will close the modal -->
+            <button class="btn">Close</button>
+          </form>
+        </div>
+      </div>
+    </dialog>
+      </div>
+    </div>
+  </div>
+
+
+      <!-- splittercards -->
+      <!-- <div class="ml-7 splittercards">
         <splittercards
         :v-for="key in Object.keys(whoOwesWho)"
         :Name1="key">
       </splittercards>
       </div> -->
-
-
+    
 </div>
 
 
