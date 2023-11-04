@@ -61,7 +61,7 @@
     <ul class="menu text-white hover:text-white text-m menu-horizontal px-1">
       <!-- signed in -->
       <li v-if="signedin">
-        <router-link to="/landinglogin"><a>HOME</a></router-link>
+        <router-link to="/feed"><a>HOME</a></router-link>
       </li>
       <li v-if="signedin">
             <router-link to="/itinerary"><a>ITINERARY</a></router-link>
