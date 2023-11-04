@@ -540,7 +540,7 @@
         
         <div class="modal-action">
           <div class="form-group">
-        <button class="btn btn-primary" @click="checkempty">Add Expense</button>
+        <button class="btn btn-primary" @click="checkempty3">Add Expense</button>
         </div>
           <form method="dialog">
             <!-- if there is a button in form, it will close the modal -->
@@ -1285,7 +1285,7 @@ async saveItinerary() {
     },
 
     // Function to validate expense is not empty
-    checkempty() {
+    checkempty3() {
       if (this.expense.currency == null || this.expense.expenseName == null || this.expense.expenseAmount == null || this.expense.personOwedName == null || this.inputValue == '') {
         alert("Please fill in all fields")
       } else {
