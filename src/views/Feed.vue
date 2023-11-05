@@ -600,6 +600,7 @@ export default {
         expenseName: null,
         expenseAmount: null,
         personOwedName: null,
+        peopleOwingNames: [],
         peopleOwingAmount: null,
         currency: null,
       },
