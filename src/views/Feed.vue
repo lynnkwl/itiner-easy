@@ -1109,7 +1109,6 @@ async saveItinerary() {
 
     // This function retrieves user input and adds it to the database. (Both in expenses and whoOwesWho)
     async addExpense() {
-      this.sortthelist();
       if (this.expense.currency === null || this.expense.expenseName === null || this.expense.expenseAmount === null || this.expense.personOwedName === null || this.inputValue === '') {
         console.log(this.expense.currency);
         console.log(this.expense.expenseName);
@@ -1346,6 +1345,9 @@ async saveItinerary() {
       } catch (error) {
         console.log(error);
       }
+    },
+    sortthelist() {
+      this.expense.peopleOwingNames = this.expense.peopleOwingNames.sort();
     },
 
     // Function to compute different ways of splitting expense
