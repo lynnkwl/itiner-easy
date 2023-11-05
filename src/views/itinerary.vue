@@ -25,6 +25,7 @@
   <div class="flex justify-center"> 
     <FormKit type="form"
           :actions="false"
+          
           >
               <FormKit type="multi-step"
               tab-style="progress"
@@ -38,7 +39,8 @@
                           type="text" 
                           label="Destination" 
                           validation="required"
-                          @blur ="checkCityExists(town)"
+                          @blur ="checkCityExists(town)"                        
+                          placeholder="e.g. Singapore"
                       />
                       <FormKit 
                           v-model="sliderValue"
