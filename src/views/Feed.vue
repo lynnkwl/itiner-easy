@@ -1151,7 +1151,7 @@ export default {
       } else {
 
         // Assigns the value of list to the peopleOwingNames object
-        if (quicksettleamount.length > 0) {
+        if (this.quicksettleamount.length > 0) {
 
         }
         else {
@@ -1421,48 +1421,49 @@ export default {
     },
     sortthelist() {
       this.expense.peopleOwingNames = this.expense.peopleOwingNames.sort();
-    }},
-
-
-    // Function to compute different ways of splitting expense
-
-    // Function to get list of trips and whoOwesWho from database
-    async created() {
-      // Getting list of trips from database
-
-      setTimeout(() => {
-        getDocs(this.tripsRef).then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            // doc.data() is never undefined for query doc snapshots
-            console.log(doc.id, " => ", doc.data());
-            this.trips.push(doc.id);
-          });
-        });
-      }, 800);
-
-      // Getting whoOwesWho from database
-      const querySnapshot1 = await getDocs(doc(this.tripsRef, this.trip, 'whoOwesWho'));
-      querySnapshot1.forEach((doc) => {
-        // doc.data() is never undefined for query doc snapshots
-        console.log(doc.id, " => ", doc.data());
-        this.whoOwesWho = doc.data();
-        console.log(this.whoOwesWho)
-      });
-    },
-
-    // Function to show updated list of expenses on trip page
-    async updated() {
-      onSnapshot(collection(this.tripsRef, this.trip, 'expenses'), (querySnapshot) => {
-        if (this.expenses.length > 0) {
-          this.expenses = [];
-        }
-        querySnapshot.docs.forEach((doc) => {
-          // doc.data() is never undefined for query doc snapshots
-          this.docId.push(doc.id);
-          this.expenses.push(doc.data());
-        });
-      });
     }
+  },
+
+
+  // Function to compute different ways of splitting expense
+
+  // Function to get list of trips and whoOwesWho from database
+  async created() {
+    // Getting list of trips from database
+
+    setTimeout(() => {
+      getDocs(this.tripsRef).then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          // doc.data() is never undefined for query doc snapshots
+          console.log(doc.id, " => ", doc.data());
+          this.trips.push(doc.id);
+        });
+      });
+    }, 800);
+
+    // Getting whoOwesWho from database
+    const querySnapshot1 = await getDocs(doc(this.tripsRef, this.trip, 'whoOwesWho'));
+    querySnapshot1.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      console.log(doc.id, " => ", doc.data());
+      this.whoOwesWho = doc.data();
+      console.log(this.whoOwesWho)
+    });
+  },
+
+  // Function to show updated list of expenses on trip page
+  async updated() {
+    onSnapshot(collection(this.tripsRef, this.trip, 'expenses'), (querySnapshot) => {
+      if (this.expenses.length > 0) {
+        this.expenses = [];
+      }
+      querySnapshot.docs.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        this.docId.push(doc.id);
+        this.expenses.push(doc.data());
+      });
+    });
+  }
   ,
   // itinerary functions
 
