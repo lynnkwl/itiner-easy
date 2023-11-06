@@ -78,7 +78,6 @@ const handleSignOut = () => {
     <Footer></Footer>
   </div>
 
-  
 </template>
 
 <style>
