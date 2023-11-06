@@ -89,10 +89,12 @@
 
     <div class="dropdown dropdown-bottom dropdown-end">
     <label tabindex="0" class="btn m-1  border-none hover:bg-[#6699CC] bg-[#5072A7]">
-      <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+      <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16" v-if="!user.profilePic">
           <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
           <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
         </svg>
+
+        <img class="w-10 h-10 rounded-full object-cover" :src="user.profilePic" v-else>
     </label>
     <ul tabindex="0" class="dropdown-content mt-6 bg-[#5072A7] z-[1] menu p-2 shadow rounded-box w-52">
       <li><router-link to="/profile"><a>Profile</a></router-link></li>
@@ -135,6 +137,9 @@ export default {
   data() {
     return {
       signedin: null,
+      user:{
+        
+      },
     };
   },
   mounted() {
@@ -143,6 +148,12 @@ export default {
     onAuthStateChanged(this.auth, (user) => {
       if (user) {
         this.signedin = true;
+        const userDocRef = doc(this.db, "users", user.uid);
+        getDoc(userDocRef).then((userDoc) => {
+          if (userDoc.exists()) {
+            this.user = userDoc.data();
+          }
+        });
       } else {
         this.signedin = false;
         console.log('User is signed out');
