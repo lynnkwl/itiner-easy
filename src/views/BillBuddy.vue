@@ -506,9 +506,6 @@ export default {
     // This function retrieves user input and adds it to the database. (Both in expenses and whoOwesWho)
     async addExpense() {
       this.computeexpense();
-      // Assigns the value of list to the peopleOwingNames object
-      console.log(this.expense.peopleOwingNames);
-      // Assigns the amount owed to peopleOwingAmount object
       if (this.splitmethod == "evenly") {
         this.expense.peopleOwingAmount = this.quicksettleamount;
       }
