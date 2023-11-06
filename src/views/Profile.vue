@@ -382,7 +382,7 @@ export default {
       // You can access edited data in this.editedUser
       // Update Firestore document with edited data
       this.updateUserInFirestore(this.user);
-      location.reload();
+      
     },
     
 
@@ -430,6 +430,7 @@ export default {
       } catch (error) {
         console.error("Error updating user data in Firestore: ", error);
       }
+      location.reload();
     },
   },
   created() {
