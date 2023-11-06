@@ -686,9 +686,9 @@ export default {
         for (let i = 0; i < this.personNames.length; i++) {
           this.quicksettleamount.push(0);
         }
-        for (let i = 0; i < this.peopleOwingNames.length; i++) {
-          let amountowed = amount / this.peopleOwingNames.length;
-          this.quicksettleamount[this.peopleOwingNames[i].index] = amountowed;
+        for (let i = 0; i < this.expense.peopleOwingNames.length; i++) {
+          let amountowed = amount / this.expense.peopleOwingNames.length;
+          this.quicksettleamount[this.expense.peopleOwingNames[i].index] = amountowed;
         }
         console.log(this.quicksettleamount);
       }
