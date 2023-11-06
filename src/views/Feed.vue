@@ -287,7 +287,7 @@
     </div>
   </div>
 
-  <div name="showItinerary" class="m-10" v-if="showItinerary">
+  <div name="showItinerary" class="m-10" v-if="showItinerary" @load="initMap(this.citycoords)">
     <!-- getmap -->
     <!-- create table each day -->
     <div v-for="(day, index) in activitiesandtime" :key="index">
