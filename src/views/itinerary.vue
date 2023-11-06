@@ -1,7 +1,7 @@
 <style>
   #map{
-    /* height: 100%; */
     width: 100%;  
+    min-height: 50vh;
   }
 
   .custom-class {
@@ -291,7 +291,7 @@
           </div>
       </div>
     </div>
-  <div id="map" class="md:col-span-2 rounded-lg"></div>  
+  <div id="map" class="md:col-span-2 rounded-lg ml-7 mr-10"></div>  
 </div>
 
 <br>
@@ -303,11 +303,11 @@
     <table class="bg-blue-300 table table-pin-rows rounded-lg max-w-full">
       <thead>
         <tr class="bg-blue-400 rounded">
-          <th class="text-xl text-gray-600">Name</th>
-          <th class="text-xl text-gray-600">Address</th>
-          <th class="text-xl text-gray-600">Price Level</th>
-          <th class="text-xl text-gray-600">Rating</th>
-          <th class="text-xl text-gray-600">Getting There</th>
+          <th class="text-2xl text-gray-600">Name</th>
+          <th class="text-2xl text-gray-600">Address</th>
+          <th class="text-2xl text-gray-600">Price Level</th>
+          <th class="text-2xl text-gray-600">Rating</th>
+          <th class="text-2xl text-gray-600">Getting There</th>
           <!-- <th class="text-xl text-gray-600">Remarks</th> -->
         </tr>
       </thead>
@@ -319,7 +319,7 @@
               <h3>{{ eatery.name }}</h3>
           </td>
           <td>
-            <h4>{{ eatery.vicinity}}</h4>
+            <h4 class="text-black text-lg">{{ eatery.vicinity}}</h4>
           </td>
           <td>
             <span v-if="eatery.price_level > 0">{{ dollarSigns(eatery.price_level)}}</span>
@@ -330,7 +330,7 @@
           </td>
           <td>
             <!-- <a href="#" @click="showLocation(eatery,eatery)">Show on Map</a> -->
-            <a href="#" @click="displaydirectionsonmap(eatery.origin, eatery.geometry.location)">Show Route</a>
+            <a href="#" @click="displaydirectionsonmap(eatery.origin, eatery.geometry.location)" class="text-black text-lg">Show Route</a>
           </td>
           <!-- <td v-if="eatery.formatted_address !== 'Travel'">
             Remarks: <input type="text" v-model="eatery.remarks"><br>
