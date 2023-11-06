@@ -41,6 +41,7 @@
                           validation="required"
                           @blur ="checkCityExists(town)"                        
                           placeholder="e.g. Singapore"
+                          help="City Name"
                       />
                       <FormKit 
                           v-model="sliderValue"
