@@ -1421,7 +1421,8 @@ export default {
     },
     sortthelist() {
       this.expense.peopleOwingNames = this.expense.peopleOwingNames.sort();
-    },
+    }},
+
 
     // Function to compute different ways of splitting expense
 
@@ -1462,7 +1463,7 @@ export default {
         });
       });
     }
-  },
+  ,
   // itinerary functions
 
 
