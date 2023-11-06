@@ -537,28 +537,8 @@ export default {
         });
 
       // Adding the expense to the whoOwesWho collection
-      // 1. Check if the personOwedName is already in the whoOwesWho collection
-      if (this.expense.personOwedName in this.whoOwesWho) {
-        console.log("Person already in whoOwesWho")
-        // 2. If it is, add the expenseAmount to the existing amount
-        this.whoOwesWho[this.expense.personOwedName] -= this.expense.expenseAmount;
-      } else {
-        console.log("Person not in whoOwesWho")
-        // 3. If it isn't, add the personOwedName and peopleOwingAmount to the whoOwesWho collection
-        this.whoOwesWho[this.expense.personOwedName] = Number(-this.expense.expenseAmount);
-      }
-      // 1. Check if the peopleOwingNames is already in the whoOwesWho collection
-      for (let i = 0; i < this.expense.peopleOwingNames.length; i++) {
-        console.log(this.expense.peopleOwingNames[i]);
-        if (this.expense.peopleOwingNames[i] in this.whoOwesWho) {
-          console.log("Person already in whoOwesWho")
-          // 2. If it is, add the peopleOwingAmount to the existing amount
-          this.whoOwesWho[this.expense.peopleOwingNames[i]] += this.expense.peopleOwingAmount;
-        } else {
-          console.log("Person not in whoOwesWho")
-          // 3. If it isn't, add the personOwedName and peopleOwingAmount to the whoOwesWho collection
-          this.whoOwesWho[this.expense.peopleOwingNames[i]] = this.expense.peopleOwingAmount;
-        }
+      for (let i=0; i<this.expense.peopleOwingNames.length; i++) {
+        this.whoOwesWho[this.expense.peopleOwingNames[i].name] = this.expense.peopleOwingAmount[i]
       }
       // Update the whoOwesWho collection in firebase
       updateDoc(doc(this.tripsRef, this.trip), {
