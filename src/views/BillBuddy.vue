@@ -162,7 +162,7 @@
           <button class="btn btn-primary" @click="checkempty">Add Expense</button>
         </div>
         <h3>Expense Table</h3>
-        <table>
+        <table class="table table-striped table-bordered table-hover table-sm">
           <thead>
             <tr>
               <th>Expense Name</th>
@@ -181,7 +181,9 @@
               <td>{{ expense.expenseName }}</td>
               <td>{{ expense.expenseAmounttrip }}</td>
               <td>{{ expense.expenseAmounthome }}</td>
-              <td v-for="name in expense.peopleOwingNames">{{ name }} &nbsp;</td>
+              <td>
+                <p v-for="name in expense.peopleOwingNames">{{ name.name }} &nbsp;</p>
+              </td>
               <td>{{ expense.peopleOwingAmount }}</td>
               <td>{{ expense.personOwedName }}</td>
               <td><button @click="deleteExpense(index, docId)">Delete Expense</button></td>
@@ -281,7 +283,6 @@ export default {
         console.log('User is signed out')
       }
     });
-    this.convertCurrency();
   },
   computed: {
     selectedTrip() {
@@ -331,9 +332,7 @@ export default {
       .then(function(response) {
         console.log(response.data);
         var convertedmoney = response.data.rates[to].rate_for_amount;
-        var convertedmoneydiv = document.getElementById("convertedmoney");
-        var html = "<h7>"+convertedmoney+"</h7>";
-        convertedmoneydiv.innerHTML = html;
+        this.expense.expenseAmounthome = convertedmoney;
 
       })    },
 
@@ -459,7 +458,7 @@ export default {
       // this.expense.personOwedName = null;
       // this.expense.peopleOwingAmount = null;
       // this.list = [];
-
+      await this.convertCurrency(this.expense);
     },
 
     // Supporting function for addExpense()
