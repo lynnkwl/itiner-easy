@@ -187,16 +187,23 @@
 <br>
 <br>
 <!-- itinerary display -->
+
 <div class="grid grid-cols-1 md:grid-cols-3 mr-10">
     <div v-if="final_activities.length>0" class="">
-      <div class="flex justify-center">
-        <button class="transition ease-in-out delay-150 bg-blue-500 hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 duration-300 btn mt-7 mr-2" @click="saveItinerary">Save Itinerary</button>
+      <div class="flex flex-col justify-center items-center">
+        <div v-if="showAlert" class="alert alert-success w-2/3">
+          <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          <span>Your Itinerary has been saved!</span>
+        </div>
+        <div>
+          <button class="transition ease-in-out delay-150 bg-blue-500 hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 duration-300 btn mt-7 mr-2" @click="saveItinerary">Save Itinerary</button>
+        </div>
       </div>      
       <div class="m-10">
           <!-- getmap -->
           <!-- create table each day -->
         <div v-for="(day, index) in activitiesandtime" :key="index">
-          <details class="collapse collapse-arrow bg-blue-300 shadow-md min-w-fit">
+          <details class="collapse collapse-arrow bg-blue-300 shadow-md min-w-fit max-h-screen">
                 <!-- <div class="flex pb-5 sticky top-0 z-10"> -->
                   <!-- <div class="w-96 border p-3 rounded-md bg-blue-300"> -->
                   <summary class="collapse-title text-xl font-medium">
@@ -237,11 +244,11 @@
                             <div class="px-2 py-2 border-l-4 my-4 border-gray-400">
                               <h3 class="text-black text-left">{{ activity.name }}</h3>
                                 <div>
-                                <p class="text-base text-left">
-                                  <!-- {{ activity.time }} - {{ activity.endtime }} -->
+                                <div class="text-base text-left">
+                                  {{ activity.time }} - {{ activity.endtime }}
                                   <p class="text-gray-600">Suggested duration:</p> 
                                   <p class="text-gray-600">{{ calculateDuration(activity.time, activity.endtime) }} hours</p>
-                                </p>
+                                </div>
                                 <p class="text-gray-500 text-base text-left">
                                   {{ activity.formatted_address}}
                                 </p>
@@ -266,8 +273,8 @@
                           <div class="px-6 py-4">
                             <div class="font-bold text-sm mb-2">{{ activity.name }}</div>
                             <p class="text-gray-700 text-base">
-                              {{ calculateDuration(activity.time, activity.endtime) }} hours
-                            </p>
+                              {{ activity.time}} - {{activity.endtime}}
+                            </p>                          
                           </div>
                             <button class="btn w-max self-center ml-5 mb-5" href="#" @click="displaydirectionsonmap(day.activities[day.activities.indexOf(activity) - 1].geometry.location, day.activities[day.activities.indexOf(activity) + 1].geometry.location)">The way there!</button>
                         </div>
@@ -360,6 +367,8 @@ import {
 
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
+
+
 // const auth = getAuth();
 // const db = getFirestore();
 // const tripsRef = collection(db, 'trips');
@@ -440,6 +449,7 @@ export default {
       openingTime: "",
       closeTime: "",
       nextStepDisabled: true,
+      showAlert: false,
     };
   },
     methods: {
@@ -464,6 +474,9 @@ export default {
         timeToHours(time) {
           const [hours, minutes] = time.split(':').map(Number);
           return hours + minutes / 60;
+        },
+        save() {
+          this.showAlert = true;
         },
 
 
@@ -1254,6 +1267,7 @@ async checkempty2(){
 
 
 async saveItinerary() {
+  this.showAlert = true;
   console.log(this.town);
   console.log(this.activitiesandtime);
   // console.log(this.activitiesandtime[0]);
