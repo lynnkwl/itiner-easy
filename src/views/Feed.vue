@@ -989,6 +989,10 @@ export default {
     toggleExpenseAndItinerary() {
       this.showExpense = !this.showExpense;
       this.showItinerary = !this.showItinerary;
+      if(this.showExpense == true){
+        this.getLatLng();
+        initMap(this.citycoords);
+      }
     },
 
     // This function retrieves user input and adds it to the database. (Both in expenses and whoOwesWho)
