@@ -1223,7 +1223,7 @@ export default {
       this.expense.currency = null;
       this.expense.peopleOwingAmount = null;
     }
-  }
+  
   ,
   // Supporting function for addExpense()
   sortthelist() {
@@ -1461,7 +1461,7 @@ export default {
         this.expenses.push(doc.data());
       });
     });
-  },
+  }},
   // itinerary functions
 
 
