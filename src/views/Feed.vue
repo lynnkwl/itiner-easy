@@ -1202,6 +1202,48 @@ async saveItinerary() {
     removeFromList(index) {
       this.list.splice(index, 1);
     },
+    computeexpense() {
+      this.quicksettleamount = [];
+      let amount = this.expense.expenseAmount;
+      if (this.custom.length > 0) {
+        let sum = 0
+        for (let i = 0; i < this.custom.length; i++) {
+          sum += this.custom[i];
+        }
+        if (sum != this.expense.expenseAmount) {
+          alert("Please make sure the percentages add up to the amount owed!")
+        }
+        else {
+          for (let i = 0; i < this.custom.length; i++) {
+            this.quicksettleamount.push(this.custom[i]);
+          }
+        }
+      }
+      if (this.shares.length > 0) {
+        let totalshares = 0;
+        for (let i = 0; i < this.shares.length; i++) {
+          totalshares += this.shares[i];
+        }
+        for (let i = 0; i < this.shares.length; i++) {
+          this.quicksettleamount.push(this.shares[i] * amount / totalshares);
+        }
+      }
+      if (this.percentages.length > 0) {
+        let totalpercentage = 0;
+        for (let i = 0; i < this.percentages.length; i++) {
+          totalpercentage += this.percentages[i];
+        }
+        if (totalpercentage != 100) {
+          alert("Please make sure the percentages add up to 100!")
+        }
+        else {
+          for (let i = 0; i < this.percentages.length; i++) {
+            this.quicksettleamount.push(this.percentages[i] * amount / 100);
+          }
+        }
+      }
+    },
+
 
     // Function to breakeven expenses
     breakeven() {
@@ -1351,48 +1393,7 @@ async saveItinerary() {
     },
 
     // Function to compute different ways of splitting expense
-    computeexpense() {
-      this.quicksettleamount = [];
-      let amount = this.expense.expenseAmount;
-      if (this.custom.length > 0) {
-        let sum = 0
-        for (let i = 0; i < this.custom.length; i++) {
-          sum += this.custom[i];
-        }
-        if (sum != this.expense.expenseAmount) {
-          alert("Please make sure the percentages add up to the amount owed!")
-        }
-        else {
-          for (let i = 0; i < this.custom.length; i++) {
-            this.quicksettleamount.push(this.custom[i]);
-          }
-        }
-      }
-      if (this.shares.length > 0) {
-        let totalshares = 0;
-        for (let i = 0; i < this.shares.length; i++) {
-          totalshares += this.shares[i];
-        }
-        for (let i = 0; i < this.shares.length; i++) {
-          this.quicksettleamount.push(this.shares[i] * amount / totalshares);
-        }
-      }
-      if (this.percentages.length > 0) {
-        let totalpercentage = 0;
-        for (let i = 0; i < this.percentages.length; i++) {
-          totalpercentage += this.percentages[i];
-        }
-        if (totalpercentage != 100) {
-          alert("Please make sure the percentages add up to 100!")
-        }
-        else {
-          for (let i = 0; i < this.percentages.length; i++) {
-            this.quicksettleamount.push(this.percentages[i] * amount / 100);
-          }
-        }
-      }
-    },
-
+    
   // Function to get list of trips and whoOwesWho from database
   async created() {
     // Getting list of trips from database
