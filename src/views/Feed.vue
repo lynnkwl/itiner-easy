@@ -1223,245 +1223,246 @@ export default {
       this.expense.currency = null;
       this.expense.peopleOwingAmount = null;
     }
-  
-  ,
-  // Supporting function for addExpense()
-  sortthelist() {
-    this.expense.peopleOwingNames = this.expense.peopleOwingNames.sort();
-  },
-  // Supporting function for addExpense()
-  removeFromList(index) {
-    this.list.splice(index, 1);
-  },
-  computeexpense() {
-    this.quicksettleamount = [];
-    let amount = this.expense.expenseAmount;
-    if (this.custom.length > 0) {
-      let sum = 0
-      for (let i = 0; i < this.custom.length; i++) {
-        sum += this.custom[i];
-      }
-      if (sum != this.expense.expenseAmount) {
-        alert("Please make sure the percentages add up to the amount owed!")
-      }
-      else {
+
+    ,
+    // Supporting function for addExpense()
+    sortthelist() {
+      this.expense.peopleOwingNames = this.expense.peopleOwingNames.sort();
+    },
+    // Supporting function for addExpense()
+    removeFromList(index) {
+      this.list.splice(index, 1);
+    },
+    computeexpense() {
+      this.quicksettleamount = [];
+      let amount = this.expense.expenseAmount;
+      if (this.custom.length > 0) {
+        let sum = 0
         for (let i = 0; i < this.custom.length; i++) {
-          this.quicksettleamount.push(this.custom[i]);
+          sum += this.custom[i];
+        }
+        if (sum != this.expense.expenseAmount) {
+          alert("Please make sure the percentages add up to the amount owed!")
+        }
+        else {
+          for (let i = 0; i < this.custom.length; i++) {
+            this.quicksettleamount.push(this.custom[i]);
+          }
         }
       }
-    }
-    if (this.shares.length > 0) {
-      let totalshares = 0;
-      for (let i = 0; i < this.shares.length; i++) {
-        totalshares += this.shares[i];
+      if (this.shares.length > 0) {
+        let totalshares = 0;
+        for (let i = 0; i < this.shares.length; i++) {
+          totalshares += this.shares[i];
+        }
+        for (let i = 0; i < this.shares.length; i++) {
+          this.quicksettleamount.push(this.shares[i] * amount / totalshares);
+        }
       }
-      for (let i = 0; i < this.shares.length; i++) {
-        this.quicksettleamount.push(this.shares[i] * amount / totalshares);
-      }
-    }
-    if (this.percentages.length > 0) {
-      let totalpercentage = 0;
-      for (let i = 0; i < this.percentages.length; i++) {
-        totalpercentage += this.percentages[i];
-      }
-      if (totalpercentage != 100) {
-        alert("Please make sure the percentages add up to 100!")
-      }
-      else {
+      if (this.percentages.length > 0) {
+        let totalpercentage = 0;
         for (let i = 0; i < this.percentages.length; i++) {
-          this.quicksettleamount.push(this.percentages[i] * amount / 100);
+          totalpercentage += this.percentages[i];
+        }
+        if (totalpercentage != 100) {
+          alert("Please make sure the percentages add up to 100!")
+        }
+        else {
+          for (let i = 0; i < this.percentages.length; i++) {
+            this.quicksettleamount.push(this.percentages[i] * amount / 100);
+          }
         }
       }
-    }
-  },
+    },
 
 
-  // Function to breakeven expenses
-  breakeven() {
-    console.log(this.whoOwesWho)
-    for (let key in this.whoOwesWho) {
-      if (this.whoOwesWho[key] > 0) {
-        console.log(key + " owes " + this.whoOwesWho[key]);
-      } else if (this.whoOwesWho[key] < -0.011) {
-        console.log(key + " is owed " + -this.whoOwesWho[key]);
-      } else {
-        console.log(key + " is breakeven");
-      }
-      console.log(key)
-      while (this.whoOwesWho[key] > 0) {
-        for (let key2 in this.whoOwesWho) {
-          if (this.whoOwesWho[key2] < 0) {
-            if (this.whoOwesWho[key] > -this.whoOwesWho[key2]) {
-              console.log(key + " pays " + -this.whoOwesWho[key2] + " to " + key2);
-              document.getElementById("amountToPay").innerHTML += key + " pays " + -this.whoOwesWho[key2] + " to " + key2 + "<br>";
-              this.whoOwesWho[key] += this.whoOwesWho[key2];
-              this.whoOwesWho[key2] = 0;
-            } else if (this.whoOwesWho[key] != 0) {
-              console.log(key + " pays " + this.whoOwesWho[key] + " to " + key2);
-              document.getElementById("amountToPay").innerHTML += key + " pays " + this.whoOwesWho[key] + " to " + key2 + "<br>";
-              this.whoOwesWho[key2] += this.whoOwesWho[key];
-              this.whoOwesWho[key] = 0;
+    // Function to breakeven expenses
+    breakeven() {
+      console.log(this.whoOwesWho)
+      for (let key in this.whoOwesWho) {
+        if (this.whoOwesWho[key] > 0) {
+          console.log(key + " owes " + this.whoOwesWho[key]);
+        } else if (this.whoOwesWho[key] < -0.011) {
+          console.log(key + " is owed " + -this.whoOwesWho[key]);
+        } else {
+          console.log(key + " is breakeven");
+        }
+        console.log(key)
+        while (this.whoOwesWho[key] > 0) {
+          for (let key2 in this.whoOwesWho) {
+            if (this.whoOwesWho[key2] < 0) {
+              if (this.whoOwesWho[key] > -this.whoOwesWho[key2]) {
+                console.log(key + " pays " + -this.whoOwesWho[key2] + " to " + key2);
+                document.getElementById("amountToPay").innerHTML += key + " pays " + -this.whoOwesWho[key2] + " to " + key2 + "<br>";
+                this.whoOwesWho[key] += this.whoOwesWho[key2];
+                this.whoOwesWho[key2] = 0;
+              } else if (this.whoOwesWho[key] != 0) {
+                console.log(key + " pays " + this.whoOwesWho[key] + " to " + key2);
+                document.getElementById("amountToPay").innerHTML += key + " pays " + this.whoOwesWho[key] + " to " + key2 + "<br>";
+                this.whoOwesWho[key2] += this.whoOwesWho[key];
+                this.whoOwesWho[key] = 0;
+              }
             }
           }
         }
       }
-    }
-  },
+    },
 
-  // Delete expense from database
-  async deleteExpense(index, docId) {
-    console.log(docId)
-    console.log(index)
-    deleteDoc(doc(this.tripsRef, this.trip, 'expenses', docId[index]))
-      .then(() => {
-        console.log("Document successfully deleted!");
-      }).catch((error) => {
-        console.error("Error removing document: ", error);
-      });
-  },
+    // Delete expense from database
+    async deleteExpense(index, docId) {
+      console.log(docId)
+      console.log(index)
+      deleteDoc(doc(this.tripsRef, this.trip, 'expenses', docId[index]))
+        .then(() => {
+          console.log("Document successfully deleted!");
+        }).catch((error) => {
+          console.error("Error removing document: ", error);
+        });
+    },
 
-  // Update expense in database
-  async updateExpense(index, docId) {
-    updateDoc(collection(this.tripsRef, this.trip, 'expenses'), docId[index]), {
-      expenseName: "Updated Expense Name",
-      expenseAmount: 100,
-      peopleOwingNames: ["Updated Name 1", "Updated Name 2"],
-      peopleOwingAmount: 50,
-      personOwedName: "Updated Person Owed Name"
-    }
-      .then(() => {
-        console.log("Document successfully updated!");
-      })
-      .catch((error) => {
-        // The document probably doesn't exist.
-        console.error("Error updating document: ", error);
-      });
-  },
-
-  // Delete trip from database
-  async deleteTrip(trip) {
-    deleteDoc(doc(this.tripsRef, trip))
-      .then(() => {
-        console.log("Document successfully deleted!");
-        window.location.reload();
-      }).catch((error) => {
-        console.error("Error removing document: ", error);
-      });
-  },
-
-  // Function to convert currency while adding expense
-  async convertCurrency() {
-    var url = 'https://currency-converter5.p.rapidapi.com/currency/convert';
-    var XRapidAPIKey = '2f0bfe79abmsh886342ca61bbf11p1e6dd8jsna7f5de5249b0';
-    var XRapidAPIHost = 'currency-converter5.p.rapidapi.com';
-    var amount = document.getElementById("moneymoneyahhhhh").value;
-    var from = document.getElementById("currencylist").value;
-    var to = document.getElementById("currencylisttoconvert").value;
-    console.log(from);
-    console.log(to);
-    axios.get(url, {
-      headers: {
-        'x-rapidapi-key': XRapidAPIKey,
-        'x-rapidapi-host': XRapidAPIHost
-      },
-      params: {
-        amount: amount,
-        from: from,
-        to: to
+    // Update expense in database
+    async updateExpense(index, docId) {
+      updateDoc(collection(this.tripsRef, this.trip, 'expenses'), docId[index]), {
+        expenseName: "Updated Expense Name",
+        expenseAmount: 100,
+        peopleOwingNames: ["Updated Name 1", "Updated Name 2"],
+        peopleOwingAmount: 50,
+        personOwedName: "Updated Person Owed Name"
       }
-    })
-      .then(function (response) {
-        console.log(response.data);
-        var convertedmoney = response.data.rates[to].rate_for_amount;
-        var convertedmoneydiv = document.getElementById("convertedmoney");
-        var html = "<h7>" + convertedmoney + "</h7>";
-        convertedmoneydiv.innerHTML = html;
-      })
-  },
+        .then(() => {
+          console.log("Document successfully updated!");
+        })
+        .catch((error) => {
+          // The document probably doesn't exist.
+          console.error("Error updating document: ", error);
+        });
+    },
 
-  // Function to validate expense is not empty
-  checkempty3() {
-    if (this.expense.currency === null || this.expense.expenseName === null || this.expense.expenseAmount === null || this.expense.personOwedName === null || this.inputValue === '') {
-      console.log(this.expense.currency);
-      console.log(this.expense.expenseName);
-      console.log(this.expense.expenseAmount);
-      console.log(this.expense.personOwedName);
-      console.log(this.inputValue);
+    // Delete trip from database
+    async deleteTrip(trip) {
+      deleteDoc(doc(this.tripsRef, trip))
+        .then(() => {
+          console.log("Document successfully deleted!");
+          window.location.reload();
+        }).catch((error) => {
+          console.error("Error removing document: ", error);
+        });
+    },
 
-      alert("Please fill in all fields")
-    } else {
-      this.addExpense();
-    }
-  },
-
-  // Function to get list of currencies to calculate expense
-  async getCurrencyList() {
-    try {
-      const response = await axios.get('https://currency-converter5.p.rapidapi.com/currency/list', {
+    // Function to convert currency while adding expense
+    async convertCurrency() {
+      var url = 'https://currency-converter5.p.rapidapi.com/currency/convert';
+      var XRapidAPIKey = '2f0bfe79abmsh886342ca61bbf11p1e6dd8jsna7f5de5249b0';
+      var XRapidAPIHost = 'currency-converter5.p.rapidapi.com';
+      var amount = document.getElementById("moneymoneyahhhhh").value;
+      var from = document.getElementById("currencylist").value;
+      var to = document.getElementById("currencylisttoconvert").value;
+      console.log(from);
+      console.log(to);
+      axios.get(url, {
         headers: {
-          'x-rapidapi-key': '2f0bfe79abmsh886342ca61bbf11p1e6dd8jsna7f5de5249b0',
-          'x-rapidapi-host': 'currency-converter5.p.rapidapi.com',
+          'x-rapidapi-key': XRapidAPIKey,
+          'x-rapidapi-host': XRapidAPIHost
         },
-      });
-      console.log(response.data);
-      for (var key in response.data.currencies) {
-        var value = response.data.currencies[key];
-        this.currencyList.push({ key, value });
-      }
-      //sort currency list by alphabet
-      this.currencyList.sort(function (a, b) {
-        if (a.value < b.value) { return -1; }
-        if (a.value > b.value) { return 1; }
-        return 0;
+        params: {
+          amount: amount,
+          from: from,
+          to: to
+        }
       })
+        .then(function (response) {
+          console.log(response.data);
+          var convertedmoney = response.data.rates[to].rate_for_amount;
+          var convertedmoneydiv = document.getElementById("convertedmoney");
+          var html = "<h7>" + convertedmoney + "</h7>";
+          convertedmoneydiv.innerHTML = html;
+        })
+    },
 
-    } catch (error) {
-      console.log(error);
-    }
-  },
-  sortthelist() {
-    this.expense.peopleOwingNames = this.expense.peopleOwingNames.sort();
-  },
+    // Function to validate expense is not empty
+    checkempty3() {
+      if (this.expense.currency === null || this.expense.expenseName === null || this.expense.expenseAmount === null || this.expense.personOwedName === null || this.inputValue === '') {
+        console.log(this.expense.currency);
+        console.log(this.expense.expenseName);
+        console.log(this.expense.expenseAmount);
+        console.log(this.expense.personOwedName);
+        console.log(this.inputValue);
 
-  // Function to compute different ways of splitting expense
+        alert("Please fill in all fields")
+      } else {
+        this.addExpense();
+      }
+    },
 
-  // Function to get list of trips and whoOwesWho from database
-  async created() {
-    // Getting list of trips from database
+    // Function to get list of currencies to calculate expense
+    async getCurrencyList() {
+      try {
+        const response = await axios.get('https://currency-converter5.p.rapidapi.com/currency/list', {
+          headers: {
+            'x-rapidapi-key': '2f0bfe79abmsh886342ca61bbf11p1e6dd8jsna7f5de5249b0',
+            'x-rapidapi-host': 'currency-converter5.p.rapidapi.com',
+          },
+        });
+        console.log(response.data);
+        for (var key in response.data.currencies) {
+          var value = response.data.currencies[key];
+          this.currencyList.push({ key, value });
+        }
+        //sort currency list by alphabet
+        this.currencyList.sort(function (a, b) {
+          if (a.value < b.value) { return -1; }
+          if (a.value > b.value) { return 1; }
+          return 0;
+        })
 
-    setTimeout(() => {
-      getDocs(this.tripsRef).then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    sortthelist() {
+      this.expense.peopleOwingNames = this.expense.peopleOwingNames.sort();
+    },
+
+    // Function to compute different ways of splitting expense
+
+    // Function to get list of trips and whoOwesWho from database
+    async created() {
+      // Getting list of trips from database
+
+      setTimeout(() => {
+        getDocs(this.tripsRef).then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            // doc.data() is never undefined for query doc snapshots
+            console.log(doc.id, " => ", doc.data());
+            this.trips.push(doc.id);
+          });
+        });
+      }, 800);
+
+      // Getting whoOwesWho from database
+      const querySnapshot1 = await getDocs(doc(this.tripsRef, this.trip, 'whoOwesWho'));
+      querySnapshot1.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        console.log(doc.id, " => ", doc.data());
+        this.whoOwesWho = doc.data();
+        console.log(this.whoOwesWho)
+      });
+    },
+
+    // Function to show updated list of expenses on trip page
+    async updated() {
+      onSnapshot(collection(this.tripsRef, this.trip, 'expenses'), (querySnapshot) => {
+        if (this.expenses.length > 0) {
+          this.expenses = [];
+        }
+        querySnapshot.docs.forEach((doc) => {
           // doc.data() is never undefined for query doc snapshots
-          console.log(doc.id, " => ", doc.data());
-          this.trips.push(doc.id);
+          this.docId.push(doc.id);
+          this.expenses.push(doc.data());
         });
       });
-    }, 800);
-
-    // Getting whoOwesWho from database
-    const querySnapshot1 = await getDocs(doc(this.tripsRef, this.trip, 'whoOwesWho'));
-    querySnapshot1.forEach((doc) => {
-      // doc.data() is never undefined for query doc snapshots
-      console.log(doc.id, " => ", doc.data());
-      this.whoOwesWho = doc.data();
-      console.log(this.whoOwesWho)
-    });
+    }
   },
-
-  // Function to show updated list of expenses on trip page
-  async updated() {
-    onSnapshot(collection(this.tripsRef, this.trip, 'expenses'), (querySnapshot) => {
-      if (this.expenses.length > 0) {
-        this.expenses = [];
-      }
-      querySnapshot.docs.forEach((doc) => {
-        // doc.data() is never undefined for query doc snapshots
-        this.docId.push(doc.id);
-        this.expenses.push(doc.data());
-      });
-    });
-  }},
   // itinerary functions
 
 
