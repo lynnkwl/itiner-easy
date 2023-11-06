@@ -295,7 +295,6 @@
         <th>People Owing Amount</th>
         <th>Person Owed Name</th>
         <th>Delete Expense</th>
-        <th>Update Expense</th>
       </tr>
     </thead>
 
@@ -310,7 +309,6 @@
         <td>{{ expense.peopleOwingAmount }}</td>
         <td>{{ expense.personOwedName }}</td>
         <td><button @click="deleteExpense(index, docId)">Delete Expense</button></td>
-        <td><button @click="updateExpense(index, docId)">Update Expense</button></td>
       </tr>
     </tbody>
   </table>
@@ -336,7 +334,6 @@
   <div id="amountToPay"></div>
 </template>
 
-
 <script>
 // Importing the functions we need from firebase
 import {
@@ -345,11 +342,6 @@ import {
 } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import navbar from "../components/navbar.vue";
-
-
-// Declaring the database data points we need
-
-// Display trips
 
 // Exporting the data to firebase
 export default {
@@ -510,6 +502,7 @@ export default {
         console.log(this.whoOwesWho)
       });
     },
+
     // This function retrieves user input and adds it to the database. (Both in expenses and whoOwesWho)
     async addExpense() {
       this.computeexpense();
@@ -528,7 +521,6 @@ export default {
       else if (this.splitmethod == "custom") {
         this.expense.peopleOwingAmount = this.quicksettleamount;
       }
-
 
       // Adds the expense to the database
       addDoc(collection(this.tripsRef, this.trip, 'expenses'), this.expense)
@@ -622,23 +614,6 @@ export default {
         });
     },
 
-    // Update expense in database
-    async updateExpense(index, docId) {
-      updateDoc(collection(this.tripsRef, this.trip, 'expenses'), docId[index]), {
-        expenseName: "Updated Expense Name",
-        expenseAmount: 100,
-        peopleOwingNames: ["Updated Name 1", "Updated Name 2"],
-        peopleOwingAmount: 50,
-        personOwedName: "Updated Person Owed Name"
-      }
-        .then(() => {
-          console.log("Document successfully updated!");
-        })
-        .catch((error) => {
-          // The document probably doesn't exist.
-          console.error("Error updating document: ", error);
-        });
-    },
     async convertCurrency() {
       var url = 'https://currency-converter5.p.rapidapi.com/currency/convert';
       var XRapidAPIKey = '2f0bfe79abmsh886342ca61bbf11p1e6dd8jsna7f5de5249b0';
