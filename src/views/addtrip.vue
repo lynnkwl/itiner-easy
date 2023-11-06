@@ -29,7 +29,6 @@
                 <span id="personNames" v-html="htmlStr"></span>
             </div>
 
-
             Which Currency do you use normally!
             <select class="w-9/12 rounded bg-blue-200 cursor-pointer border-2 border-blue-400" name="currencylist"
                 id="currencylist" @change="convertit" v-model="homeCurrency">
@@ -68,7 +67,7 @@
                 <button class="btn btn-primary">Click to Go Back to Feed</button>
             </router-link>
         </form>
-        
+
     </div>
 </template>
 
@@ -138,11 +137,18 @@ export default {
         },
         submitForm() {
             let numPeople = document.getElementById("numPeople").value;
-            for (let i=1; i<=numPeople; i++) {
+            for (let i = 1; i <= numPeople; i++) {
                 this.personNames.push(document.getElementById("person" + i).value);
             }
+            this.personNames = this.personNames.sort();
+            console.log(this.personNames)
+            let whoOwesWho = {};
+            for (let i = 0; i < this.personNames.length; i++) {
+                whoOwesWho[this.personNames[i]] = 0;
+            }
+            console.log(whoOwesWho)
             setDoc(doc(this.tripsRef, this.destination), {
-                whoOwesWho: {},
+                whoOwesWho: whoOwesWho,
                 homeCurrency: this.homeCurrency,
                 tripCurrency: this.tripCurrency,
                 numPeople: numPeople,
@@ -176,9 +182,9 @@ export default {
                 console.log(error);
             }
         },
-       async getitinerary(){
+        async getitinerary() {
 
-       }
+        }
     },
     created() {
         this.getCurrencyList();
