@@ -1216,12 +1216,12 @@ export default {
         });
 
       // Reset the values of the expense object
-      this.expense.expenseName = null;
-      this.expense.expenseAmount = null;
-      this.expense.peopleOwingNames = null;
-      this.expense.personOwedName = null;
-      this.expense.currency = null;
-      this.expense.peopleOwingAmount = null;
+      // this.expense.expenseName = null;
+      // this.expense.expenseAmount = null;
+      // this.expense.peopleOwingNames = null;
+      // this.expense.personOwedName = null;
+      // this.expense.currency = null;
+      // this.expense.peopleOwingAmount = null;
     }
 
     ,
@@ -1250,7 +1250,7 @@ export default {
           }
         }
       }
-      if (this.shares.length > 0) {
+      else if (this.shares.length > 0) {
         let totalshares = 0;
         for (let i = 0; i < this.shares.length; i++) {
           totalshares += this.shares[i];
@@ -1259,7 +1259,7 @@ export default {
           this.quicksettleamount.push(this.shares[i] * amount / totalshares);
         }
       }
-      if (this.percentages.length > 0) {
+     else if (this.percentages.length > 0) {
         let totalpercentage = 0;
         for (let i = 0; i < this.percentages.length; i++) {
           totalpercentage += this.percentages[i];
@@ -1273,6 +1273,12 @@ export default {
           }
         }
       }
+      else{
+        for (let i = 0; i < this.expense.peopleOwingNames.length; i++) {
+          this.quicksettleamount.push(amount / this.peopleOwingNames.length);
+        }
+      }
+
     },
 
 
