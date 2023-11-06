@@ -392,10 +392,7 @@ export default {
       console.log(this.expense.peopleOwingNames);
       // Assigns the amount owed to peopleOwingAmount object
       if (this.splitmethod == "evenly") {
-        this.expense.peopleOwingAmount =[];
-        for (let i = 0; i < this.expense.peopleOwingNames.length; i++) {
-          this.expense.peopleOwingAmount.push(this.expense.expenseAmount / this.expense.peopleOwingNames.length);
-        }
+        this.expense.peopleOwingAmount = this.quicksettleamount;
       }
       else if (this.splitmethod == "percentage") {
         this.expense.peopleOwingAmount = this.quicksettleamount;
@@ -623,45 +620,76 @@ export default {
       console.log(this.expense.peopleOwingNames);
       this.quicksettleamount = [];
       let amount = this.expense.expenseAmount;
-      if (this.custom.length > 0) {
-        let sum = 0
-        for (let i = 0; i < this.custom.length; i++) {
-          sum += this.custom[i];
-        }
-        if (sum != this.expense.expenseAmount) {
-          alert("Please make sure the percentages add up to the amount owed!")
-        }
-        else {
-          for (let i = 0; i < this.custom.length; i++) {
-            this.quicksettleamount.push(this.custom[i]);
-          }
-        }
-      }
-      if (this.shares.length > 0) {
-        let totalshares = 0;
-        for (let i = 0; i < this.shares.length; i++) {
-          totalshares += this.shares[i];
-        }
-        for (let i = 0; i < this.shares.length; i++) {
-          this.quicksettleamount.push(this.shares[i] * amount / totalshares);
-        }
-      }
-      if (this.percentages.length > 0) {
+      if(this.splitmethod == "percentage"){
         let totalpercentage = 0;
         for (let i = 0; i < this.percentages.length; i++) {
           totalpercentage += this.percentages[i];
         }
         if (totalpercentage != 100) {
-          alert("Please make sure the percentages add up to 100!")
+          alert("Please make sure the percentages add up to 100");
         }
         else {
-          for (let i = 0; i < this.percentages.length; i++) {
-            this.quicksettleamount.push(this.percentages[i] * amount / 100);
-          }
 
 
+        for (let i = 0; i < this.personNames.length; i++) {
+          this.quicksettleamount.push(0);
         }
+        for (let i = 0; i < this.expense.peopleOwingNames.length; i++) {
+          let amountowed = amount * this.percentages[i] / 100;
+          this.quicksettleamount[this.expense.peopleOwingNames[i].index] = amountowed;
+        }
+        console.log(this.quicksettleamount);
 
+      }
+
+      }
+
+      else if(this.splitmethod == "shares"){
+        let totalshares = 0;
+        for (let i = 0; i < this.shares.length; i++) {
+          totalshares += this.shares[i];
+        }
+        for (let i = 0; i < this.personNames.length; i++) {
+          this.quicksettleamount.push(0);
+        }
+        for (let i = 0; i < this.expense.peopleOwingNames.length; i++) {
+          let amountowed = amount * this.shares[i] / totalshares;
+          this.quicksettleamount[this.expense.peopleOwingNames[i].index] = amountowed;
+        }
+        console.log(this.quicksettleamount);
+
+      }
+
+
+
+      else if(this.splitmethod == "custom"){
+        let totalcustom = 0;
+        for (let i = 0; i < this.expense.peopleOwingNames.length; i++) {
+          totalcustom += this.custom[i];
+        }
+        if (totalcustom != 100) {
+          alert("Please make sure the custom amounts add up to 100");
+        }
+        else {
+        for (let i = 0; i < this.personNames.length; i++) {
+          this.quicksettleamount.push(0);
+        }
+        for (let i = 0; i < this.expense.peopleOwingNames.length; i++) {
+          let amountowed = this.custom[i];
+          this.quicksettleamount[this.expense.peopleOwingNames[i].index] = amountowed;
+      }
+      }
+      console.log(this.quicksettleamount);
+}
+      else{
+        for (let i = 0; i < this.personNames.length; i++) {
+          this.quicksettleamount.push(0);
+        }
+        for (let i = 0; i < this.peopleOwingNames.length; i++) {
+          let amountowed = amount / this.peopleOwingNames.length;
+          this.quicksettleamount[this.peopleOwingNames[i].index] = amountowed;
+        }
+        console.log(this.quicksettleamount);
       }
 
     }
