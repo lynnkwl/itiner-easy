@@ -25,7 +25,7 @@
   <div class="flex justify-center"> 
     <FormKit type="form"
           :actions="false"
-          
+
           >
               <FormKit type="multi-step"
               tab-style="progress"
@@ -50,6 +50,7 @@
                           value="1"
                           min="1"
                           max="3" 
+                          placeholder="between 1 & 3 days"
                       />
                     <!-- reformat to change day/days based on value -->
                       
@@ -198,7 +199,7 @@
           <details class="collapse collapse-arrow bg-blue-300 shadow-md min-w-fit">
                 <!-- <div class="flex pb-5 sticky top-0 z-10"> -->
                   <!-- <div class="w-96 border p-3 rounded-md bg-blue-300"> -->
-                  <summary class="collapse-title text-xl font-medium ">
+                  <summary class="collapse-title text-xl font-medium">
                     <h1 class="mb-1">Day {{ index + 1 }}</h1>
                     <h3 class="text-gray-500 mb-2">🗓️ {{ day.date }}</h3>
                   
@@ -224,7 +225,7 @@
                   
                   </summary>
     
-          <div class="collapse-content max-h-screen overflow-auto bg-blue-100 snap-both snap-mandatory"> 
+          <div class="pt-5 collapse-content max-h-screen overflow-auto bg-blue-100 snap-both snap-mandatory"> 
               <div class="flex overflow-auto">   
                   <div>
                     <div v-for="activity in day.activities" :key="activity.name" >
@@ -234,10 +235,12 @@
                           <img class="w-52 h-32 self-center rounded-md" :src="activity.photo" alt="image of attraction">
 
                             <div class="px-2 py-2 border-l-4 my-4 border-gray-400">
-                              <h3 class="text-gray-700 text-left">{{ activity.name }}</h3>
+                              <h3 class="text-black text-left">{{ activity.name }}</h3>
                                 <div>
-                                <p class="text-gray-700 text-base text-left">
-                                  {{ activity.time }} - {{ activity.endtime }}
+                                <p class="text-base text-left">
+                                  <!-- {{ activity.time }} - {{ activity.endtime }} -->
+                                  <p class="text-gray-600">Suggested duration:</p> 
+                                  <p class="text-gray-600">{{ calculateDuration(activity.time, activity.endtime) }} hours</p>
                                 </p>
                                 <p class="text-gray-500 text-base text-left">
                                   {{ activity.formatted_address}}
@@ -263,7 +266,7 @@
                           <div class="px-6 py-4">
                             <div class="font-bold text-sm mb-2">{{ activity.name }}</div>
                             <p class="text-gray-700 text-base">
-                              {{ activity.time }} - {{ activity.endtime }}
+                              {{ calculateDuration(activity.time, activity.endtime) }} hours
                             </p>
                           </div>
                             <button class="btn w-max self-center ml-5 mb-5" href="#" @click="displaydirectionsonmap(day.activities[day.activities.indexOf(activity) - 1].geometry.location, day.activities[day.activities.indexOf(activity) + 1].geometry.location)">The way there!</button>
@@ -284,56 +287,50 @@
 </div>
 
 <br>
-  
-  <div v-if="eateries.length>0" class="overflow-auto overflow-x-hidden h-96 m-10 rounded-lg">
-    <h1 class="text-gray-700 text-center underline">Places to eat</h1>
-    <table class="bg-blue-300 table table-pin-rows rounded-lg max-w-fit">
+<br>
+
+<h1 v-if="eateries.length>0" class="text-gray-700 text-center">Places to eat</h1>
+  <div v-if="eateries.length>0" class="overflow-auto h-96 m-10 rounded-lg">
+    
+    <table class="bg-blue-300 table table-pin-rows rounded-lg max-w-full">
       <thead>
         <tr class="bg-blue-400 rounded">
           <th class="text-xl text-gray-600">Name</th>
           <th class="text-xl text-gray-600">Address</th>
-          <th class="text-xl text-gray-600">Photo</th>
           <th class="text-xl text-gray-600">Price Level</th>
           <th class="text-xl text-gray-600">Rating</th>
-          <th class="text-xl text-gray-600">Map Details</th>
-          <th class="text-xl text-gray-600">How to get there!</th>
-          <th class="text-xl text-gray-600">Remarks</th>
+          <th class="text-xl text-gray-600">Getting There</th>
+          <!-- <th class="text-xl text-gray-600">Remarks</th> -->
         </tr>
       </thead>
 
       <tbody>
         <tr v-for="eatery in eateries" :key="eatery.name">
           <td>
-            <label>
+              <img :src="eatery.photo" @error="setDefaultImage" class="w-32 h-1/2 rounded hover:scale-1.25 pb-2" alt="">
               <h3>{{ eatery.name }}</h3>
-            </label>
           </td>
           <td>
             <h4>{{ eatery.vicinity}}</h4>
           </td>
           <td>
-            <img :src="eatery.photo" class="w-32 h-1/2 rounded hover:scale-1.25">
+            <span v-if="eatery.price_level > 0">{{ dollarSigns(eatery.price_level)}}</span>
+            <span v-else>💰</span>
           </td>
           <td>
-            {{ eatery.price_level}}
+            {{ ratingStars(eatery.rating) }}
           </td>
           <td>
-            {{ eatery.rating }}
-          </td>
-          <td>
-            <a href="#" @click="showLocation(eatery,eatery)">Show on Map</a>
-          </td>
-          <td>
+            <!-- <a href="#" @click="showLocation(eatery,eatery)">Show on Map</a> -->
             <a href="#" @click="displaydirectionsonmap(eatery.origin, eatery.geometry.location)">Show Route</a>
           </td>
-          <td v-if="eatery.formatted_address !== 'Travel'">
+          <!-- <td v-if="eatery.formatted_address !== 'Travel'">
             Remarks: <input type="text" v-model="eatery.remarks"><br>
             Expenses: <input type="number" v-model="eatery.expense"><br>
-          </td>
+          </td> -->
           <!-- <td>
             I want to eat here<input name = "eateries{{ index }}" type="radio" :value="eatery" @click="addeaterytotrip(eatery,)" v-model="selectedEateries">
           </td> -->
-          
         </tr>
       </tbody>
     </table>
@@ -449,6 +446,28 @@ export default {
         sliderChange(event) {
         this.sliderValue = event.target.value;
         },
+        dollarSigns(priceLevel) {
+          return '💰'.repeat(parseInt(priceLevel));
+        },
+        ratingStars(rating) {
+          return '⭐'.repeat(parseInt(rating));
+        },
+        setDefaultImage(event) {
+          event.target.src = '../assets/expenses/food.png';
+        },
+        calculateDuration(startTime, endTime) {
+          const start = this.timeToHours(startTime);
+          const end = this.timeToHours(endTime);
+          const duration = end - start;
+          return Math.round(duration);
+        },
+        timeToHours(time) {
+          const [hours, minutes] = time.split(':').map(Number);
+          return hours + minutes / 60;
+        },
+
+
+
 
         
 //weather api
