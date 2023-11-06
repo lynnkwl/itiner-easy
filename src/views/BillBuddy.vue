@@ -392,7 +392,10 @@ export default {
       console.log(this.expense.peopleOwingNames);
       // Assigns the amount owed to peopleOwingAmount object
       if (this.splitmethod == "evenly") {
-        this.expense.peopleOwingAmount = this.expense.expenseAmount / this.expense.peopleOwingNames.length;
+        this.expense.peopleOwingAmount =[];
+        for (let i = 0; i < this.expense.peopleOwingNames.length; i++) {
+          this.expense.peopleOwingAmount.push(this.expense.expenseAmount / this.expense.peopleOwingNames.length);
+        }
       }
       else if (this.splitmethod == "percentage") {
         this.expense.peopleOwingAmount = this.quicksettleamount;
