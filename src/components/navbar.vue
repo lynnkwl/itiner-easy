@@ -96,7 +96,7 @@
     </label>
     <ul tabindex="0" class="dropdown-content mt-6 bg-[#5072A7] z-[1] menu p-2 shadow rounded-box w-52">
       <li><router-link to="/profile"><a>Profile</a></router-link></li>
-      <li><a>Sign out</a></li>
+      <li><button @click="handleSignOut"><a>Sign out</a></button></li>
     </ul>
     </div>
     </div>
@@ -128,27 +128,36 @@ import {
   getFirestore, collection, getDocs,
   addDoc, deleteDoc, doc, updateDoc, setDoc, query, onSnapshot, getDoc
 } from "firebase/firestore";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getAuth, onAuthStateChanged ,signOut} from "firebase/auth";
+import router from '../router/index.js';
 
 export default {
-  data()
-  {
+  data() {
     return {
-      signedin:null,
-  }},
+      signedin: null,
+    };
+  },
   mounted() {
     this.db = getFirestore();
     this.auth = getAuth();
     onAuthStateChanged(this.auth, (user) => {
       if (user) {
-        this.signedin = true
+        this.signedin = true;
       } else {
-        this.signedin = false
-        console.log('User is signed out')
+        this.signedin = false;
+        console.log('User is signed out');
       }
     });
   },
-  methods(){}
+  methods: {
+    handleSignOut() {
+      // Call the `signOut` function from within the component
+      signOut(this.auth).then(() => {
+        // You may need to import `router` and use it here
+        router.push("/");
+      });
+    },
+  },
 };
 
 

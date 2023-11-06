@@ -132,6 +132,9 @@ const register = () => {
         email: email.value,
         password: password.value,
         uid: data.user.uid,
+        bio: "Bio",
+        location: "Location",
+        profilePic: "",
       });
       router.push('/feed') // redirect to feed
     })
