@@ -506,9 +506,6 @@ export default {
     // This function retrieves user input and adds it to the database. (Both in expenses and whoOwesWho)
     async addExpense() {
       this.computeexpense();
-      // Assigns the value of list to the peopleOwingNames object
-      console.log(this.expense.peopleOwingNames);
-      // Assigns the amount owed to peopleOwingAmount object
       if (this.splitmethod == "evenly") {
         this.expense.peopleOwingAmount = this.quicksettleamount;
       }
@@ -642,6 +639,7 @@ export default {
           })
       }
     },
+
     checkempty() {
       if (this.expense.currency == null || this.expense.expenseName == null || this.expense.expenseAmount == null || this.expense.personOwedName == null || this.peopleOwingNames == []) {
         console.log(this.expense.currency);
@@ -758,25 +756,27 @@ export default {
         }
         console.log(this.quicksettleamount);
       }
-
     }
   },
 
   async updated() {
-    onSnapshot(collection(this.tripsRef, this.trip, 'expenses'), (querySnapshot) => {
-      if (this.expenses.length > 0) {
-        this.expenses = [];
-      }
-      querySnapshot.docs.forEach((doc) => {
-        // doc.data() is never undefined for query doc snapshots
-        this.docId.push(doc.id);
-        this.expenses.push(doc.data());
+    setTimeout(() => {
+      onSnapshot(collection(this.tripsRef, this.trip, 'expenses'), (querySnapshot) => {
+        if (this.expenses.length > 0) {
+          this.docId = [];
+          this.expenses = [];
+        }
+        querySnapshot.docs.forEach((doc) => {
+          // doc.data() is never undefined for query doc snapshots
+          this.docId.push(doc.id);
+          this.expenses.push(doc.data());
+        });
       });
-    });
+    }, 1000)
   },
 
   async created() {
-    // await this.tripsRef;
+    // Displays the trips that the user has
     setTimeout(() => {
       getDocs(this.tripsRef).then((querySnapshot) => {
         querySnapshot.forEach((doc) => {

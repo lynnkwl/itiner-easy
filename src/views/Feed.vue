@@ -1412,16 +1412,18 @@ export default {
 
   // Function to show updated list of expenses on trip page
   async updated() {
-    onSnapshot(collection(this.tripsRef, this.trip, 'expenses'), (querySnapshot) => {
-      if (this.expenses.length > 0) {
-        this.expenses = [];
-      }
-      querySnapshot.docs.forEach((doc) => {
-        // doc.data() is never undefined for query doc snapshots
-        this.docId.push(doc.id);
-        this.expenses.push(doc.data());
+    setTimeout(() => {
+      onSnapshot(collection(this.tripsRef, this.trip, 'expenses'), (querySnapshot) => {
+        if (this.expenses.length > 0) {
+          this.expenses = [];
+        }
+        querySnapshot.docs.forEach((doc) => {
+          // doc.data() is never undefined for query doc snapshots
+          this.docId.push(doc.id);
+          this.expenses.push(doc.data());
+        });
       });
-    });
+    }, 1000);
   }
   ,
   // itinerary functions
