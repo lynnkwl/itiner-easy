@@ -989,9 +989,8 @@ export default {
     toggleExpenseAndItinerary() {
       this.showExpense = !this.showExpense;
       this.showItinerary = !this.showItinerary;
-      if(this.showExpense == true){
+      if(this.showItinerary == true){
         this.getLatLng();
-        initMap(this.citycoords);
       }
     },
 
