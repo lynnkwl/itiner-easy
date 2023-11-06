@@ -73,15 +73,15 @@
         <div class="form-group">
           <p>Person Owed:</p>
           <select v-model="expense.personOwedName" class="form-control" required>
-            <option v-for="name in personNames" :key="name" :value="name" selected>
+            <option v-for="(name,index) in personNames" :key="name" :value="name">
               {{ name }}
             </option>
           </select>
         </div>
         <div class="form-group">
           <p>Who Owes Money:</p>
-          <label v-for="name in personNames">
-            <input type="checkbox" :name="name" :value="name" v-model="expense.peopleOwingNames">{{ name }}<br>
+          <label v-for="(name,index) in personNames">
+            <input type="checkbox" :name="name" :value="{name:name,index:index}" v-model="expense.peopleOwingNames">{{ name }}<br>
           </label>
         </div>
         <div>
@@ -105,7 +105,7 @@
           <h3>Split By Percentage</h3>
           <div class="form-group">
             <h4 v-for="(name, index) in expense.peopleOwingNames ">
-              {{ name }} <input type="number" placeholder="Percentage" v-model="percentages[index]" class="form-control"
+              {{ name.name }} <input type="number" placeholder="Percentage" v-model="percentages[index]" class="form-control"
                 @keyup.enter="computeexpense">
             </h4>
             <ul>
@@ -119,7 +119,7 @@
           <h3>Split By Shares</h3>
           <div class="form-group">
             <h4 v-for="(name, index) in expense.peopleOwingNames ">
-              {{ name }} <input type="number" placeholder="Shares" v-model="shares[index]" class="form-control"
+              {{ name.name }} <input type="number" placeholder="Shares" v-model="shares[index]" class="form-control"
                 @keyup.enter="computeexpense">
             </h4>
             <ul>
@@ -133,7 +133,7 @@
           <h3>Have it your way!</h3>
           <div class="form-group">
             <h4 v-for="(name, index) in expense.peopleOwingNames ">
-              {{ name }} <input type="number" placeholder="custom" v-model="custom[index]" class="form-control"
+              {{ name.name }} <input type="number" placeholder="custom" v-model="custom[index]" class="form-control"
                 @keyup.enter="computeexpense">
             </h4>
             <ul>
@@ -620,6 +620,7 @@ export default {
       console.log(this.homeCurrency);
       console.log(this.tripCurrency);
       console.log(this.expense.currency);
+      console.log(this.expense.peopleOwingNames);
       this.quicksettleamount = [];
       let amount = this.expense.expenseAmount;
       if (this.custom.length > 0) {
