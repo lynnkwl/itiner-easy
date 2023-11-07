@@ -50,7 +50,7 @@
     </div>
     <div class="flex items-center cursor-pointer">
         <span class=" mr-1" v-if="signedin">
-            <router-link to="/landinglogin"><img class="h-20 w-20" src="./logo/itiner-easy.svg"></router-link>
+            <router-link to="/feed"><img class="h-20 w-20" src="./logo/itiner-easy.svg"></router-link>
         </span>
         <span class=" mr-1 z-10" v-if="!signedin">
             <router-link to="/"><img class="h-20 w-20" src="./logo/itiner-easy.svg"></router-link>
