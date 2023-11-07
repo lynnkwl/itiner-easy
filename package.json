@@ -26,6 +26,7 @@
     "nvm": "^0.0.4",
     "pnpm": "^7.33.6",
     "scrollreveal": "^4.0.9",
+    "uuid": "^9.0.1",
     "vue": "^3.3.7",
     "vue-router": "^4.2.5",
     "vue-scroll-reveal": "github:tserkov/vue-scroll-reveal#v2",
