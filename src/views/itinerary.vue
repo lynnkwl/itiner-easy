@@ -1279,11 +1279,13 @@ async saveItinerary() {
   var activitiesandtime = this.activitiesandtime;
   var json = JSON.stringify(activitiesandtime);
   console.log(json);
+  var transport = this.transport;
   
   const docSnap = await getDoc(doc(this.tripsRef, this.town));
   if (docSnap.exists()) {
     console.log("Document data:", docSnap.data());
     updateDoc(doc(this.tripsRef, this.town), {activitiesandtime: json});
+    updateDoc(doc(this.tripsRef, this.town), {transport: transport});
   } else {
     // doc.data() will be undefined in this case
     console.log("No such document!");

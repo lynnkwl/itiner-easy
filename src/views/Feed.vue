@@ -593,6 +593,8 @@ export default {
     },
     async displaydirectionsonmap(origin, destination) {
       event.preventDefault();
+      console.log(origin);
+      console.log(destination);
       var directionsService = new google.maps.DirectionsService();
       var directionsRenderer = new google.maps.DirectionsRenderer();
       var map = new google.maps.Map(document.getElementById('map'), {
@@ -983,6 +985,7 @@ export default {
           this.homeCurrency = doc.data().homeCurrency;
           this.personNames = doc.data().personNames.sort();
           this.activitiesandtime = doc.data().activitiesandtime;
+          this.transport = doc.data().transport;
           this.activitiesandtime = JSON.parse(this.activitiesandtime);
           console.log(this.activitiesandtime);
         } else {
